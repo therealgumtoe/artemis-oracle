@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Moon, Sparkles, BookOpen, RotateCcw } from 'lucide-react';
 
-const cards = [
+const cardsDE = [
   { id: 1, name: "Artemis", category: "Göttin", symbol: "bow", image: "Artemis mit gespanntem Bogen im silbernen Wald", pastEcho: "Unabhängigkeit war einmal dein Schutz und deine Sprache", presentTouch: "Etwas in dir kennt nur einen einzigen Pfad, und das ist deiner", pathEssence: "den Weg der eigenen Spur, der ungezähmten Klarheit, der einsamen Wahrheit", futureMove: "Etwas Freies wartet auf dich, jenseits dessen, was andere erwarten", meaning: "Die Jägerin, Hüterin der Wildnis und der jungen Mädchen. Sie steht für Unabhängigkeit, Selbstbestimmung und die wilde, ungezähmte Kraft in dir.", message: "Vertraue deinem Instinkt. Du bist bereits ganz und vollständig. Gehe deinen eigenen Weg, auch wenn er einsam erscheint.", dailyReading: "Artemis erscheint heute als Hüterin deiner Wildnis und richtet deinen Blick auf das, was nur dir gehört. Etwas in deiner Umgebung zeigt sein wahres Gesicht erst, wenn du aufhörst, dich nach anderen zu richten, und deinem eigenen Instinkt vertraust. Alte Bedürfnisse nach Bestätigung lösen sich langsam aus dir und machen Platz für eine Klarheit, die längst in deinen Knochen wohnt. Folge heute dem Pfad, der nur dich kennt, denn genau dort findet dich Artemis." },
   { id: 2, name: "Persephone", category: "Göttin", symbol: "pomegranate", image: "Persephone mit dem Granatapfel in der Hand", pastEcho: "Die Dualität zwischen Licht und Schatten hat dich einst geformt", presentTouch: "Etwas zwischen den Welten in dir verlangt nach Anerkennung", pathEssence: "den Weg der Tiefe, der Verwandlung, der Rückkehr aus dem Verborgenen", futureMove: "Eine Krone wartet auf dich, doch sie wird im Dunkeln geschmiedet", meaning: "Königin der Unterwelt und Göttin des Frühlings. Sie verkörpert die Dualität zwischen Licht und Schatten.", message: "Du wandelst zwischen den Welten. Deine Schatten sind deine Verbündeten, deine Krone. Umarme beide Seiten von dir.", dailyReading: "Persephone erscheint heute als Königin zwischen Licht und Schatten und richtet deinen Blick auf das, was du in dir noch nicht zusammenführen wolltest. Etwas in deiner Welt offenbart heute beide Seiten gleichzeitig, das Süße und das Bittere, und beide gehören dazu. Alte Anstrengungen, dich nur in einer Hälfte zu zeigen, lösen sich langsam, und etwas in dir wird ganz. Folge heute dem, was sich nach Wahrheit anfühlt, auch wenn es nicht nur hell ist." },
   { id: 3, name: "Nyx", category: "Göttin", symbol: "night", image: "Nyx, in einen Mantel aus Sternen gehüllt", pastEcho: "Die Nacht hat dich einmal mehr gelehrt als jeder Tag", presentTouch: "Etwas Uraltes in dir spricht, sobald die Welt still wird", pathEssence: "den Weg der Mysterien, der schweigenden Weisheit, des dunklen Wissens", futureMove: "Etwas, das du nicht in Worte fassen kannst, kommt langsam in Reichweite", meaning: "Urgöttin der Nacht, Mutter der Schicksalsmächte. Sie ist das Mysterium, das allem vorausgeht.", message: "In der Dunkelheit liegt deine größte Weisheit. Höre auf das, was die Nacht dir flüstert.", dailyReading: "Nyx erscheint heute als Urgöttin der Nacht und richtet deinen Blick auf das, was du nur in tiefer Stille hören kannst. Etwas in dir flüstert seit Tagen, doch erst in der Dämmerung wirst du es vernehmen. Alte laute Stimmen verlieren ihr Gewicht, und ein leises Wissen steigt langsam aus deinem Inneren auf. Folge heute der Ahnung, die kommt, sobald du das Licht dimmst." },
@@ -55,6 +55,538 @@ const cards = [
   { id: 51, name: "Die Pilgerin", category: "Mensch", symbol: "pilgrim", image: "Die Pilgerin mit Staub des langen Weges an den Füßen", pastEcho: "Ein Weg, den du einmal gegangen bist, war wichtiger als das Ziel", presentTouch: "Etwas in dir vertraut dem Gehen mehr als dem Ankommen", pathEssence: "den Weg der heiligen Reise, des selbsterkennenden Gehens, der wachsenden Geduld", futureMove: "Du wirst ankommen, aber nicht so, wie du dachtest. Es wird schöner sein", meaning: "Sie ist auf einer Reise, deren Ziel sie selbst ist.", message: "Der Weg ist das Ziel. Vertraue dem Weg.", dailyReading: "Die Pilgerin erscheint heute als Hüterin des Weges und richtet deinen Blick darauf, dass das Gehen wichtiger ist als das Ankommen. Etwas in deinem Leben verlangt nicht das Endziel, sondern den nächsten Schritt. Alte Ungeduld nach Ergebnissen löst sich langsam, und der Weg selbst wird zur Antwort. Folge heute der Bewegung, ohne zu wissen, wohin sie führt." },
   { id: 52, name: "Die Erbin", category: "Mensch", symbol: "heiress", image: "Die Erbin im Mantel ihrer Ahninnen", pastEcho: "Frauen vor dir haben einmal geträumt, und dieser Traum war deiner", presentTouch: "Etwas in dir trägt das Wissen jener, die nie selbst sprechen konnten", pathEssence: "den Weg der ahnen getragenen Macht, der weitergegebenen Weisheit, der erfüllten Linie", futureMove: "Du bist die Antwort auf die Gebete deiner Großmütter. Sie sehen dich", meaning: "Sie trägt das Wissen ihrer Ahninnen in den Knochen.", message: "Du bist die Antwort auf die Gebete deiner Großmütter.", dailyReading: "Die Erbin erscheint heute als Trägerin alter Linien und richtet deinen Blick auf das, was schon vor dir in deinem Blut war. Etwas in dir trägt die Träume deiner Vormütter, und du lebst, was sie nicht durften. Alte Frage nach deinem Wert löst sich langsam, denn deine Ahninnen kennen dich. Folge heute dem Wissen, dass du nicht aus dem Nichts kommst, sondern aus einem alten Plan." },
   { id: 53, name: "Der Grüne Komet", category: "Mysterium", symbol: "comet", image: "Der Grüne Komet, dessen Bahn durch dein Feld zieht", pastEcho: "Etwas Unerwartetes hat dich einmal an einen Ort gebracht, den keine Planung kannte", presentTouch: "Seine Bahn berührt etwas in dir, das lange geschlafen hat", pathEssence: "den Weg der seltenen Botschaft, des kosmischen Zeichens, der nicht geplanten Begegnung", futureMove: "Etwas Seltenes nähert sich dir. Halte deine Augen offen für das, was anders aussieht", meaning: "Ein seltener Bote aus den Tiefen des Kosmos. Sein smaragdgrünes Leuchten erscheint nur jenen, die bereit sind, das Unerwartete zu empfangen.", message: "Etwas Seltenes nähert sich dir. Halte deine Augen offen für die Zeichen, die anders aussehen als gewohnt.", dailyReading: "Der Grüne Komet erscheint heute als seltener Bote aus den Tiefen des Kosmos und richtet deinen Blick auf etwas, das nicht hierhin passt und doch gemeint ist. Etwas in deinem Leben nähert sich, das du nicht kommen sehen wirst und das dich tief berühren wird. Alte Erwartungen, wie Geschenke aussehen müssen, lösen sich langsam, und du bleibst offen für das Unerwartete. Folge heute den Zeichen, die anders aussehen als die anderen, denn sie tragen deinen Namen." }
+];
+
+const cardsEN = [
+  { id: 1, name: "Artemis", category: "Goddess", symbol: "bow",
+    image: "Artemis with her drawn bow in the silver wood",
+    pastEcho: "Independence was once your shelter and your tongue",
+    presentTouch: "Something in you knows only one path, and it is yours",
+    pathEssence: "the way of your own trail, of untamed clarity, of solitary truth",
+    futureMove: "Something free is waiting for you, beyond what others expect",
+    meaning: "The Huntress, keeper of the wilderness and of young women. She stands for independence, self-rule, and the wild, untamed force within you.",
+    message: "Trust your instinct. You are already whole. Walk your own path, even when it feels lonely.",
+    dailyReading: "Artemis arrives today as keeper of your wildness and turns your gaze toward what belongs to you alone. Something around you only reveals its true face once you stop measuring yourself by others and trust your own instinct. Old needs for approval are slowly loosening their hold and making room for a clarity that has lived in your bones all along. Follow the path today that only knows you, for that is where Artemis finds you." },
+
+  { id: 2, name: "Persephone", category: "Goddess", symbol: "pomegranate",
+    image: "Persephone with the pomegranate in her hand",
+    pastEcho: "The duality of light and shadow once shaped you",
+    presentTouch: "Something between worlds in you is asking to be acknowledged",
+    pathEssence: "the way of depth, of transformation, of return from what is hidden",
+    futureMove: "A crown is waiting for you, but it will be forged in the dark",
+    meaning: "Queen of the Underworld and Goddess of Spring. She embodies the duality between light and shadow.",
+    message: "You walk between worlds. Your shadows are your allies, your crown. Embrace both halves of yourself.",
+    dailyReading: "Persephone arrives today as Queen between light and shadow and turns your gaze toward what you have not yet allowed to come together inside you. Something in your world is showing both sides at once today, the sweet and the bitter, and both belong. Old efforts to appear only as one half are slowly loosening, and something in you becomes whole. Follow today what feels true, even if it is not only bright." },
+
+  { id: 3, name: "Nyx", category: "Goddess", symbol: "night",
+    image: "Nyx, wrapped in a cloak of stars",
+    pastEcho: "Night once taught you more than any day",
+    presentTouch: "Something ancient in you speaks the moment the world goes still",
+    pathEssence: "the way of mystery, of silent wisdom, of dark knowing",
+    futureMove: "Something you cannot put into words is slowly coming within reach",
+    meaning: "Primordial Goddess of the Night, mother of the powers of fate. She is the mystery that goes before all things.",
+    message: "Your deepest wisdom lives in the dark. Listen to what the night whispers to you.",
+    dailyReading: "Nyx arrives today as Primordial Goddess of the Night and turns your gaze toward what you can only hear in deep stillness. Something in you has been whispering for days, but you will only catch it at dusk. Old loud voices lose their weight, and a quiet knowing slowly rises from within. Follow today the hunch that comes the moment you dim the lights." },
+
+  { id: 4, name: "Hekate", category: "Goddess", symbol: "key",
+    image: "Hekate at the crossroads with her torch",
+    pastEcho: "A passage in your life once brought you to sacred ground",
+    presentTouch: "A crossroads inside you is waiting for your attention",
+    pathEssence: "the way of the threshold, of magic, of conscious choice",
+    futureMove: "The torch in your hand burns for a reason. It is making itself known",
+    meaning: "Goddess of magic, crossroads, and thresholds. Keeper of the keys to the three worlds.",
+    message: "You stand at a crossroads. The torch in your hand burns for a reason. It shows you the way.",
+    dailyReading: "Hekate arrives today as keeper of the thresholds and turns your gaze toward a crossroads you have long sensed. Something around you is asking for a decision that will not come from outside but from within you. Old indecision is slowly loosening, and the torch in your hand finds its direction. Follow today the path that calls you to the threshold, for that is exactly where Hekate has been waiting for you." },
+
+  { id: 5, name: "Selene", category: "Goddess", symbol: "moon",
+    image: "Selene on her silver chariot across the night sky",
+    pastEcho: "Quiet reflection was once your greatest strength",
+    presentTouch: "Something in you wishes to mirror rather than to shine",
+    pathEssence: "the way of soft luminance, of receiving attention",
+    futureMove: "A gentle light is rising, and you do not have to chase it",
+    meaning: "The personified Moon Goddess. She draws her silver chariot across the night sky.",
+    message: "You are allowed to shine softly, like the moon. It is enough to reflect what is true.",
+    dailyReading: "Selene arrives today as the quiet Moon Goddess and turns your gaze toward the power of reflection. Something in your world is not asking for your radiance but for your soft mirroring of what is true. Old striving to be seen is slowly loosening, and another kind of presence is rising in you. Follow today the gentle light that is enough." },
+
+  { id: 6, name: "Lilith", category: "Goddess", symbol: "serpent",
+    image: "Lilith with the serpent rising at her side",
+    pastEcho: "A no you once said is still carrying you today",
+    presentTouch: "Something unbent in you is asking for its full size",
+    pathEssence: "the way of raw truth, of untamed power, of the non-negotiable self",
+    futureMove: "Something in you is rising upright, and it cannot be talked down again",
+    meaning: "The first woman who refused to bow. She is the untamed force, the raw truth.",
+    message: "Say no. With your whole chest. You were created to live at your full height.",
+    dailyReading: "Lilith arrives today as the unbent one and turns your gaze toward what you have made small for too long. Something around you has earned a no that you should have spoken long ago. Old adjustments are slowly loosening their hold, and your true size begins to stretch out again. Follow today the impulse that draws you upright, even when it feels uncomfortable." }
+
+  { id: 7, name: "Morrigan", category: "Goddess", symbol: "raven",
+    image: "The Morrigan with ravens above the battlefield",
+    pastEcho: "Sovereignty once found you through a fight",
+    presentTouch: "Something in you knows the difference between a battle and a war",
+    pathEssence: "the way of sovereignty, of sacred conflict, of non-negotiable dignity",
+    futureMove: "Something in you stops explaining and begins to reign",
+    meaning: "Celtic Goddess of war, fate, and sovereignty.",
+    message: "There is a battle you must fight. With yourself. Your sovereignty remains non-negotiable.",
+    dailyReading: "Morrigan arrives today as Goddess of fate and turns your gaze toward a battle that will not be fought outside, but within you. Something in your world is challenging your sovereignty, and it remains non-negotiable. Old attempts to justify yourself are slowly loosening, and a royal stillness takes their place. Follow today the knowing that you owe no explanation to anyone who refuses to see you." },
+
+  { id: 8, name: "Inanna", category: "Goddess", symbol: "star",
+    image: "Inanna at the seven gates of the Underworld",
+    pastEcho: "You once left something behind that saved you",
+    presentTouch: "Something in you is descending, and it knows why",
+    pathEssence: "the way of descent, of shedding, of royal return",
+    futureMove: "You will rise again, but not as the one you were",
+    meaning: "Sumerian Queen of Heaven who descended into the Underworld and returned transformed.",
+    message: "You are passing through seven gates. At each, you leave something behind. Trust the descent.",
+    dailyReading: "Inanna arrives today as Queen of the descent and turns your gaze toward what you must let fall in order to go on. Something in your world is asking for a piece of jewellery you would rather keep. Old identities are slowly loosening at one gate after another, and you sink deeper into your true self. Follow today the descent, for at the lowest point your crowning is waiting." },
+
+  { id: 9, name: "Kali", category: "Goddess", symbol: "skull",
+    image: "Kali dancing, her blade in the moonlight",
+    pastEcho: "An old illusion once died inside you",
+    presentTouch: "Something in you is ready to lift its sword against what is false",
+    pathEssence: "the way of liberation, of cleansing destruction, of sacred clarity",
+    futureMove: "Something will fall, and that is good. What remains is true",
+    meaning: "Hindu Goddess of destruction and liberation. She dances on the death of old illusions.",
+    message: "Something must die so that you may live. Let it go. The storm cleanses what is allowed to remain.",
+    dailyReading: "Kali arrives today as sacred destroyer and turns your gaze toward what is finally allowed to die. Something in your life is asking for an ending you have long sensed but not yet spoken. Old illusions are slowly loosening beneath her blade, and what remains is true. Follow today the storm inside you, for it cleanses what is allowed to remain." },
+
+  { id: 10, name: "Diana", category: "Goddess", symbol: "stag",
+    image: "Diana with the doe and the crescent moon at her brow",
+    pastEcho: "You once kept something sacred in you when no one else could see it",
+    presentTouch: "Something in you senses what needs protecting",
+    pathEssence: "the way of the keeper, of watchful stillness, of the sacred boundary",
+    futureMove: "You become the guardian of what you love most",
+    meaning: "Roman Goddess of the moon and the hunt, protector of women.",
+    message: "Protect what is sacred. Especially in yourself. You are your own guardian.",
+    dailyReading: "Diana arrives today as keeper of the sacred and turns your gaze toward what deserves your protection. Something around you is touching a hallowed place in you that is not open to everyone. Old readiness to be available to all is slowly loosening, and you begin to be your own guardian. Follow today the instinct that shows you where your boundary lies." },
+
+  { id: 11, name: "Brigid", category: "Goddess", symbol: "flame",
+    image: "Brigid with fire in her hands",
+    pastEcho: "A flame once kindled something new in you",
+    presentTouch: "Something in you wants to heal, to write, to forge",
+    pathEssence: "the way of creation, of devotion, of inner burning",
+    futureMove: "What wishes to be made through you is asking for room. Your power is seeking a form",
+    meaning: "Celtic Goddess of fire, healing, and poetry.",
+    message: "Kindle your flame again. What you create is sacred.",
+    dailyReading: "Brigid arrives today as Goddess of the sacred fire and turns your gaze toward what wants to come into being through you. Something inside you has been burning for days, and it is asking for a form to be poured into. Old doubts about your creative power are slowly loosening, and your hands find their way back to their work. Follow today the spark you have not yet taken seriously." },
+
+  { id: 12, name: "Freya", category: "Goddess", symbol: "falcon",
+    image: "Freya on her falcon chariot, her heart wide open",
+    pastEcho: "Love and strength in you were once not opposites",
+    presentTouch: "Something in you wants to be tender and deadly at once",
+    pathEssence: "the way of union, of open defence, of undivided love",
+    futureMove: "Something beloved is drawing near, and it knows your name",
+    meaning: "Norse Goddess of love, beauty, and war.",
+    message: "Love and war are one. You are allowed to be open-hearted and lethal at the same time.",
+    dailyReading: "Freya arrives today as Goddess of love and war and turns your gaze toward the unity of what you have been keeping apart. Something in your world is asking you to be open-hearted and clear at the same time, without splitting yourself in two. Old ideas that love must be soft and strength must be hard are slowly loosening. Follow today the courage to be both, for that is how you were always meant." }
+
+  { id: 13, name: "The Silver Bow", category: "Symbol", symbol: "bow_silver",
+    image: "The silver bow, drawn between stillness and arrow",
+    pastEcho: "An intention you once spoke clearly is still carrying you",
+    presentTouch: "Something in you holds the tension without releasing",
+    pathEssence: "the way of pure intention, of focused will, of precise letting go",
+    futureMove: "The arrow finds its mark. You do not have to steer everything",
+    meaning: "A tool of precision and intent. Tension, focus, and the release.",
+    message: "Aim clearly. Only draw what you are also willing to release. Your intent is your sharpest weapon.",
+    dailyReading: "The Silver Bow arrives today as a tool of pure intent and turns your gaze toward what you truly want. Something in your world is asking for your full focus, nothing more and nothing less. Old scattered efforts are slowly loosening, and a single clear arrow finds its tension in you. Follow today the mark you see clearly, and only draw what you are willing to release." },
+
+  { id: 14, name: "The Arrow", category: "Symbol", symbol: "arrow",
+    image: "The arrow in flight, no longer hesitating",
+    pastEcho: "A movement you once dared has never turned back",
+    presentTouch: "Something in you already knows where",
+    pathEssence: "the way of pure direction, of resolved motion, of unstoppable flight",
+    futureMove: "It is time to fly. You will feel it in your gut",
+    meaning: "Pure direction. The arrow does not hesitate, does not question, does not doubt.",
+    message: "Stop overthinking. It is time to fly. You already know where.",
+    dailyReading: "The Arrow arrives today as pure direction and turns your gaze toward what you are already ready for. Something in your life does not need more reflection, but motion. Old layers of doubt are slowly loosening, and a clear line becomes visible. Follow today the first impulse that does not hesitate, for it knows where it wants to go." },
+
+  { id: 15, name: "The Chalice", category: "Symbol", symbol: "chalice",
+    image: "The chalice, overflowing with liquid moonlight",
+    pastEcho: "Receiving once nourished you when giving emptied you",
+    presentTouch: "Something in you wants to be filled, without begging",
+    pathEssence: "the way of receiving, of sacred openness, of flowing surrender",
+    futureMove: "Your chalice will be filled, overfilled, more than you would have granted yourself",
+    meaning: "A vessel of receptivity and of the sacred feminine.",
+    message: "You are allowed to receive. Let yourself be filled. Your chalice deserves to overflow.",
+    dailyReading: "The Chalice arrives today as a sacred vessel and turns your gaze toward your own openness. Something in your world wants to come to you, but it can only do so if you stop carrying everything yourself. Old striving, where you only gave, is slowly loosening, and your hands open upward. Follow today what comes toward you, and let yourself be filled until it overflows." },
+
+  { id: 16, name: "Crown of Thorns", category: "Symbol", symbol: "thorns",
+    image: "The crown of thorns that turns wounds into dignity",
+    pastEcho: "A wound in you once made you sacred",
+    presentTouch: "Something in you wears a diadem that others cannot see",
+    pathEssence: "the way of the wound walked through, of dignity shining through, of crowned pain",
+    futureMove: "What hurt you becomes a wellspring others drink from",
+    meaning: "A symbol for those who have grown into their power through suffering.",
+    message: "Your scars are your diadem. What wounded you also crowned you.",
+    dailyReading: "The Crown of Thorns arrives today as a symbol of pain transformed and turns your gaze toward what was shaped in you through wounding. Something in your story today is not a wound but a diadem. Old shame about past breaks is slowly loosening, and a quiet dignity takes its place. Follow today the knowing that your scars are part of your crowning." },
+
+  { id: 17, name: "The Veil", category: "Symbol", symbol: "veil",
+    image: "The veil that parts one world from another",
+    pastEcho: "You once kept something hidden that protected you",
+    presentTouch: "Something in you knows that not everything must be spoken",
+    pathEssence: "the way of the hidden, of guarded mysteries, of silent power",
+    futureMove: "Something withdraws so that something more valuable can rise to the surface",
+    meaning: "The membrane between the worlds. What is veiled remains hidden.",
+    message: "Some things are allowed to stay hidden. The hidden has its own power.",
+    dailyReading: "The Veil arrives today as a membrane between worlds and turns your gaze toward what does not need to come into the light. Something around you wants to be spoken, but it carries more power when it stays hidden. Old duty to disclose everything is slowly loosening, and the mystery finds its way back to its own force. Follow today the impulse to keep some things to yourself." },
+
+  { id: 18, name: "The Mirror", category: "Symbol", symbol: "mirror",
+    image: "The mirror in which you meet yourself",
+    pastEcho: "An honest look at yourself once changed everything",
+    presentTouch: "Something in you wishes to be seen, above all by you",
+    pathEssence: "the way of self-knowing, of unavoidable truth, of inner meeting",
+    futureMove: "You will see what you have long avoided. And that is good",
+    meaning: "A tool of truth and of self-knowledge.",
+    message: "Look. Truly look. What triggers you is a door to yourself.",
+    dailyReading: "The Mirror arrives today as a tool of truth and turns your gaze toward what you have not yet wanted to see in yourself. Something around you is provoking you, and that is precisely an open door to yourself. Old avoidance is slowly loosening, and an honest seeing becomes possible. Follow today the reaction that pulls at you most, for it leads you home." },
+
+  { id: 19, name: "The Key", category: "Symbol", symbol: "key_symbol",
+    image: "The key resting in your hand for a long time",
+    pastEcho: "You once opened a door you still walk through today",
+    presentTouch: "Something in you already holds the key to what comes next",
+    pathEssence: "the way of conscious access, of willing opening, of the decisive turning",
+    futureMove: "A door opens, but only when you realise you are the one carrying the key",
+    meaning: "Access to what is closed.",
+    message: "You already hold the key. The question is whether you can, or whether you will.",
+    dailyReading: "The Key arrives today as access to what is closed and turns your gaze toward what you could have opened long ago. Something in your life is waiting for a conscious decision only you can make. Old questions of whether are slowly loosening, and the question of when becomes clearer. Follow today the hand that has been holding the key for a while now." },
+
+  { id: 20, name: "The Torch", category: "Symbol", symbol: "torch",
+    image: "The torch that lights only the next step",
+    pastEcho: "You once shone for others without burning yourself out",
+    presentTouch: "Something in you knows the way, even when you cannot see it whole",
+    pathEssence: "the way of inner guidance, of the light you carry yourself, of trusted darkness",
+    futureMove: "You will light the way for others, and you will not be extinguished",
+    meaning: "Light in the darkness, carried by those who lead.",
+    message: "You are shining. See that you preserve yourself.",
+    dailyReading: "The Torch arrives today as light in the darkness and turns your gaze toward the next step, not the whole road. Something around you is not asking for your overview but for your presence in the here and now. Old worry about the whole is slowly loosening, and you begin to see only what you can illuminate. Follow today the small circle of light that is enough." },
+
+  { id: 21, name: "The Pomegranate", category: "Symbol", symbol: "pomegranate_sym",
+    image: "The pomegranate whose seeds bind you",
+    pastEcho: "A conscious choice once bound you to a place you do not regret",
+    presentTouch: "Something in you is examining more carefully what it takes in",
+    pathEssence: "the way of conscious receiving, of chosen binding, of sacred commitment",
+    futureMove: "You will taste, and it will become part of you",
+    meaning: "Fruit of the Underworld and of fertility.",
+    message: "What you eat becomes part of you. Choose with awareness.",
+    dailyReading: "The Pomegranate arrives today as fruit of conscious choice and turns your gaze toward what you are taking in right now. Something around you wants to become part of you, but you may decide whether you partake. Old habits of joining in automatically are slowly loosening, and you begin to choose what you let inside you. Follow today this awareness, for you become what you eat." }
+
+  { id: 22, name: "The Blood Moon", category: "Rare Moon", symbol: "blood_moon",
+    image: "The Blood Moon, hanging heavy in the sky",
+    pastEcho: "An upheaval in you once changed everything you held certain",
+    presentTouch: "Your blood already knows what your mind has not yet admitted",
+    pathEssence: "the way of ancient magic, of cosmic upheaval, of cellular truth",
+    futureMove: "Something is rearranging itself, deep beneath everything visible. Old voices lose their weight. A new call grows stronger",
+    meaning: "A rare cosmic moment. A sign of upheaval and ancient magic.",
+    message: "Something great is shifting in you. Your blood knows it before your mind.",
+    dailyReading: "The Blood Moon arrives today as a rare cosmic moment and turns your gaze toward a deep shift inside you. Something in your cells already knows what your mind has not yet spoken aloud. Old identities are slowly loosening beneath its heavy light, and something ancient is being woken. Follow today the hunch that does not come from your head, but from your belly." },
+
+  { id: 23, name: "The She-Wolf", category: "Being", symbol: "wolf",
+    image: "The she-wolf, her breath left behind in the snow",
+    pastEcho: "A pack once carried you when you could no longer stand alone",
+    presentTouch: "Something in you is seeking those who speak your language",
+    pathEssence: "the way of belonging, of faithful bond, of the shared howl",
+    futureMove: "Your pack will find you. You will know them by their eyes",
+    meaning: "The leader of the pack, loyal and lethal.",
+    message: "Find your pack. The few who speak your language.",
+    dailyReading: "The She-Wolf arrives today as leader of the pack and turns your gaze toward the few who truly speak your language. Something in your circle today is showing who belongs to your pack and who merely stands nearby. Old efforts to reach everyone are slowly loosening, and you turn toward those who answer. Follow today the howl rising in you, for it calls your own." },
+
+  { id: 24, name: "The Doe", category: "Being", symbol: "doe",
+    image: "The doe, motionless between the trees",
+    pastEcho: "A watchfulness once kept you from trusting wrongly",
+    presentTouch: "Something in you listens more carefully before it moves",
+    pathEssence: "the way of watchful stillness, of sensing pause, of conscious caution",
+    futureMove: "The right movement comes at the right time. You will know it",
+    meaning: "A reserve that is strength.",
+    message: "Your reserve is a sign of strength. Be watchful and trusting at once.",
+    dailyReading: "The Doe arrives today as teacher of watchful stillness and turns your gaze toward the strength of holding back. Something around you wants to be decided quickly, but your reserve carries truth in it. Old fear of seeming indecisive is slowly loosening, and you see that listening is also an act. Follow today the inner standing still, for it protects you." },
+
+  { id: 25, name: "The Owl", category: "Being", symbol: "owl",
+    image: "The owl whose eyes pierce the night",
+    pastEcho: "Quiet observation once showed you truths that others overlooked",
+    presentTouch: "Something in you listens more than it speaks",
+    pathEssence: "the way of nocturnal wisdom, of seeing stillness, of waking silence",
+    futureMove: "A realisation rises slowly in you, without effort",
+    meaning: "Keeper of nocturnal wisdom.",
+    message: "Listen more than you speak. Observe.",
+    dailyReading: "The Owl arrives today as keeper of hidden truths and turns your gaze toward what lies between the words. Something around you only shows its true face in stillness, far from distraction and quick answers. Old thoughts are slowly loosening inside you and making room for a deeper realisation that has long been waiting. Follow today the feeling that keeps returning, for that is where your message begins." },
+
+  { id: 26, name: "The Raven", category: "Being", symbol: "crow",
+    image: "The raven on the branch between the worlds",
+    pastEcho: "A foreboding once proved truer than all logic",
+    presentTouch: "Something in you reads the signs others cannot see",
+    pathEssence: "the way of prophetic seeing, of read signs, of trusted foreboding",
+    futureMove: "A message reaches you, and you will already know it when it comes",
+    meaning: "Messenger between the worlds.",
+    message: "Notice the signs. They are everywhere. Trust your forebodings.",
+    dailyReading: "The Raven arrives today as messenger between the worlds and turns your gaze toward the signs that lie everywhere. Something around you today is not a coincidence but an answer you have already asked for. Old scepticism toward forebodings is slowly loosening, and your inner reading becomes clearer. Follow today the first hint, for it does not come from nowhere." },
+
+  { id: 27, name: "The Serpent", category: "Being", symbol: "serpent_sym",
+    image: "The serpent leaving her old skin behind",
+    pastEcho: "A shedding once freed you, even though it hurt",
+    presentTouch: "Something old in you is becoming translucent and slipping away",
+    pathEssence: "the way of shedding, of returning renewal, of the released self",
+    futureMove: "What no longer fits falls from you, without your needing to grasp it",
+    meaning: "A symbol of shedding and rebirth.",
+    message: "Shed your skin. Let the old identity fall.",
+    dailyReading: "The Serpent arrives today as a symbol of shedding and turns your gaze toward what you have long since outgrown. Something in you is carrying an identity that has grown old and wishes to slip away. Old self-images are slowly loosening and falling away like translucent skin. Follow today the urge to renew yourself, and keep nothing out of mere habit." },
+
+  { id: 28, name: "The Panther", category: "Being", symbol: "panther",
+    image: "The panther, silent in the moon-shadow",
+    pastEcho: "A quiet strength in you once carried you to your goal, without fanfare",
+    presentTouch: "Something in you knows when stillness is more effective than words",
+    pathEssence: "the way of depth, of dignity, of soundless resolve",
+    futureMove: "You will be there before others notice",
+    meaning: "A quiet power that lives in the shadows.",
+    message: "You are allowed to be silent and still powerful.",
+    dailyReading: "The Panther arrives today as a quiet force in the shadows and turns your gaze toward the power of being soft-spoken. Something around you today is showing that loud is not strong, and silent is not weak. Old ideas that you must show yourself in order to be effective are slowly loosening. Follow today the inner path of the panther, who arrives before others notice." },
+
+  { id: 29, name: "The Moth", category: "Being", symbol: "moth",
+    image: "The moth that flies to the flame",
+    pastEcho: "A longing once burned you, and yet you do not regret it",
+    presentTouch: "Something in you is testing which light you truly follow",
+    pathEssence: "the way of dangerous longing, of clear desire, of bright choice",
+    futureMove: "You will know whether the light you follow is your own or someone else's",
+    meaning: "A creature that flies to the light, even when it burns her.",
+    message: "Ask yourself which light you are following. Is it yours or someone else's?",
+    dailyReading: "The Moth arrives today as a creature of dangerous longing and turns your gaze toward the light you are following. Something in your life is asking for an honest answer as to whether what draws you truly belongs to you. Old foreign desires are slowly loosening, and your own longings become clearer. Follow today only the light that comes from within yourself." },
+
+  { id: 30, name: "The Spider", category: "Being", symbol: "spider",
+    image: "The spider weaving the threads of fate",
+    pastEcho: "You once knotted something that still carries you today",
+    presentTouch: "Something in you is weaving, without your noticing",
+    pathEssence: "the way of the weaver, of shaped reality, of conscious knotting",
+    futureMove: "Your web becomes visible, and it is more beautiful than you thought",
+    meaning: "Weaver of fate.",
+    message: "You weave your own fate. Every thought is a thread.",
+    dailyReading: "The Spider arrives today as weaver of fate and turns your gaze toward the threads you yourself are knotting. Something in your thoughts today is weaving your reality, whether you wish it or not. Old stories you tell yourself are slowly loosening, and you become the conscious weaver. Follow today what you wish to create, for every thought is a thread." }
+
+  { id: 31, name: "The Underworld", category: "Mystery", symbol: "underworld",
+    image: "The Underworld with its still waters",
+    pastEcho: "You once descended and returned with something true",
+    presentTouch: "Something in you is asking you to descend once more",
+    pathEssence: "the way of descent, of dark meeting, of the truth that lies beneath the surface",
+    futureMove: "What you find there has always been yours, you have only forgotten",
+    meaning: "The place where everything repressed lives.",
+    message: "Descend. What you fear holds the answer.",
+    dailyReading: "The Underworld arrives today as the place of the repressed and turns your gaze toward what you did not want to see. Something in you holds an answer you will only find by going deeper. Old avoidance of what is hard is slowly loosening, and a sacred descent begins. Follow today the fear that shows you the way, for it guards what is essential." },
+
+  { id: 32, name: "The Hunt", category: "Mystery", symbol: "hunt",
+    image: "The hunt, opening before sunrise",
+    pastEcho: "You once pursued something and made it your own",
+    presentTouch: "Something in you stops waiting and begins to move",
+    pathEssence: "the way of sacred pursuit, of active grasping, of clear claim",
+    futureMove: "Some things only come to you when you go and get them. You know what it is",
+    meaning: "The sacred pursuit of what belongs to you.",
+    message: "Stop waiting. Some things you have to claim.",
+    dailyReading: "The Hunt arrives today as sacred pursuit and turns your gaze toward what is not coming to you but toward which you must move yourself. Something in your life is no longer waiting for you to be ready. Old patience that has turned into stillness is slowly loosening, and movement becomes possible. Follow today the track that belongs to you, and claim what is yours." },
+
+  { id: 33, name: "The Awakening", category: "Mystery", symbol: "awakening",
+    image: "The awakening, a light through closed eyelids",
+    pastEcho: "You once saw something you can no longer un-see",
+    presentTouch: "Something in you is opening, and it hurts beautifully",
+    pathEssence: "the way of open eyes, of unavoidable clarity, of sacred pain",
+    futureMove: "You will see. It will hurt and it will be sacred",
+    meaning: "The moment when the eyes open.",
+    message: "You see now. It hurts and it is sacred.",
+    dailyReading: "The Awakening arrives today as the moment of open eyes and turns your gaze toward a truth no longer possible to overlook. Something around you becomes clear today, and you cannot roll it back into the not-knowing of before. Old comfort of not knowing is slowly loosening, and a sacred clarity opens up. Follow today the seeing, even when it hurts, for it is sacred." },
+
+  { id: 34, name: "The Threshold", category: "Mystery", symbol: "threshold",
+    image: "The threshold, neither within nor without",
+    pastEcho: "A passage in you once changed you without your noticing it at once",
+    presentTouch: "Something in you stands between the rooms and waits",
+    pathEssence: "the way of the in-between, of sacred pause, of slow becoming",
+    futureMove: "You will cross the threshold, not by hurrying, but by being granted leave",
+    meaning: "The sacred space between what has been and what is yet to come.",
+    message: "You are in between. Take your time.",
+    dailyReading: "The Threshold arrives today as sacred in-between and turns your gaze toward what is neither past nor future. Something in you stands between the rooms and needs no haste. Old pressing for answers is slowly loosening, and the in-between is granted its own value. Follow today no direction, but remain still and breathe in the passage." },
+
+  { id: 35, name: "The Transformation", category: "Mystery", symbol: "transformation",
+    image: "The transformation, woven from ash and breath",
+    pastEcho: "A metamorphosis once cast you into a new form",
+    presentTouch: "Something in you is turning fluid and searching for its new shape",
+    pathEssence: "the way of dissolution, of alchemical ripening, of trusted transformation",
+    futureMove: "What you are becoming, you do not yet know. But your cells already know",
+    meaning: "The alchemical transformation.",
+    message: "What is moving in you right now is metamorphosis. Let yourself dissolve.",
+    dailyReading: "The Transformation arrives today as an alchemical process and turns your gaze toward what is dissolving in you right now. Something inside you is changing its state and does not yet know its new form. Old firmness is slowly loosening, and you become fluid enough to be remade. Follow today no answer, but stay in the process that is reshaping you." },
+
+  { id: 36, name: "Sisterhood", category: "Mystery", symbol: "sisterhood",
+    image: "Sisterhood, a circle of women beneath the moon",
+    pastEcho: "Women once carried you when you could no longer stand",
+    presentTouch: "Something in you wishes to be held without having to explain itself",
+    pathEssence: "the way of feminine connection, of shared breath, of the sacred circle",
+    futureMove: "You will find your pack of women. They know who you are",
+    meaning: "A sacred circle of women who hold each other.",
+    message: "You need your sisters. Seek them. Hold them.",
+    dailyReading: "Sisterhood arrives today as a sacred circle and turns your gaze toward the women you need and who need you. Something in your world is reminding you that you are not meant to live for yourself alone. Old notions of solitary making are slowly loosening, and you seek, hold, are held. Follow today the call for your sisters, for they are already waiting." },
+
+  { id: 37, name: "The Shadows", category: "Mystery", symbol: "shadow",
+    image: "The shadows that walk with you",
+    pastEcho: "Something you rejected was always a part of your power",
+    presentTouch: "Something in you wishes to be brought home",
+    pathEssence: "the way of integration, of uncomfortable reconciliation, of the homecoming self",
+    futureMove: "What you did not want to see becomes a doorstep. You walk across it",
+    meaning: "Everything you have rejected in yourself.",
+    message: "Turn around. Look it in the face. Take it home.",
+    dailyReading: "The Shadows arrive today as the disowned part of your power and turn your gaze toward what you have rejected in yourself. Something in you that you wanted to be rid of has always been a source of your strength. Old severance from parts of your self is slowly loosening, and you take home what belongs to you. Follow today the shadow that bothers you most, and give it a seat inside you." },
+
+  { id: 38, name: "The Rebirth", category: "Mystery", symbol: "rebirth",
+    image: "The rebirth from the feathers of the phoenix",
+    pastEcho: "Something in you once died so that you could live",
+    presentTouch: "Something in you is rising from the ashes",
+    pathEssence: "the way of new beginning, of mourning celebration, of second birth",
+    futureMove: "A new version of you is rising. Mourn the old briefly. Celebrate it long",
+    meaning: "The rising from the ashes.",
+    message: "You are new. Mourn the old version, and then celebrate.",
+    dailyReading: "The Rebirth arrives today as a rising from the ashes and turns your gaze toward what you have become after an ending. Something in you is new, and perhaps you have not yet quite noticed it yourself. Old grief for what has passed is slowly loosening and making room for a quiet celebration. Follow today the new breath in you, and take it as your own." },
+
+  { id: 39, name: "Wolf Moon", category: "Rare Moon", symbol: "wolf_moon",
+    image: "The Wolf Moon high above the winter forest",
+    pastEcho: "A winter once taught you what stillness is for",
+    presentTouch: "Something in you is gathering strength without showing it yet",
+    pathEssence: "the way of inner retreat, of the cold that gathers, of the hidden howl",
+    futureMove: "Your howl becomes a language. Others will answer",
+    meaning: "The first full moon of the year.",
+    message: "Listen to your howl. Winter is for gathering your strength.",
+    dailyReading: "The Wolf Moon arrives today as the first full moon of the year and turns your gaze toward the power of gathering. Something inside you is asking you not to bloom now, but to root. Old urgency for visibility is slowly loosening, and winter becomes an ally. Follow today the howl rising in you, for it calls your own." },
+
+  { id: 40, name: "Blue Moon", category: "Rare Moon", symbol: "blue_moon",
+    image: "The Blue Moon, once only in a single breath",
+    pastEcho: "A rare chance once brought you to a place you do not forget",
+    presentTouch: "Something in you senses that this moment is one of a kind",
+    pathEssence: "the way of the rare chance, of conscious manifestation, of the magical window",
+    futureMove: "What you set now will be magnified. Time is on your side",
+    meaning: "A second full moon within a month. A magical window.",
+    message: "This opportunity is rare. What you manifest now is amplified.",
+    dailyReading: "The Blue Moon arrives today as a rare magical window and turns your gaze toward what you wish to manifest now. Something in time itself carries more weight today than it usually does. Old scepticism about making things real is slowly loosening, and your intent finds its echo. Follow today what you truly want, for the moment is listening." },
+
+  { id: 41, name: "Harvest Moon", category: "Rare Moon", symbol: "harvest_moon",
+    image: "The Harvest Moon, heavy and golden over the ripened fields",
+    pastEcho: "Gratitude was once a key for you",
+    presentTouch: "Something in you wishes to harvest what it has long tended",
+    pathEssence: "the way of the ripe fruit, of honoured effort, of golden recognition",
+    futureMove: "You will see what you have created. It is more than you think",
+    meaning: "The full moon close to the autumn equinox.",
+    message: "See what you have created. Honour it.",
+    dailyReading: "The Harvest Moon arrives today as a full moon of recognition and turns your gaze toward what you have created without honouring it. Something in your life has ripened, and it is asking to be seen by you. Old habit of always aiming for the next thing is slowly loosening, and you stay with what is. Follow today the gratitude for what has come to be, for it is nourishment." },
+
+  { id: 42, name: "Black Moon", category: "Rare Moon", symbol: "black_moon",
+    image: "The Black Moon, a door into the hidden",
+    pastEcho: "You once had your greatest clarity in deepest darkness",
+    presentTouch: "Something in you knows its true longing, beyond all noise",
+    pathEssence: "the way of deep intention, of bottomless clarity, of undiluted wanting",
+    futureMove: "What you truly want becomes visible the moment all lights go out",
+    meaning: "A second new moon in a month. The deepest darkness.",
+    message: "In this darkness you have absolute clarity. What do you truly want?",
+    dailyReading: "The Black Moon arrives today as the deepest darkness and turns your gaze toward the clarity that only arises in complete stillness. Something in you knows its true longing the moment all noise is gone. Old blending with foreign desires is slowly loosening, and you hear yourself again. Follow today no outer light, for your own is becoming visible." }
+
+  { id: 43, name: "The Mother", category: "Human", symbol: "mother",
+    image: "The Mother who carries her own children within her",
+    pastEcho: "You once nourished without asking where you took it from",
+    presentTouch: "Something in you wishes to become mother to itself",
+    pathEssence: "the way of nourishing fullness, of holding hands, of creative patience",
+    futureMove: "The love you are seeking begins in you. It is already waiting there",
+    meaning: "The creative force that nourishes, holds, and protects.",
+    message: "Become a mother to yourself. The love you are seeking begins with you.",
+    dailyReading: "The Mother arrives today as nourishing force and turns your gaze toward what you can give yourself. Something in you is seeking a love that will not come from outside but from within. Old expectation of others is slowly loosening, and you become the mother of your own longing. Follow today the gesture you needed as a child, and give it to yourself." },
+
+  { id: 44, name: "The Lover", category: "Human", symbol: "lover",
+    image: "The Lover whose heart stays unlocked",
+    pastEcho: "An open devotion once brought you to a place where you did not lose yourself",
+    presentTouch: "Something in you has stopped barricading itself",
+    pathEssence: "the way of undivided devotion, of the open heart, of love that does not turn away",
+    futureMove: "Love comes not as reward, but as recognition",
+    meaning: "The open, self-giving soul.",
+    message: "Love is the language of your soul. Keep your heart open.",
+    dailyReading: "The Lover arrives today as an open soul and turns your gaze toward the courage of not closing your heart. Something in your world today is not asking for caution, but for devotion. Old armour is slowly loosening, and a soft strength takes its place. Follow today the love your heart speaks, and trust that it is your language." },
+
+  { id: 45, name: "The Healer", category: "Human", symbol: "healer",
+    image: "The Healer with hands of moonlight",
+    pastEcho: "You once helped someone simply by staying",
+    presentTouch: "Something in you heals through pure presence",
+    pathEssence: "the way of witnessing presence, of touching attention, of changing stillness",
+    futureMove: "You will heal without knowing exactly what you are doing. Your presence is enough",
+    meaning: "She who knows the wounds. Her own and others'.",
+    message: "You heal by becoming a witness. Your presence is the medicine.",
+    dailyReading: "The Healer arrives today as one who transforms through her presence and turns your gaze toward the healing force of your pure being-there. Something around you today needs not a solution, but you. Old notions that you must always do something are slowly loosening, and being becomes the medicine. Follow today the sitting rather than the running, for your presence heals." },
+
+  { id: 46, name: "The Wise One", category: "Human", symbol: "sage",
+    image: "The Wise One amid her books and bones",
+    pastEcho: "An inner voice once proved you right when all the world disagreed",
+    presentTouch: "Something in you already knows what it cannot yet speak",
+    pathEssence: "the way of inner truth, of silent clarity, of unshaken certainty",
+    futureMove: "The answer is already whispering to you. You only need to turn down the volume of the world",
+    meaning: "The keeper of inner truth.",
+    message: "You know more than you believe. The answer whispers.",
+    dailyReading: "The Wise One arrives today as keeper of inner truth and turns your gaze toward what you have long known but not yet spoken aloud. Something in you has been whispering for days, and it carries the answer you are seeking outside. Old dependence on foreign opinions is slowly loosening, and your own voice becomes clearer. Follow today the inner answer, for it has always been with you." },
+
+  { id: 47, name: "The Warrior", category: "Human", symbol: "warrior",
+    image: "The Warrior in her iron, yet not out of hatred",
+    pastEcho: "A fight you once led was an act of love",
+    presentTouch: "Something in you is ready to rise without hardening",
+    pathEssence: "the way of sacred conflict, of the protecting blade, of unbent loyalty",
+    futureMove: "You will fight. But not from rage, from truth",
+    meaning: "She fights out of love for what she protects.",
+    message: "There are things you must fight for. Stand up.",
+    dailyReading: "The Warrior arrives today as sacred fighter and turns your gaze toward what is worth standing for. Something in your life is asking not for adjustment, but for clarity. Old fear of conflict is slowly loosening, and you remember the strength you can carry. Follow today the impulse to draw yourself up, for it comes from love, not anger." },
+
+  { id: 48, name: "The Dreamer", category: "Human", symbol: "dreamer",
+    image: "The Dreamer whose eyes look into other worlds",
+    pastEcho: "A dream you defended is now your reality",
+    presentTouch: "Something in you sees a world that is not yet",
+    pathEssence: "the way of visionary force, of fidelity against the real, of soft persistence",
+    futureMove: "What you dream today, someone else will dream as obvious in a few years",
+    meaning: "She sees what may come to be.",
+    message: "Defend your dreams. Reality is yesterday's dream that someone dared to dream.",
+    dailyReading: "The Dreamer arrives today as keeper of the not-yet-visible and turns your gaze toward the vision no one else shares. Something in you sees a world that is missing in reality. Old shame about dreaming too big is slowly loosening, and you defend your inner picture. Follow today the dream you have already turned away, for it is returning." },
+
+  { id: 49, name: "The Creator", category: "Human", symbol: "creator",
+    image: "The Creator with clay between her fingers",
+    pastEcho: "You once made something without feeling ready, and it carried",
+    presentTouch: "Something in you wishes to take form, now, not later",
+    pathEssence: "the way of the creative flow, of the unhesitating hand, of the work in becoming",
+    futureMove: "Do not wait until you feel ready. Begin, and the work will carry you",
+    meaning: "From her hands, new things come into the world.",
+    message: "Never wait until you feel ready. Create now.",
+    dailyReading: "The Creator arrives today as one who shapes from clay and breath and turns your gaze toward what is waiting in your hands. Something in you wishes to be made, now, not when you feel ready. Old worry about the right moment is slowly loosening, and the work finds its form. Follow today the hand that already knows what it wishes to do." },
+
+  { id: 50, name: "The Rebel", category: "Human", symbol: "rebel",
+    image: "The Rebel who never bends the knee",
+    pastEcho: "A no you once said brought you back to yourself",
+    presentTouch: "Something in you refuses to make itself small once more",
+    pathEssence: "the way of wild authenticity, of the unbent stance, of the homecoming self",
+    futureMove: "Your wildness will find its place. It was always there. It will be seen",
+    meaning: "She refuses to make herself small.",
+    message: "Stop adjusting. Your wildness is your home.",
+    dailyReading: "The Rebel arrives today as one who never becomes smaller and turns your gaze toward the adjustments that have cost you. Something around you wants to force you back into old dimensions, but you no longer fit inside them. Old willingness to bend yourself is slowly loosening, and your wildness finds its footing. Follow today the no rising in you, for it is your home." },
+
+  { id: 51, name: "The Pilgrim", category: "Human", symbol: "pilgrim",
+    image: "The Pilgrim with the dust of the long road on her feet",
+    pastEcho: "A path you once walked was more important than the destination",
+    presentTouch: "Something in you trusts the walking more than the arriving",
+    pathEssence: "the way of the sacred journey, of self-knowing walking, of growing patience",
+    futureMove: "You will arrive, but not the way you thought. It will be more beautiful",
+    meaning: "She is on a journey whose destination is herself.",
+    message: "The way is the goal. Trust the way.",
+    dailyReading: "The Pilgrim arrives today as keeper of the way and turns your gaze to the truth that walking is more important than arriving. Something in your life is not asking for the final goal, but for the next step. Old impatience for results is slowly loosening, and the way itself becomes the answer. Follow today the movement, without knowing where it leads." },
+
+  { id: 52, name: "The Inheritor", category: "Human", symbol: "heiress",
+    image: "The Inheritor in the cloak of her foremothers",
+    pastEcho: "Women before you once dreamed, and that dream was yours",
+    presentTouch: "Something in you carries the knowing of those who could never speak it themselves",
+    pathEssence: "the way of ancestor-borne power, of inherited wisdom, of the fulfilled lineage",
+    futureMove: "You are the answer to your grandmothers' prayers. They see you",
+    meaning: "She carries the knowledge of her foremothers in her bones.",
+    message: "You are the answer to your grandmothers' prayers.",
+    dailyReading: "The Inheritor arrives today as bearer of old lineages and turns your gaze toward what was in your blood long before you. Something in you carries the dreams of your foremothers, and you live what they were not allowed to. Old questions of your worth are slowly loosening, for your foremothers know you. Follow today the knowing that you do not come from nothing, but from an old plan." },
+
+  { id: 53, name: "The Green Comet", category: "Mystery", symbol: "comet",
+    image: "The Green Comet whose path crosses your field",
+    pastEcho: "Something unexpected once brought you to a place no plan had known",
+    presentTouch: "Its passing touches something in you that has long slept",
+    pathEssence: "the way of the rare message, of the cosmic sign, of the unplanned meeting",
+    futureMove: "Something rare is drawing near. Keep your eyes open for what looks different",
+    meaning: "A rare messenger from the depths of the cosmos. Its emerald glow only shows itself to those ready to receive the unexpected.",
+    message: "Something rare is drawing near. Keep your eyes open for signs that look different from the usual.",
+    dailyReading: "The Green Comet arrives today as a rare messenger from the depths of the cosmos and turns your gaze toward something that does not belong here and yet is meant. Something in your life is approaching that you will not see coming and that will touch you deeply. Old expectations of how gifts must look are slowly loosening, and you stay open to the unexpected. Follow today the signs that look different from the others, for they carry your name." }
 ];
 
 const COLORS = {
@@ -481,7 +1013,7 @@ const shuffleArray = (arr) => {
   return a;
 };
 
-const cardTone = {
+const cardToneDE = {
   "Artemis": "Unabhängigkeit", "Persephone": "Dualität", "Nyx": "tiefes Mysterium",
   "Hekate": "Übergang", "Selene": "stille Reflexion", "Lilith": "rebellische Kraft",
   "Morrigan": "Souveränität", "Inanna": "Transformation", "Kali": "Befreiung",
@@ -501,6 +1033,231 @@ const cardTone = {
   "Die Schöpferin": "schöpferischer Fluss", "Die Rebellin": "wilde Authentizität",
   "Die Pilgerin": "heilige Reise", "Die Erbin": "ahnen getragene Macht",
   "Der Grüne Komet": "seltene Botschaft"
+};
+
+const cardToneEN = {
+  "Artemis": "independence", "Persephone": "duality", "Nyx": "deep mystery",
+  "Hekate": "passage", "Selene": "quiet reflection", "Lilith": "rebellious power",
+  "Morrigan": "sovereignty", "Inanna": "transformation", "Kali": "liberation",
+  "Diana": "protection", "Brigid": "creative fire", "Freya": "union",
+  "The Silver Bow": "clear intent", "The Arrow": "action", "The Chalice": "receiving",
+  "Crown of Thorns": "pain made power", "The Veil": "mystery", "The Mirror": "self-knowing",
+  "The Key": "access", "The Torch": "guidance", "The Pomegranate": "conscious choice",
+  "The Blood Moon": "awakening", "The She-Wolf": "belonging", "The Doe": "watchful reserve",
+  "The Owl": "silent wisdom", "The Raven": "prophetic signs", "The Serpent": "shedding",
+  "The Panther": "precise strength", "The Moth": "dangerous longing", "The Spider": "fate-weaving",
+  "The Underworld": "shadow work", "The Hunt": "active pursuit", "The Awakening": "clarity",
+  "The Threshold": "the in-between", "The Transformation": "metamorphosis", "Sisterhood": "feminine kinship",
+  "The Shadows": "integration", "The Rebirth": "new beginning", "Wolf Moon": "inner retreat",
+  "Blue Moon": "rare opportunity", "Harvest Moon": "gratitude", "Black Moon": "deep intent",
+  "The Mother": "nourishing fullness", "The Lover": "open devotion", "The Healer": "transforming presence",
+  "The Wise One": "inner truth", "The Warrior": "sacred fight", "The Dreamer": "visionary force",
+  "The Creator": "creative flow", "The Rebel": "wild authenticity",
+  "The Pilgrim": "sacred journey", "The Inheritor": "ancestor-borne power",
+  "The Green Comet": "rare message"
+};
+
+// Sprach-Helper: gibt das passende Karten- und Ton-Set zurück
+const getCards = (lang) => lang === 'en' ? cardsEN : cardsDE;
+const getCardTone = (lang) => lang === 'en' ? cardToneEN : cardToneDE;
+
+// Sprach-Detection: speichert die Wahl der Nutzerin
+const LANG_KEY = 'artemis-oracle-lang-v1';
+
+const detectInitialLang = () => {
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === 'de' || saved === 'en') return saved;
+  } catch(e) {}
+  try {
+    const nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    if (nav.startsWith('de')) return 'de';
+    return 'en';
+  } catch(e) {}
+  return 'de';
+};
+
+const saveLang = (lang) => {
+  try { localStorage.setItem(LANG_KEY, lang); } catch(e) {}
+};
+
+// UI-Übersetzungen
+const T = {
+  de: {
+    // AuthScreen
+    houseOf: 'HOUSE OF',
+    oracleDeck: 'Oracle Deck',
+    nameInvite: 'Bevor du den heiligen Hain betrittst,',
+    nameInvite2: 'nenne der Göttin deinen Namen.',
+    namePlaceholder: 'Dein Name...',
+    consent: 'Ich verstehe, dass dieses Orakel der Selbstreflexion dient und stimme zu.',
+    consentMissing: 'Bitte stimme den Nutzungsbedingungen zu.',
+    nameMissing: 'Bitte gib deinen Namen ein.',
+    enterGrove: 'Den Hain betreten',
+    leaveGrove: 'Den Hain verlassen',
+    deckSubtitle: '53 KARTEN · 9 MYSTERIEN',
+    rights: 'ALL RIGHTS RESERVED',
+    // Home
+    welcome: 'Willkommen',
+    homeSubtitle: 'Die Göttinnen, Wesen und Mysterien erwarten dich.',
+    backToOverview: 'Zurück zur Übersicht',
+    newReading: 'Neue Legung',
+    soon: 'bald',
+    inDays: (n) => `in ${n} ${n === 1 ? 'Tag' : 'Tagen'}`,
+    // Options
+    optDailyTitle: 'Tagesorakel',
+    optDailyDesc: 'Für Momente, in denen du eine einzige Botschaft für deinen Tag empfangen möchtest. Diese Karte richtet deinen Blick auf die Energie, die dich heute begleitet.',
+    optThreeTitle: 'Drei Karten Legung',
+    optThreeDesc: 'Für Fragen rund um Vergangenheit, Gegenwart und den nächsten Schritt. Diese Legung öffnet Zusammenhänge und zeigt, was sich gerade durch dein Leben bewegt.',
+    optRelTitle: 'Beziehungsorakel',
+    optRelDesc: 'Für Verbindungen zwischen zwei Menschen. Gefühle, Sehnsucht, Distanz, Begegnung und unausgesprochene Wahrheiten treten hier stärker hervor.',
+    optCrossTitle: 'Das Heilige Kreuz',
+    optCrossDesc: 'Für Zeiten großer Entscheidungen, innerer Wendepunkte und tiefer Fragen. Diese Legung führt dich durch verborgene Ebenen deiner Situation und zeigt, was unter der Oberfläche wirkt.',
+    optYearTitle: 'Jahresorakel',
+    optYearDesc: 'Für einen Blick auf die kommenden Monate und die größeren Bewegungen deines Weges. Jede Karte öffnet ein neues Kapitel deiner Reise.',
+    optJournalTitle: 'Orakel Journal',
+    optJournalDesc: 'Hier ruhen alle Karten, die du dir bewahrt hast. Eine stille Sammlung deiner Wege, die du immer wieder besuchen darfst.',
+    optJournalDesc: 'Ein stiller Raum für die Karten, die dich berührt haben. Jede Legung darfst du hier bewahren, mit eigenen Worten, jederzeit zugänglich auf diesem Gerät.',
+    // Shuffle messages
+    shuffleDaily: 'Die Göttin wählt deine Karte...',
+    shuffleThree: 'Drei Karten finden zu dir...',
+    shuffleRel: 'Eure Verbindung wird sichtbar...',
+    shuffleCross: 'Das Kreuz formt sich...',
+    shuffleYear: 'Dein Jahr offenbart sich...',
+    // Card-screen labels
+    labelMeaning: 'BEDEUTUNG',
+    labelMessage: 'BOTSCHAFT',
+    labelTodayCarries: 'Was dich heute trägt',
+    labelInterpretation: 'Die Auslegung',
+    labelThreeSub: 'Deine Geschichte durch die drei Karten',
+    labelFourSub: 'Eure Geschichte durch die vier Karten',
+    labelFiveSub: 'Deine Geschichte durch die fünf Karten',
+    labelYour: 'Dein Jahr',
+    labelYearSub: 'Der Bogen durch alle zwölf Monate',
+    yearIntro: '{t(lang, 'yearIntro')}',
+    // Position labels
+    posPast: 'Vergangenheit',
+    posPresent: 'Gegenwart',
+    posFuture: 'Zukunft',
+    posMe: 'Du',
+    posOther: 'Sie oder Er',
+    posConnection: 'Eure Verbindung',
+    posCommonFuture: 'Eure Zukunft',
+    posCrossFuture: 'Zukunft',
+    posCrossLeft: 'Weg links',
+    posCrossRight: 'Weg rechts',
+    posCrossPast: 'Vergangenheit',
+    posCrossPresent: 'Gegenwart',
+    // Months
+    months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    // Wish messages
+    wishShooting: 'Hast du die Sternschnuppe gesehen? Dann wünsche dir etwas.',
+    wishComet: 'Ein Grüner Komet zog vorüber. Etwas Seltenes berührt dich gerade.',
+    // Journal
+    saveToJournal: 'Im Journal bewahren',
+    savedToJournal: 'Im Journal bewahrt',
+    journalEmpty: 'Dein Journal ist noch leer. Wenn du eine Legung bewahren möchtest, klicke nach dem Ziehen auf das Herz.',
+    journalDelete: 'Löschen',
+    journalExport: 'Exportieren',
+    confirmDelete: 'Diese Notiz wirklich löschen?',
+    confirmClear: 'Wirklich alle Einträge löschen? Das kann nicht rückgängig gemacht werden.',
+    clearAll: 'Alles löschen',
+    entries: 'Einträge',
+    entry: 'Eintrag',
+    essence: 'DIE ESSENZ',
+    // Categories (for filtering display)
+    catGoddess: 'Göttin',
+    catSymbol: 'Symbol',
+    catBeing: 'Wesen',
+    catMystery: 'Mysterium',
+    catRareMoon: 'Seltener Mond',
+    catHuman: 'Mensch'
+  },
+  en: {
+    houseOf: 'HOUSE OF',
+    oracleDeck: 'Oracle Deck',
+    nameInvite: 'Before you enter the sacred grove,',
+    nameInvite2: 'speak your name to the Goddess.',
+    namePlaceholder: 'Your name...',
+    consent: 'I understand that this oracle serves self-reflection, and I agree.',
+    consentMissing: 'Please agree to the terms first.',
+    nameMissing: 'Please enter your name.',
+    enterGrove: 'Enter the Grove',
+    leaveGrove: 'Leave the Grove',
+    deckSubtitle: '53 CARDS · 9 MYSTERIES',
+    rights: 'ALL RIGHTS RESERVED',
+    welcome: 'Welcome',
+    homeSubtitle: 'The Goddesses, beings, and mysteries are waiting for you.',
+    backToOverview: 'Back to the overview',
+    newReading: 'Draw again',
+    soon: 'soon',
+    inDays: (n) => `in ${n} ${n === 1 ? 'day' : 'days'}`,
+    optDailyTitle: 'Daily Oracle',
+    optDailyDesc: 'For moments when you wish to receive a single message for your day. This card turns your gaze toward the energy walking with you today.',
+    optThreeTitle: 'Three-Card Reading',
+    optThreeDesc: 'For questions about past, present, and the next step. This reading opens connections and shows what is moving through your life right now.',
+    optRelTitle: 'Relationship Oracle',
+    optRelDesc: 'For the bond between two people. Feelings, longing, distance, meeting, and unspoken truths come more clearly to the surface here.',
+    optCrossTitle: 'The Sacred Cross',
+    optCrossDesc: 'For times of great decision, inner turning points, and deep questions. This reading takes you through hidden layers of your situation and shows what is at work beneath the surface.',
+    optYearTitle: 'Year Oracle',
+    optYearDesc: 'For a view of the coming months and the larger movements of your path. Each card opens a new chapter of your journey.',
+    optJournalTitle: 'Oracle Journal',
+    optJournalDesc: 'Here rest all the cards you have kept. A quiet collection of your ways, to return to whenever you wish.',
+    optJournalDesc: 'A quiet place for the cards that have touched you. Each reading you may keep here, in your own words, available at any time on this device.',
+    shuffleDaily: 'The Goddess is choosing your card...',
+    shuffleThree: 'Three cards are finding their way to you...',
+    shuffleRel: 'Your bond is becoming visible...',
+    shuffleCross: 'The cross is taking shape...',
+    shuffleYear: 'Your year is revealing itself...',
+    labelMeaning: 'MEANING',
+    labelMessage: 'MESSAGE',
+    labelTodayCarries: 'What is carrying you today',
+    labelInterpretation: 'The Reading',
+    labelThreeSub: 'Your story through the three cards',
+    labelFourSub: 'Your story through the four cards',
+    labelFiveSub: 'Your story through the five cards',
+    labelYour: 'Your year',
+    labelYearSub: 'The arc through all twelve months',
+    yearIntro: 'Twelve cards for twelve months. A look at your year to come.',
+    posPast: 'Past',
+    posPresent: 'Present',
+    posFuture: 'Future',
+    posMe: 'You',
+    posOther: 'She or He',
+    posConnection: 'Your bond',
+    posCommonFuture: 'Your future',
+    posCrossFuture: 'Future',
+    posCrossLeft: 'Path on the left',
+    posCrossRight: 'Path on the right',
+    posCrossPast: 'Past',
+    posCrossPresent: 'Present',
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    wishShooting: 'Did you see the shooting star? Then make a wish.',
+    wishComet: 'A Green Comet passed by. Something rare is touching you right now.',
+    saveToJournal: 'Keep in your journal',
+    savedToJournal: 'Kept in your journal',
+    journalEmpty: 'Your journal is still empty. To keep a reading, tap the heart after you have drawn.',
+    journalDelete: 'Delete',
+    journalExport: 'Export',
+    confirmDelete: 'Really delete this entry?',
+    confirmClear: 'Really clear all entries? This cannot be undone.',
+    clearAll: 'Clear all',
+    entries: 'entries',
+    entry: 'entry',
+    essence: 'THE ESSENCE',
+    catGoddess: 'Goddess',
+    catSymbol: 'Symbol',
+    catBeing: 'Being',
+    catMystery: 'Mystery',
+    catRareMoon: 'Rare Moon',
+    catHuman: 'Human'
+  }
+};
+
+const t = (lang, key, ...args) => {
+  const val = (T[lang] && T[lang][key]) || (T.de && T.de[key]) || key;
+  return typeof val === 'function' ? val(...args) : val;
 };
 
 // Year Oracle: only available during the "Rauhnächte" (sacred nights between the years)
@@ -523,29 +1280,85 @@ const daysUntilNextYearOracle = () => {
   return Math.ceil(ms / (1000 * 60 * 60 * 24));
 };
 
-const generateYearSynthesis = (drawn, userName) => {
+// generateYearSynthesis wird weiter unten definiert (braucht themeCards)
+
+
+
+// Thema-Karten Mapping für beide Sprachen (für Theme-Detection)
+const themeCards = {
+  shadow: { de: ["Die Schatten", "Die Unterwelt", "Schwarzer Mond", "Nyx", "Hekate", "Kali", "Lilith"],
+            en: ["The Shadows", "The Underworld", "Black Moon", "Nyx", "Hekate", "Kali", "Lilith"] },
+  transformation: { de: ["Die Wandlung", "Die Wiedergeburt", "Das Erwachen", "Die Schlange", "Persephone", "Inanna"],
+                    en: ["The Transformation", "The Rebirth", "The Awakening", "The Serpent", "Persephone", "Inanna"] },
+  action: { de: ["Der Pfeil", "Die Jagd", "Artemis", "Der Silberbogen", "Morrigan"],
+            en: ["The Arrow", "The Hunt", "Artemis", "The Silver Bow", "Morrigan"] },
+  receiving: { de: ["Der Kelch", "Selene", "Die Hirschkuh", "Der Schleier", "Die Eule"],
+               en: ["The Chalice", "Selene", "The Doe", "The Veil", "The Owl"] },
+  love: { de: ["Die Liebende", "Freya", "Der Kelch"],
+          en: ["The Lover", "Freya", "The Chalice"] },
+  creation: { de: ["Die Schöpferin", "Brigid", "Die Träumerin"],
+              en: ["The Creator", "Brigid", "The Dreamer"] },
+  comet: { de: ["Der Grüne Komet"], en: ["The Green Comet"] }
+};
+
+const hasTheme = (drawn, themeKey, lang) => {
+  const list = themeCards[themeKey] && themeCards[themeKey][lang] || [];
+  return drawn.some(c => list.includes(c.name));
+};
+
+const generateYearSynthesis = (drawn, userName, lang = 'de') => {
   if (!drawn || drawn.length !== 12) return null;
-  const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  const tone = getCardTone(lang);
+  const months = (T[lang] && T[lang].months) || T.de.months;
 
-  // Group cards into quarters for the seasonal narrative
-  const winter = [drawn[0], drawn[1]]; // Jan, Feb
-  const spring = [drawn[2], drawn[3], drawn[4]]; // März, April, Mai
-  const summer = [drawn[5], drawn[6], drawn[7]]; // Juni, Juli, August
-  const autumn = [drawn[8], drawn[9], drawn[10]]; // Sept, Okt, Nov
-  const yearEnd = [drawn[11]]; // Dezember
+  const winter = [drawn[0], drawn[1]];
+  const spring = [drawn[2], drawn[3], drawn[4]];
+  const summer = [drawn[5], drawn[6], drawn[7]];
+  const autumn = [drawn[8], drawn[9], drawn[10]];
+  const yearEnd = [drawn[11]];
 
-  // Detect overall themes
-  const hasShadow = drawn.some(c => ["Die Schatten", "Die Unterwelt", "Schwarzer Mond", "Nyx", "Hekate", "Kali", "Lilith"].includes(c.name));
-  const hasTransformation = drawn.some(c => ["Die Wandlung", "Die Wiedergeburt", "Das Erwachen", "Die Schlange", "Persephone", "Inanna"].includes(c.name));
-  const hasAction = drawn.some(c => ["Der Pfeil", "Die Jagd", "Artemis", "Der Silberbogen", "Morrigan"].includes(c.name));
-  const hasLove = drawn.some(c => ["Die Liebende", "Freya", "Der Kelch"].includes(c.name));
-  const hasCreation = drawn.some(c => ["Die Schöpferin", "Brigid", "Die Träumerin"].includes(c.name));
-  const hasComet = drawn.some(c => c.name === "Der Grüne Komet");
+  const hasShadow = hasTheme(drawn, 'shadow', lang);
+  const hasTransformation = hasTheme(drawn, 'transformation', lang);
+  const hasAction = hasTheme(drawn, 'action', lang);
+  const hasLove = hasTheme(drawn, 'love', lang);
+  const hasCreation = hasTheme(drawn, 'creation', lang);
+  const hasComet = hasTheme(drawn, 'comet', lang);
 
-  // Year theme card: the most "powerful" or thematic card
-  const themeCard = drawn[5] || drawn[0]; // Juni als Sommerhöhe
-  const themeTone = cardTone[themeCard.name] || "ein heimliches Thema";
+  const themeCard = drawn[5] || drawn[0];
 
+  if (lang === 'en') {
+    const themeTone = tone[themeCard.name] || "a hidden theme";
+    let yearPromise;
+    if (hasComet) yearPromise = "This year carries a rare gift in it. The Green Comet has appeared in your year reading, and that means something. There will be an event, a meeting, or a moment you do not see coming and that will touch you deeply. Keep your eyes open for the unexpected.";
+    else if (hasTransformation && hasShadow) yearPromise = "This will be a year of true transformation. It will not always be comfortable, for you will have to walk through dark rooms to find your way to your new self. But this very journey will teach you the most. At the end of the year, you will be someone else, freer and truer.";
+    else if (hasCreation && hasAction) yearPromise = "This year wishes to be made through you. Something in you is pressing toward realisation, a work, a vision, a contribution only you can give. If you begin now and stay with the work, the coming year will be one of creative harvests.";
+    else if (hasLove) yearPromise = "This year carries love to you in many forms. Bonds will deepen, meetings will become more true. Notice what arises between you and others, for there lies one of the central gifts of this year. Keep your heart open.";
+    else if (hasAction) yearPromise = "This year is calling you to move. It is not a year for waiting, but for daring. What you begin now will carry you. Trust the tension you feel inside; it is signpost, not obstacle.";
+    else if (hasTransformation) yearPromise = "This is a year of metamorphosis. You will feel something in you changing, sometimes quietly, sometimes with great force. Let it happen. What you will be at the end of the year you cannot yet quite recognise, but it is good.";
+    else yearPromise = "This year carries a quality of its own that will only slowly reveal itself. It is not a year for quick conclusions, but for attentive listening. What wishes to show itself will show itself when you are quiet enough.";
+
+    const opening = `${userName ? userName + ', your' : 'Your'} year to come does not begin with an empty page, but with a written path that you will only recognise as you walk it. Twelve cards have found their way to you, one for each month, and together they tell the story of a year already in motion.`;
+
+    const winterText = `You begin the year in January with ${winter[0].name}, a card that carries ${tone[winter[0].name] || 'a quality of its own'} in it. ${winter[0].message} In February, ${winter[1].name} follows and deepens this energy. ${winter[1].message} The first two months are your winter ground, a time of listening inward and laying the seed for the whole year. Do not rush; what takes root here bears fruit later.`;
+
+    const springText = `In March, spring opens with ${spring[0].name}. ${spring[0].message} In April, ${spring[1].name} walks with you. ${spring[1].message} And in May, ${spring[2].name} appears. ${spring[2].message} These three months are the time of stirring. What you received in winter now wishes to come into motion. Be brave, but also patient with what needs time to grow.`;
+
+    const summerText = `With June, you enter the middle of your year, carried by ${summer[0].name}. ${summer[0].message} The heart of summer belongs to ${summer[1].name} in July. ${summer[1].message} And August gifts you ${summer[2].name}. ${summer[2].message} Summer is your ripening time, the height of your power. What you are living through now are not random moments, but the harvest of your first half of the year. Live them with awareness.`;
+
+    const autumnText = `In September it grows quieter with ${autumn[0].name}. ${autumn[0].message} October carries ${autumn[1].name}. ${autumn[1].message} And in November, ${autumn[2].name} comes to you. ${autumn[2].message} Autumn is the time of honesty. What has proven itself? What is allowed to go? These three months will teach you what truly belongs to you and what you may release.`;
+
+    const yearEndText = `And in December, on the threshold to the next year, ${yearEnd[0].name} shines. ${yearEnd[0].message} So your year ends and the next begins. What this December brings you is both closing and first whisper of what comes after.`;
+
+    const themeIntro = `If you look at the whole year, a single thread runs through it, and its name is ${themeTone}. That is the true theme of your year, the invisible arc that connects all twelve months. It is what you are allowed to grow at.`;
+
+    const closing = `${yearPromise} Keep this reading. Write down the beginning of each season and look back at the end of the year. You will see that the cards already knew what you still had to live.`;
+
+    const paragraphs = [opening, winterText, springText, summerText, autumnText, yearEndText, themeIntro, closing];
+    return { paragraphs, months };
+  }
+
+  // German
+  const themeTone = tone[themeCard.name] || "ein heimliches Thema";
   let yearPromise;
   if (hasComet) yearPromise = "Dieses Jahr trägt ein seltenes Geschenk in sich. Der Grüne Komet erscheint in deiner Jahreslegung, und das bedeutet etwas. Es wird ein Ereignis geben, eine Begegnung oder einen Moment, den du nicht kommen siehst und der dich tief berührt. Halte deine Augen offen für das Unerwartete.";
   else if (hasTransformation && hasShadow) yearPromise = "Dieses Jahr wird ein Jahr der echten Verwandlung. Es wird nicht immer bequem sein, denn du wirst durch dunkle Räume gehen müssen, um zu deinem neuen Selbst zu finden. Doch genau diese Reise wird dich am meisten lehren. Am Ende des Jahres wirst du jemand anderes sein, freier und wahrer.";
@@ -557,7 +1370,7 @@ const generateYearSynthesis = (drawn, userName) => {
 
   const opening = `${userName ? userName + ', dein' : 'Dein'} kommendes Jahr beginnt nicht mit einem leeren Blatt, sondern mit einem geschriebenen Pfad, den du erst im Gehen erkennst. Zwölf Karten haben sich für dich gefunden, eine für jeden Monat, und zusammen erzählen sie die Geschichte eines Jahres, das schon jetzt in Bewegung ist.`;
 
-  const winterText = `Du beginnst das Jahr im Januar mit ${winter[0].name}, einer Karte, die ${cardTone[winter[0].name] || 'eine eigene Qualität'} in sich trägt. ${winter[0].message} Im Februar folgt ${winter[1].name} und vertieft diese Energie. ${winter[1].message} Die ersten zwei Monate sind dein Wintergrund, eine Zeit, in der du nach innen lauschst und das Saatkorn für das gesamte Jahr legst. Hetze nicht, das, was hier wurzelt, trägt später Frucht.`;
+  const winterText = `Du beginnst das Jahr im Januar mit ${winter[0].name}, einer Karte, die ${tone[winter[0].name] || 'eine eigene Qualität'} in sich trägt. ${winter[0].message} Im Februar folgt ${winter[1].name} und vertieft diese Energie. ${winter[1].message} Die ersten zwei Monate sind dein Wintergrund, eine Zeit, in der du nach innen lauschst und das Saatkorn für das gesamte Jahr legst. Hetze nicht, das, was hier wurzelt, trägt später Frucht.`;
 
   const springText = `Im März öffnet sich der Frühling mit ${spring[0].name}. ${spring[0].message} Im April begleitet dich ${spring[1].name}. ${spring[1].message} Und im Mai erscheint ${spring[2].name}. ${spring[2].message} Diese drei Monate sind die Zeit des Aufbruchs. Was du im Winter empfangen hast, will jetzt in Bewegung kommen. Sei mutig, aber auch geduldig mit dem, was Zeit zum Wachsen braucht.`;
 
@@ -572,22 +1385,45 @@ const generateYearSynthesis = (drawn, userName) => {
   const closing = `${yearPromise} Bewahre diese Auslegung. Schreib dir den Anfang jeder Jahreszeit auf und schau am Ende des Jahres zurück. Du wirst erkennen, dass die Karten gewusst haben, was du erst leben musstest.`;
 
   const paragraphs = [opening, winterText, springText, summerText, autumnText, yearEndText, themeIntro, closing];
-
   return { paragraphs, months };
 };
 
-const generateThreeSynthesis = (drawn) => {
+const generateThreeSynthesis = (drawn, lang = 'de') => {
   if (!drawn || drawn.length !== 3) return null;
   const [past, present, future] = drawn;
-  const pastTone = cardTone[past.name] || "eine Energie";
-  const presentTone = cardTone[present.name] || "eine Kraft";
-  const futureTone = cardTone[future.name] || "ein Weg";
+  const tone = getCardTone(lang);
+  const cap = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
-  const hasShadow = drawn.some(c => ["Die Schatten", "Die Unterwelt", "Schwarzer Mond", "Nyx", "Hekate", "Kali", "Lilith"].includes(c.name));
-  const hasTransformation = drawn.some(c => ["Die Wandlung", "Die Wiedergeburt", "Das Erwachen", "Die Schlange", "Persephone", "Inanna"].includes(c.name));
-  const hasAction = drawn.some(c => ["Der Pfeil", "Die Jagd", "Artemis", "Der Silberbogen", "Morrigan"].includes(c.name));
-  const hasReceiving = drawn.some(c => ["Der Kelch", "Selene", "Die Hirschkuh", "Der Schleier", "Die Eule"].includes(c.name));
+  const hasShadow = hasTheme(drawn, 'shadow', lang);
+  const hasTransformation = hasTheme(drawn, 'transformation', lang);
+  const hasAction = hasTheme(drawn, 'action', lang);
+  const hasReceiving = hasTheme(drawn, 'receiving', lang);
 
+  if (lang === 'en') {
+    const pastTone = tone[past.name] || "an energy";
+    const presentTone = tone[present.name] || "a force";
+    const futureTone = tone[future.name] || "a way";
+    let closingNote;
+    if (hasShadow && hasTransformation) closingNote = "What is touching you uncomfortably right now is no accident. It is the very fabric from which your transformation will be made.";
+    else if (hasAction && hasReceiving) closingNote = "Know when to draw the bow and when to hold the chalice. Both movements belong to you.";
+    else if (hasAction) closingNote = "These cards are calling you to move. Trust the tension you feel inside.";
+    else if (hasReceiving) closingNote = "You do not have to carry everything yourself. Open to what is coming toward you.";
+    else if (hasTransformation) closingNote = "A metamorphosis has already begun in you. Let yourself dissolve where the old no longer holds.";
+    else if (hasShadow) closingNote = "Your way leads through dark rooms. Carry a torch, not fear.";
+    else closingNote = "Listen for the fine notes between the cards. Sometimes fate whispers.";
+
+    return [
+      `Your story begins with ${past.name} in your past. ${cap(pastTone)} was what shaped you, what brought you to exactly this place. ${past.message} This energy has done its work; it carries you today like a quiet ground, even though you no longer need to live it actively.`,
+      `Out of that story, you now stand in your present, held by ${present.name}. ${cap(presentTone)} is the theme around which everything turns for you right now. ${present.message} This is your here and now, the place where you can truly act. The past did not grow toward this point by chance; it prepared you for exactly this question.`,
+      `And on the horizon, ${future.name} is already showing itself, your future. ${cap(futureTone)} is where this energy wishes to unfold, if you stay true to your way. ${future.message} This card is not a prediction, but a promise. If you follow the question of your present, if you do not turn aside, you will arrive exactly where something new is waiting for you.`,
+      closingNote
+    ];
+  }
+
+  // German (default)
+  const pastTone = tone[past.name] || "eine Energie";
+  const presentTone = tone[present.name] || "eine Kraft";
+  const futureTone = tone[future.name] || "ein Weg";
   let closingNote;
   if (hasShadow && hasTransformation) closingNote = "Was dich gerade unbequem berührt, ist nicht zufällig. Es ist der Stoff, aus dem deine Wandlung entsteht.";
   else if (hasAction && hasReceiving) closingNote = "Wisse, wann du den Bogen spannst und wann du den Kelch hältst. Beide Bewegungen gehören zu dir.";
@@ -597,29 +1433,54 @@ const generateThreeSynthesis = (drawn) => {
   else if (hasShadow) closingNote = "Dein Weg führt durch dunkle Räume. Trage eine Fackel, keine Furcht.";
   else closingNote = "Höre auf die feinen Töne zwischen den Karten. Manchmal flüstert das Schicksal.";
 
-  const paragraphs = [
-    `Deine Geschichte beginnt mit ${past.name} in deiner Vergangenheit. ${pastTone.charAt(0).toUpperCase() + pastTone.slice(1)} war das, was dich geprägt hat, was dich genau hierher gebracht hat. ${past.message} Diese Energie hat ihre Aufgabe erfüllt, sie trägt dich heute wie ein stiller Grund, auch wenn du sie nicht mehr aktiv leben musst.`,
-    `Aus dieser Geschichte heraus stehst du jetzt in deiner Gegenwart, und sie wird getragen von ${present.name}. ${presentTone.charAt(0).toUpperCase() + presentTone.slice(1)} ist das Thema, um das sich gerade alles bei dir dreht. ${present.message} Dies ist dein Hier und Jetzt, der Ort, an dem du wirklich wirken kannst. Die Vergangenheit ist nicht zufällig zu diesem Punkt gewachsen, sie hat dich vorbereitet auf genau diese Frage.`,
-    `Und am Horizont zeigt sich bereits ${future.name}, deine Zukunft. ${futureTone.charAt(0).toUpperCase() + futureTone.slice(1)} ist das, wohin sich die Energie entfalten will, wenn du deinem Weg treu bleibst. ${future.message} Diese Karte ist keine Vorhersage, sondern ein Versprechen. Wenn du der Frage deiner Gegenwart folgst, wenn du nicht ausweichst, wirst du genau dort ankommen, wo etwas Neues auf dich wartet.`,
+  return [
+    `Deine Geschichte beginnt mit ${past.name} in deiner Vergangenheit. ${cap(pastTone)} war das, was dich geprägt hat, was dich genau hierher gebracht hat. ${past.message} Diese Energie hat ihre Aufgabe erfüllt, sie trägt dich heute wie ein stiller Grund, auch wenn du sie nicht mehr aktiv leben musst.`,
+    `Aus dieser Geschichte heraus stehst du jetzt in deiner Gegenwart, und sie wird getragen von ${present.name}. ${cap(presentTone)} ist das Thema, um das sich gerade alles bei dir dreht. ${present.message} Dies ist dein Hier und Jetzt, der Ort, an dem du wirklich wirken kannst. Die Vergangenheit ist nicht zufällig zu diesem Punkt gewachsen, sie hat dich vorbereitet auf genau diese Frage.`,
+    `Und am Horizont zeigt sich bereits ${future.name}, deine Zukunft. ${cap(futureTone)} ist das, wohin sich die Energie entfalten will, wenn du deinem Weg treu bleibst. ${future.message} Diese Karte ist keine Vorhersage, sondern ein Versprechen. Wenn du der Frage deiner Gegenwart folgst, wenn du nicht ausweichst, wirst du genau dort ankommen, wo etwas Neues auf dich wartet.`,
     closingNote
   ];
-
-  return paragraphs;
 };
 
-const generateRelationshipSynthesis = (drawn) => {
+const generateRelationshipSynthesis = (drawn, lang = 'de') => {
   if (!drawn || drawn.length !== 4) return null;
   const [me, other, connection, future] = drawn;
+  const tone = getCardTone(lang);
+  const cap = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
-  const meTone = cardTone[me.name] || "eine eigene Qualität";
-  const otherTone = cardTone[other.name] || "eine andere Qualität";
-  const connTone = cardTone[connection.name] || "eine besondere Energie";
-  const futureTone = cardTone[future.name] || "ein Weg";
+  const hasShadow = hasTheme(drawn, 'shadow', lang);
+  const hasTransformation = hasTheme(drawn, 'transformation', lang);
+  const hasLove = hasTheme(drawn, 'love', lang);
+  const hasAction = hasTheme(drawn, 'action', lang);
 
-  const hasShadow = drawn.some(c => ["Die Schatten", "Die Unterwelt", "Schwarzer Mond", "Nyx", "Hekate", "Kali", "Lilith"].includes(c.name));
-  const hasTransformation = drawn.some(c => ["Die Wandlung", "Die Wiedergeburt", "Das Erwachen", "Die Schlange", "Persephone", "Inanna"].includes(c.name));
-  const hasLove = drawn.some(c => ["Die Liebende", "Freya", "Der Kelch"].includes(c.name));
-  const hasAction = drawn.some(c => ["Der Pfeil", "Die Jagd", "Artemis", "Der Silberbogen", "Morrigan"].includes(c.name));
+  if (lang === 'en') {
+    const meTone = tone[me.name] || "a quality of its own";
+    const otherTone = tone[other.name] || "another quality";
+    const connTone = tone[connection.name] || "a particular energy";
+    const futureTone = tone[future.name] || "a way";
+
+    let closingNote;
+    if (hasShadow && hasTransformation) closingNote = "What is uncomfortable between you right now is no accident. It is the very fabric from which your transformation will be made. Do not skip the difficult moments — they carry more truth than the easy ones.";
+    else if (hasLove && hasAction) closingNote = "Your bond wants to be tender and courageous at once. Love here needs clarity too. Say what must be said, and keep your heart open as you do.";
+    else if (hasLove) closingNote = "Your bond is carried by love. Hold it tenderly, it deserves your attention. What is growing between you wishes to be tended.";
+    else if (hasShadow) closingNote = "Your bond touches dark rooms. That is not wrong. Some connections exist to take you to places you would not enter alone.";
+    else if (hasTransformation) closingNote = "This bond is transforming both of you. Let it happen, even if you do not know who you will be at the end of this changing.";
+    else if (hasAction) closingNote = "Your bond is calling you both to move. Do not wait for the perfect moment, it is not coming. Take the next step.";
+    else closingNote = "Your bond carries a logic of its own. Listen more carefully to what lies between the words. Sometimes silence knows more than speech.";
+
+    return [
+      `You step into this bond as ${me.name}, a card that carries ${meTone} in it. ${me.message} This card shows who you become in this connection, what space you take, what energy you bring. Ask yourself honestly whether this bond brings you closer to yourself or further away.`,
+      `Across from you stands ${other.name}, bringing ${otherTone}. ${other.message} Take this card as an invitation to see the other being more clearly, without laying your wishes on top. The other person is not what you project, but exactly what this card shows.`,
+      `Between the two of you lives ${connection.name}, the card of your bond. ${cap(connTone)} is what you create together, beyond what you put into words. ${connection.message} Your bond is more than the sum of you two. ${me.name} and ${other.name} meet and form a third space that belongs neither to you nor to the other alone, but is born from both of you.`,
+      `Where your bond is moving toward is shown by ${future.name}. ${cap(futureTone)} is the direction in which what is now between you wishes to unfold. ${future.message} Take this as an invitation, not a forecast. The future of your bond depends on how you are with each other now.`,
+      closingNote
+    ];
+  }
+
+  // German
+  const meTone = tone[me.name] || "eine eigene Qualität";
+  const otherTone = tone[other.name] || "eine andere Qualität";
+  const connTone = tone[connection.name] || "eine besondere Energie";
+  const futureTone = tone[future.name] || "ein Weg";
 
   let closingNote;
   if (hasShadow && hasTransformation) closingNote = "Was zwischen euch gerade unbequem ist, ist nicht zufällig. Es ist der Stoff, aus dem eure Wandlung entsteht. Lass die schwierigen Momente nicht aus, sie tragen mehr Wahrheit als die leichten.";
@@ -630,66 +1491,139 @@ const generateRelationshipSynthesis = (drawn) => {
   else if (hasAction) closingNote = "Eure Verbindung ruft euch zur Bewegung. Wartet nicht auf den perfekten Moment, er kommt nicht. Macht den nächsten Schritt.";
   else closingNote = "Eure Verbindung trägt eine eigene Logik. Höre genauer hin, was zwischen den Worten liegt. Manchmal weiß das Schweigen mehr als die Sprache.";
 
-  const paragraphs = [
+  return [
     `Du trittst dieser Beziehung mit ${me.name} entgegen, einer Karte, die ${meTone} in sich trägt. ${me.message} Diese Karte zeigt, wer du in dieser Verbindung wirst, welchen Raum du einnimmst, welche Energie du mitbringst. Frage dich ehrlich, ob du in dieser Beziehung näher zu dir kommst oder weiter von dir weg.`,
     `Dir gegenüber steht ${other.name} und bringt ${otherTone} mit. ${other.message} Verstehe diese Karte als Einladung, das andere Wesen klarer zu sehen, ohne deine Wünsche darüberzulegen. Die andere Person ist nicht das, was du in sie hineinprojizierst, sondern genau das, was diese Karte zeigt.`,
-    `Zwischen euch beiden lebt ${connection.name}, die Karte eurer Verbindung. ${connTone.charAt(0).toUpperCase() + connTone.slice(1)} ist das, was ihr gemeinsam erschafft, jenseits dessen, was ihr in Worte fasst. ${connection.message} Eure Verbindung ist mehr als die Summe eurer beider Wesen. ${me.name} und ${other.name} treffen aufeinander und bilden einen dritten Raum, der weder dir noch der anderen Person allein gehört, sondern aus euch beiden entsteht.`,
-    `Wohin sich eure Verbindung bewegt, zeigt ${future.name}. ${futureTone.charAt(0).toUpperCase() + futureTone.slice(1)} ist die Richtung, in die das, was zwischen euch jetzt angelegt ist, sich entfalten will. ${future.message} Verstehe das als Einladung, nicht als Vorhersage. Die Zukunft eurer Verbindung hängt davon ab, wie ihr jetzt miteinander seid.`,
+    `Zwischen euch beiden lebt ${connection.name}, die Karte eurer Verbindung. ${cap(connTone)} ist das, was ihr gemeinsam erschafft, jenseits dessen, was ihr in Worte fasst. ${connection.message} Eure Verbindung ist mehr als die Summe eurer beider Wesen. ${me.name} und ${other.name} treffen aufeinander und bilden einen dritten Raum, der weder dir noch der anderen Person allein gehört, sondern aus euch beiden entsteht.`,
+    `Wohin sich eure Verbindung bewegt, zeigt ${future.name}. ${cap(futureTone)} ist die Richtung, in die das, was zwischen euch jetzt angelegt ist, sich entfalten will. ${future.message} Verstehe das als Einladung, nicht als Vorhersage. Die Zukunft eurer Verbindung hängt davon ab, wie ihr jetzt miteinander seid.`,
     closingNote
   ];
-
-  return paragraphs;
 };
 
 // Cross synthesis - atmosphärisch, bildhaft, mit offenen Fragen
-const buildCrossStory = (cards) => {
+const buildCrossStory = (cards, lang = 'de') => {
   if (!cards || cards.length !== 5) return null;
   // Reihenfolge: above=Zukunft, left=Weg links, right=Weg rechts, below=Vergangenheit, center=Gegenwart
   const [above, left, right, below, center] = cards;
   const future = above, pathLeft = left, pathRight = right, past = below, present = center;
+  const tone = getCardTone(lang);
 
-  // Helfer-Fallbacks für ältere Karten ohne neue Felder
+  // Karten-Listen je Sprache für Frage-Logik
+  const shadowList = themeCards.shadow[lang] || [];
+  const transformList = themeCards.transformation[lang] || [];
+  const actionList = themeCards.action[lang] || [];
+  const receivingList = themeCards.receiving[lang] || [];
+  const loveList = themeCards.love[lang] || [];
+  const creationList = themeCards.creation[lang] || [];
+  const cometList = themeCards.comet[lang] || [];
+  // Warrior + Mother extra für Path-Fragen
+  const warriorName = lang === 'en' ? 'The Warrior' : 'Die Kriegerin';
+  const motherName = lang === 'en' ? 'The Mother' : 'Die Mutter';
+
+  if (lang === 'en') {
+    const img = (c) => c.image || c.name;
+    const echo = (c) => c.pastEcho || `${tone[c.name] || 'a quality of its own'} was once a key for you`;
+    const touch = (c) => c.presentTouch || `Something in you is stirring that carries ${tone[c.name] || 'no name yet'}`;
+    const essence = (c) => c.pathEssence || `the way that ${c.name} embodies`;
+    const move = (c) => c.futureMove || `${c.name} is moving toward you`;
+
+    const presentQuestion = (c) => {
+      if (shadowList.includes(c.name))
+        return "What in you wishes to be seen, without you bending it into shape?";
+      if (transformList.includes(c.name))
+        return "Which part of you is ready to go, and which wants to be born?";
+      if ([...actionList, warriorName].includes(c.name))
+        return "What have you long been drawing the bow for, without releasing it?";
+      if (receivingList.includes(c.name))
+        return "What wishes to come to you the moment you stop chasing it?";
+      if (loveList.filter(n => n !== 'The Chalice').includes(c.name))
+        return "Where may your heart soften today, without losing itself?";
+      if ([...creationList, motherName].includes(c.name))
+        return "What wishes to come into the world through you?";
+      if (cometList.includes(c.name))
+        return "Which truth is calling you, the moment everything around you goes still?";
+      return "Which truth is calling you, the moment everything around you goes still?";
+    };
+
+    const pathQuestion = (l, r) => {
+      const isShadow = (c) => shadowList.includes(c.name);
+      const isReceiving = (c) => receivingList.includes(c.name);
+      const isAction = (c) => [...actionList, warriorName].includes(c.name);
+
+      if (isShadow(l) || isShadow(r))
+        return "Which way carries your breath, and which costs it?";
+      if ((isAction(l) && isReceiving(r)) || (isAction(r) && isReceiving(l)))
+        return "Which way calls for your motion, and which for your surrender?";
+      if (isReceiving(l) && isReceiving(r))
+        return "Which way sounds like you, when you listen very softly?";
+      return "Which decision feels like a return to yourself?";
+    };
+
+    const openings = [
+      "The cards open today a space between memory and fate. Every glance carries a question that has long been waiting beneath your surface.",
+      "Five cards have gathered for you, and they do not lie at random. Each carries a piece of your story and a piece of what still wishes to become.",
+      "What the cards show is not what will happen, but what is already living in you. This reading is an invitation to listen."
+    ];
+    const opening = openings[Math.floor(Math.random() * openings.length)];
+
+    const closings = [
+      "Between the cards lies a message that only shows itself when you look longer. Nothing presses you. Yet something in you has already begun to remember.",
+      "The cards do not speak in instructions, but in mirrors. What you recognise in them was already in you before. They only carry it into the light.",
+      "This reading is not to be decided, but inhabited. Stay in it for a while, and notice which image will not let you go.",
+      "Between the cards there whispers a knowing that your language has not yet quite reached. Give it time. It is coming."
+    ];
+    const closing = closings[Math.floor(Math.random() * closings.length)];
+
+    return [
+      opening,
+      `${img(past)} lies behind you and carries the light of a time gone by. What ripened there is still at work in your choices, in your gaze, in the quiet knowing you have gained through experience. ${echo(past)}. Today it becomes visible which ways have shaped you, and which traces still glow inside you.`,
+      `In the centre of your present, ${img(present)} appears. ${touch(present)}. ${present.message} Here is your moment.`,
+      presentQuestion(present),
+      `To the left rises ${img(pathLeft)}. There the first way opens, ${essence(pathLeft)}. ${pathLeft.message}`,
+      `To the right appears ${img(pathRight)}. There the second way opens, ${essence(pathRight)}. ${pathRight.message}`,
+      pathQuestion(pathLeft, pathRight),
+      `On the horizon, ${img(future)} is rising. Your future is already moving toward you. ${move(future)}. This card carries the promise of a passage.`,
+      closing
+    ];
+  }
+
+  // German
   const img = (c) => c.image || c.name;
-  const echo = (c) => c.pastEcho || `${cardTone[c.name] || 'eine eigene Qualität'} war einmal ein Schlüssel für dich`;
-  const touch = (c) => c.presentTouch || `Etwas in dir bewegt sich, das ${cardTone[c.name] || 'noch keinen Namen'} trägt`;
+  const echo = (c) => c.pastEcho || `${tone[c.name] || 'eine eigene Qualität'} war einmal ein Schlüssel für dich`;
+  const touch = (c) => c.presentTouch || `Etwas in dir bewegt sich, das ${tone[c.name] || 'noch keinen Namen'} trägt`;
   const essence = (c) => c.pathEssence || `den Weg, den ${c.name} verkörpert`;
   const move = (c) => c.futureMove || `${c.name} bewegt sich auf dich zu`;
 
-  // Frage zur Gegenwart - abhängig vom Karten-Charakter
   const presentQuestion = (c) => {
-    if (["Die Schatten", "Die Unterwelt", "Schwarzer Mond", "Nyx", "Hekate", "Kali", "Lilith"].includes(c.name))
+    if (shadowList.includes(c.name))
       return "Was in dir möchte gesehen werden, ohne dass du es zurechtbiegst?";
-    if (["Die Wandlung", "Die Wiedergeburt", "Das Erwachen", "Die Schlange", "Persephone", "Inanna"].includes(c.name))
+    if (transformList.includes(c.name))
       return "Welcher Teil von dir ist bereit zu gehen, und welcher will geboren werden?";
-    if (["Der Pfeil", "Die Jagd", "Artemis", "Der Silberbogen", "Morrigan", "Die Kriegerin"].includes(c.name))
+    if ([...actionList, warriorName].includes(c.name))
       return "Wofür spannst du längst den Bogen, ohne ihn loszulassen?";
-    if (["Der Kelch", "Selene", "Die Hirschkuh", "Der Schleier", "Die Eule"].includes(c.name))
+    if (receivingList.includes(c.name))
       return "Was möchte zu dir kommen, sobald du aufhörst, es zu jagen?";
-    if (["Die Liebende", "Freya"].includes(c.name))
+    if (loveList.filter(n => n !== 'Der Kelch').includes(c.name))
       return "Wo darf dein Herz heute weicher werden, ohne sich zu verlieren?";
-    if (["Die Schöpferin", "Brigid", "Die Träumerin", "Die Mutter"].includes(c.name))
+    if ([...creationList, motherName].includes(c.name))
       return "Was möchte durch dich in die Welt kommen?";
-    if (c.name === "Der Grüne Komet")
-      return "Welche Wahrheit ruft nach dir, sobald alles um dich herum still wird?";
     return "Welche Wahrheit ruft nach dir, sobald alles um dich herum still wird?";
   };
 
-  // Frage zu den Wegen - abhängig von der Karten-Kombination
   const pathQuestion = (l, r) => {
-    const hasShadow = (c) => ["Die Schatten", "Die Unterwelt", "Schwarzer Mond", "Nyx", "Hekate", "Kali", "Lilith"].includes(c.name);
-    const hasReceiving = (c) => ["Der Kelch", "Selene", "Die Hirschkuh", "Der Schleier", "Die Eule"].includes(c.name);
-    const hasAction = (c) => ["Der Pfeil", "Die Jagd", "Artemis", "Der Silberbogen", "Morrigan", "Die Kriegerin"].includes(c.name);
+    const isShadow = (c) => shadowList.includes(c.name);
+    const isReceiving = (c) => receivingList.includes(c.name);
+    const isAction = (c) => [...actionList, warriorName].includes(c.name);
 
-    if (hasShadow(l) || hasShadow(r))
+    if (isShadow(l) || isShadow(r))
       return "Welcher Weg trägt deinen Atem, und welcher kostet ihn?";
-    if (hasAction(l) && hasReceiving(r) || hasAction(r) && hasReceiving(l))
+    if ((isAction(l) && isReceiving(r)) || (isAction(r) && isReceiving(l)))
       return "Welcher Weg verlangt deine Bewegung, und welcher deine Hingabe?";
-    if (hasReceiving(l) && hasReceiving(r))
+    if (isReceiving(l) && isReceiving(r))
       return "Welcher Weg klingt nach dir, wenn du sehr leise hinhörst?";
     return "Welche Entscheidung fühlt sich nach Rückkehr zu dir selbst an?";
   };
 
-  // Variation in den Eröffnungen
   const openings = [
     "Die Karten öffnen heute einen Raum zwischen Erinnerung und Schicksal. Jeder Blick auf sie trägt eine Frage in sich, die längst unter deiner Oberfläche gewartet hat.",
     "Fünf Karten haben sich für dich versammelt, und sie liegen nicht zufällig. Jede trägt ein Stück deiner Geschichte und ein Stück dessen, was noch werden will.",
@@ -697,7 +1631,6 @@ const buildCrossStory = (cards) => {
   ];
   const opening = openings[Math.floor(Math.random() * openings.length)];
 
-  // Variation im Schluss
   const closings = [
     "Zwischen den Karten liegt eine Botschaft, die sich erst zeigt, wenn du länger hinsiehst. Nichts drängt dich. Doch etwas in dir hat längst begonnen, sich zu erinnern.",
     "Die Karten reden nicht in Anweisungen, sondern in Spiegeln. Was du in ihnen erkennst, war schon vorher in dir. Sie tragen es nur ans Licht.",
@@ -706,27 +1639,17 @@ const buildCrossStory = (cards) => {
   ];
   const closing = closings[Math.floor(Math.random() * closings.length)];
 
-  const paragraphs = [
+  return [
     opening,
-
     `${img(past)} liegt hinter dir und trägt das Licht einer vergangenen Zeit. Was dort gereift ist, wirkt weiter in deinen Entscheidungen, in deinem Blick, in dem stillen Wissen, das du durch Erfahrung gewonnen hast. ${echo(past)}. Heute zeigt sich, welche Wege dich geformt haben und welche Spuren noch immer in deinem Inneren leuchten.`,
-
     `Im Zentrum deiner Gegenwart erscheint ${img(present)}. ${touch(present)}. ${present.message} Hier liegt dein Augenblick.`,
-
     presentQuestion(present),
-
     `Links erhebt sich ${img(pathLeft)}. Dort öffnet sich der erste Weg, ${essence(pathLeft)}. ${pathLeft.message}`,
-
     `Rechts erscheint ${img(pathRight)}. Dort öffnet sich der zweite Weg, ${essence(pathRight)}. ${pathRight.message}`,
-
     pathQuestion(pathLeft, pathRight),
-
     `Am Horizont steigt ${img(future)} auf. Deine Zukunft bewegt sich bereits auf dich zu. ${move(future)}. Diese Karte trägt das Versprechen eines Übergangs.`,
-
     closing
   ];
-
-  return paragraphs;
 };
 
 function CardDisplay({ card, size = 'md', label }) {
@@ -809,20 +1732,69 @@ function ShuffleAnimation({ message }) {
   );
 }
 
-function AuthScreen({ onLogin }) {
+// Sprach-Umschalter oben rechts, dezent wie ein Wasserzeichen.
+// Wird auf jedem Bildschirm über allem gelegt.
+function LangSwitch({ lang, setLang }) {
+  const buttonStyle = (active) => ({
+    background: 'transparent',
+    border: 'none',
+    color: COLORS.silverLight,
+    padding: '4px 6px',
+    fontFamily: "'Cormorant Garamond', serif",
+    fontStyle: 'italic',
+    fontSize: '13px',
+    letterSpacing: '0.25em',
+    cursor: active ? 'default' : 'pointer',
+    opacity: active ? 0.95 : 0.4,
+    textShadow: active ? '0 0 12px rgba(232, 228, 240, 0.45)' : 'none',
+    transition: 'opacity 0.4s ease, text-shadow 0.4s ease',
+    outline: 'none'
+  });
+  return (
+    <div style={{
+      position: 'fixed', top: '18px', right: '20px',
+      zIndex: 100,
+      display: 'flex', alignItems: 'center',
+      pointerEvents: 'auto'
+    }}>
+      <button
+        onClick={() => setLang('de')}
+        style={buttonStyle(lang === 'de')}
+        onMouseEnter={e => { if (lang !== 'de') e.currentTarget.style.opacity = 0.75; }}
+        onMouseLeave={e => { if (lang !== 'de') e.currentTarget.style.opacity = 0.4; }}
+      >de</button>
+      <span style={{
+        color: COLORS.silverLight,
+        opacity: 0.3,
+        fontSize: '11px',
+        fontFamily: "'Cormorant Garamond', serif",
+        fontStyle: 'italic'
+      }}>·</span>
+      <button
+        onClick={() => setLang('en')}
+        style={buttonStyle(lang === 'en')}
+        onMouseEnter={e => { if (lang !== 'en') e.currentTarget.style.opacity = 0.75; }}
+        onMouseLeave={e => { if (lang !== 'en') e.currentTarget.style.opacity = 0.4; }}
+      >en</button>
+    </div>
+  );
+}
+
+function AuthScreen({ onLogin, lang, setLang }) {
   const [name, setName] = useState('');
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState('');
 
   const submit = () => {
-    if (!name.trim()) { setError('Bitte gib deinen Namen ein.'); return; }
-    if (!accepted) { setError('Bitte stimme den Nutzungsbedingungen zu.'); return; }
+    if (!name.trim()) { setError(t(lang, 'nameMissing')); return; }
+    if (!accepted) { setError(t(lang, 'consentMissing')); return; }
     onLogin({ name: name.trim() });
   };
 
   return (
     <div style={{minHeight: '100vh', width: '100%', position: 'relative', overflow: 'hidden', ...bgStyle}}>
       <StarsBg/>
+      <LangSwitch lang={lang} setLang={setLang}/>
       <style>{sharedStyles}</style>
       <div className="artemis-page" style={{position: 'relative', zIndex: 10, width: '100%', maxWidth: '640px', margin: '0 auto', padding: '64px 24px 48px'}}>
         <div style={{textAlign: 'center', marginBottom: '40px'}}>
@@ -832,22 +1804,22 @@ function AuthScreen({ onLogin }) {
               <AnimatedMoon size={80}/>
             </div>
           </div>
-          <h1 className="h-mystical artemis-house" style={{fontSize: '20px', color: COLORS.silverLight, marginBottom: '8px', animation: 'mysticalGlow 4s ease-in-out infinite'}}>HOUSE OF</h1>
+          <h1 className="h-mystical artemis-house" style={{fontSize: '20px', color: COLORS.silverLight, marginBottom: '-12px', lineHeight: 1, animation: 'mysticalGlow 4s ease-in-out infinite'}}>{t(lang, 'houseOf')}</h1>
           <h1 className="h-italic artemis-title" style={{fontSize: '72px', color: COLORS.silverLight, animation: 'mysticalGlow 4s ease-in-out infinite', lineHeight: 1, marginBottom: '20px'}}>Artemis</h1>
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '36px'}}>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to right, transparent, ' + COLORS.silver + ')'}}/>
-            <p className="label-text artemis-divider-text" style={{fontSize: '11px', color: COLORS.silver, textTransform: 'uppercase'}}>Oracle Deck</p>
+            <p className="label-text artemis-divider-text" style={{fontSize: '11px', color: COLORS.silver, textTransform: 'uppercase'}}>{t(lang, 'oracleDeck')}</p>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, ' + COLORS.silver + ')'}}/>
           </div>
           <p className="body-text artemis-prose" style={{fontStyle: 'italic', fontSize: '17px', color: COLORS.silverLight, opacity: 0.85, lineHeight: 1.6, marginBottom: '32px'}}>
-            Bevor du den heiligen Hain betrittst,<br/>nenne der Göttin deinen Namen.
+            {t(lang, 'nameInvite')}<br/>{t(lang, 'nameInvite2')}
           </p>
         </div>
 
         <div style={{display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '440px', margin: '0 auto'}}>
           <input
             type="text"
-            placeholder="Dein Name..."
+            placeholder={t(lang, 'namePlaceholder')}
             value={name}
             onChange={e => setName(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') submit(); }}
@@ -868,7 +1840,7 @@ function AuthScreen({ onLogin }) {
               {accepted && <svg width="12" height="12" viewBox="0 0 12 12"><path d="M 2 6 L 5 9 L 10 3" stroke={COLORS.silverLight} strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>}
             </div>
             <span className="body-text" style={{fontSize: '14px', fontStyle: 'italic', color: COLORS.silverLight, opacity: 0.85, lineHeight: 1.5}}>
-              Ich verstehe, dass dieses Orakel der Selbstreflexion dient und stimme zu.
+              {t(lang, 'consent')}
             </span>
           </label>
 
@@ -881,12 +1853,12 @@ function AuthScreen({ onLogin }) {
             border: '1px solid rgba(200, 196, 212, 0.4)',
             cursor: 'pointer', borderRadius: '2px'
           }}>
-            Den Hain betreten
+            {t(lang, 'enterGrove')}
           </button>
         </div>
 
         <div style={{textAlign: 'center', marginTop: '56px', marginBottom: '40px'}}>
-          <p className="label-text" style={{fontSize: '11px', color: COLORS.silver, opacity: 0.55}}>53 KARTEN · 9 MYSTERIEN</p>
+          <p className="label-text" style={{fontSize: '11px', color: COLORS.silver, opacity: 0.55}}>{t(lang, 'deckSubtitle')}</p>
         </div>
 
         <div style={{marginTop: '64px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', opacity: 0.55}}>
@@ -896,7 +1868,7 @@ function AuthScreen({ onLogin }) {
             <div style={{height: '1px', width: '28px', background: COLORS.silver}}/>
           </div>
           <p className="h-italic" style={{fontSize: '16px', color: COLORS.silverLight}}>sheAwakens</p>
-          <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.7}}>© {new Date().getFullYear()} · ALL RIGHTS RESERVED</p>
+          <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.7}}>© {new Date().getFullYear()} · {t(lang, 'rights')}</p>
         </div>
       </div>
     </div>
@@ -979,6 +1951,14 @@ export default function App() {
   const [drawn, setDrawn] = useState([]);
   const [shuffling, setShuffling] = useState(false);
 
+  // Sprache: DE oder EN. Wird in localStorage gespeichert und bei Start automatisch
+  // an der Systemsprache der Nutzerin ausgerichtet, falls noch keine Wahl gespeichert ist.
+  const [lang, setLangState] = useState(() => detectInitialLang());
+  const setLang = React.useCallback((newLang) => {
+    saveLang(newLang);
+    setLangState(newLang);
+  }, []);
+
   // Journal-Zustand
   const [journal, setJournal] = useState([]);
   const [journalSaved, setJournalSaved] = useState(false); // Hinweis "im Journal bewahrt"
@@ -994,26 +1974,26 @@ export default function App() {
       setWishMessage({
         id: Date.now(),
         type: 'shooting',
-        text: 'Hast du die Sternschnuppe gesehen? Dann wünsche dir etwas.'
+        text: t(lang, 'wishShooting')
       });
     }, 600);
-  }, []);
+  }, [lang]);
 
   const handleComet = React.useCallback(() => {
     setTimeout(() => {
       setWishMessage({
         id: Date.now(),
         type: 'comet',
-        text: 'Ein Grüner Komet zog vorüber. Etwas Seltenes berührt dich gerade.'
+        text: t(lang, 'wishComet')
       });
     }, 1500); // Komet ist länger unterwegs, später Hinweis
-  }, []);
+  }, [lang]);
 
   // Wunsch-Hinweis nach 9 Sekunden automatisch ausblenden
   useEffect(() => {
     if (!wishMessage) return;
-    const t = setTimeout(() => setWishMessage(null), 9000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setWishMessage(null), 9000);
+    return () => clearTimeout(timer);
   }, [wishMessage]);
 
   // Journal beim Start aus localStorage laden
@@ -1033,45 +2013,53 @@ export default function App() {
   // Wird beim Speichern ins Journal mit aufgenommen, damit der Eintrag später noch Kontext trägt.
   const buildJournalSummary = () => {
     if (!drawn || drawn.length === 0) return '';
-    const modeLabels = {
-      daily: 'Tagesorakel',
-      three: 'Drei Karten Legung',
-      relationship: 'Beziehungsorakel',
-      cross: 'Das Heilige Kreuz',
-      year: 'Jahresorakel'
+    const tone = getCardTone(lang);
+    const modeLabelsDE = {
+      daily: 'Tagesorakel', three: 'Drei Karten Legung',
+      relationship: 'Beziehungsorakel', cross: 'Das Heilige Kreuz', year: 'Jahresorakel'
     };
-    const label = modeLabels[mode] || 'Legung';
+    const modeLabelsEN = {
+      daily: 'Daily Oracle', three: 'Three-Card Reading',
+      relationship: 'Relationship Oracle', cross: 'The Sacred Cross', year: 'Year Oracle'
+    };
+    const label = (lang === 'en' ? modeLabelsEN : modeLabelsDE)[mode] || (lang === 'en' ? 'Reading' : 'Legung');
 
     if (mode === 'daily') {
       const c = drawn[0];
-      const tone = cardTone[c.name] || 'eine eigene Qualität';
-      return `${label} · ${c.name}. ${c.name} bringt heute ${tone} in dein Feld. ${c.message}`;
+      const toneStr = tone[c.name] || (lang === 'en' ? 'a quality of its own' : 'eine eigene Qualität');
+      if (lang === 'en') return `${label} · ${c.name}. ${c.name} brings ${toneStr} into your field today. ${c.message}`;
+      return `${label} · ${c.name}. ${c.name} bringt heute ${toneStr} in dein Feld. ${c.message}`;
     }
 
     if (mode === 'three') {
       const [past, present, future] = drawn;
-      const presentTone = cardTone[present.name] || 'eine eigene Kraft';
+      const presentTone = tone[present.name] || (lang === 'en' ? 'a force of its own' : 'eine eigene Kraft');
+      if (lang === 'en') return `${label} · ${past.name} · ${present.name} · ${future.name}. From ${past.name} you come, in the present ${present.name} is at work with ${presentTone}, and on the horizon ${future.name} opens. ${present.message}`;
       return `${label} · ${past.name} · ${present.name} · ${future.name}. Aus ${past.name} kommst du, in der Gegenwart wirkt ${present.name} mit ${presentTone}, und am Horizont öffnet sich ${future.name}. ${present.message}`;
     }
 
     if (mode === 'relationship') {
       const [me, other, connection, future] = drawn;
-      const connTone = cardTone[connection.name] || 'eine eigene Energie';
+      const connTone = tone[connection.name] || (lang === 'en' ? 'an energy of its own' : 'eine eigene Energie');
+      if (lang === 'en') return `${label} · You: ${me.name} · She/He: ${other.name} · Bond: ${connection.name} · Future: ${future.name}. Between you lives ${connTone}. ${connection.message}`;
       return `${label} · Du: ${me.name} · Sie/Er: ${other.name} · Verbindung: ${connection.name} · Zukunft: ${future.name}. Zwischen euch lebt ${connTone}. ${connection.message}`;
     }
 
     if (mode === 'cross') {
-      // Reihenfolge: above=Zukunft, left=Weg links, right=Weg rechts, below=Vergangenheit, center=Gegenwart
       const [above, left, right, below, center] = drawn;
-      const presentTone = cardTone[center.name] || 'ein eigenes Thema';
+      const presentTone = tone[center.name] || (lang === 'en' ? 'a theme of its own' : 'ein eigenes Thema');
+      if (lang === 'en') return `${label} · Present: ${center.name} (${presentTone}). From ${below.name} you come, before you two ways open: ${left.name} or ${right.name}. On the horizon, ${above.name} awaits. ${center.message}`;
       return `${label} · Gegenwart: ${center.name} (${presentTone}). Aus ${below.name} kommst du, vor dir öffnen sich zwei Wege: ${left.name} oder ${right.name}. Am Horizont wartet ${above.name}. ${center.message}`;
     }
 
     if (mode === 'year') {
-      const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      const monthsDE = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      const monthsEN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const months = lang === 'en' ? monthsEN : monthsDE;
       const cardLine = drawn.map((c, i) => `${months[i]}: ${c.name}`).join(' · ');
-      const themeCard = drawn[5] || drawn[0]; // Juni als Sommerhöhe
-      const themeTone = cardTone[themeCard.name] || 'ein heimliches Thema';
+      const themeCard = drawn[5] || drawn[0];
+      const themeTone = tone[themeCard.name] || (lang === 'en' ? 'a hidden theme' : 'ein heimliches Thema');
+      if (lang === 'en') return `${label}. ${cardLine}. Thread through the year: ${themeTone}.`;
       return `${label}. ${cardLine}. Roter Faden des Jahres: ${themeTone}.`;
     }
 
@@ -1084,6 +2072,7 @@ export default function App() {
       id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
       date: new Date().toISOString(),
       mode,
+      lang, // Sprache merken, in der die Legung gezogen wurde
       cards: drawn.map(c => ({ id: c.id, name: c.name, category: c.category, symbol: c.symbol, message: c.message })),
       summary: buildJournalSummary(),
       note: (note || '').trim()
@@ -1139,31 +2128,31 @@ export default function App() {
     setDrawn([]);
     setMode(targetMode);
     setTimeout(() => {
-      setDrawn(shuffleArray(cards).slice(0, count));
+      setDrawn(shuffleArray(getCards(lang)).slice(0, count));
       setShuffling(false);
     }, 2800);
   };
 
   const reset = () => { setDrawn([]); setShuffling(false); setMode('home'); };
 
-  if (!user) return <AuthScreen onLogin={setUser}/>;
+  if (!user) return <AuthScreen onLogin={setUser} lang={lang} setLang={setLang}/>;
 
   const yearAvailable = isYearOracleAvailable();
   const yearCountdown = daysUntilNextYearOracle();
 
   const options = [
-    {key: 'daily', count: 1, title: 'Tagesorakel', icon: Moon, disabled: false,
-     description: 'Für Momente, in denen du eine einzige Botschaft für deinen Tag empfangen möchtest. Diese Karte richtet deinen Blick auf die Energie, die dich heute begleitet.'},
-    {key: 'three', count: 3, title: 'Drei Karten Legung', icon: Sparkles, disabled: false,
-     description: 'Für Fragen rund um Vergangenheit, Gegenwart und den nächsten Schritt. Diese Legung öffnet Zusammenhänge und zeigt, was sich gerade durch dein Leben bewegt.'},
-    {key: 'relationship', count: 4, title: 'Beziehungsorakel', icon: null, disabled: false, customIcon: 'heart',
-     description: 'Für Verbindungen zwischen zwei Menschen. Gefühle, Sehnsucht, Distanz, Begegnung und unausgesprochene Wahrheiten treten hier stärker hervor.'},
-    {key: 'cross', count: 5, title: 'Das Heilige Kreuz', icon: null, disabled: false, customIcon: 'cross',
-     description: 'Für Zeiten großer Entscheidungen, innerer Wendepunkte und tiefer Fragen. Diese Legung führt dich durch verborgene Ebenen deiner Situation und zeigt, was unter der Oberfläche wirkt.'},
-    {key: 'year', count: 12, title: 'Jahresorakel', icon: null, disabled: !yearAvailable, customIcon: 'sun', suffix: yearAvailable ? null : `in ${yearCountdown} ${yearCountdown === 1 ? 'Tag' : 'Tagen'}`,
-     description: 'Für einen Blick auf die kommenden Monate und die größeren Bewegungen deines Weges. Jede Karte öffnet ein neues Kapitel deiner Reise.'},
-    {key: 'journal', count: 0, title: 'Orakel Journal', icon: BookOpen, disabled: false,
-     description: 'Ein stiller Raum für die Karten, die dich berührt haben. Jede Legung darfst du hier bewahren, mit eigenen Worten, jederzeit zugaenglich auf diesem Gerät.'}
+    {key: 'daily', count: 1, title: t(lang, 'optDailyTitle'), icon: Moon, disabled: false,
+     description: t(lang, 'optDailyDesc')},
+    {key: 'three', count: 3, title: t(lang, 'optThreeTitle'), icon: Sparkles, disabled: false,
+     description: t(lang, 'optThreeDesc')},
+    {key: 'relationship', count: 4, title: t(lang, 'optRelTitle'), icon: null, disabled: false, customIcon: 'heart',
+     description: t(lang, 'optRelDesc')},
+    {key: 'cross', count: 5, title: t(lang, 'optCrossTitle'), icon: null, disabled: false, customIcon: 'cross',
+     description: t(lang, 'optCrossDesc')},
+    {key: 'year', count: 12, title: t(lang, 'optYearTitle'), icon: null, disabled: !yearAvailable, customIcon: 'sun', suffix: yearAvailable ? null : t(lang, 'inDays', yearCountdown),
+     description: t(lang, 'optYearDesc')},
+    {key: 'journal', count: 0, title: t(lang, 'optJournalTitle'), icon: BookOpen, disabled: false,
+     description: t(lang, 'optJournalDesc')}
   ];
 
   const renderHome = () => (
@@ -1175,15 +2164,15 @@ export default function App() {
             <AnimatedMoon size={72}/>
           </div>
         </div>
-        <h1 className="h-mystical artemis-house" style={{fontSize: '20px', color: COLORS.silverLight, marginBottom: '8px', animation: 'mysticalGlow 4s ease-in-out infinite'}}>HOUSE OF</h1>
+        <h1 className="h-mystical artemis-house" style={{fontSize: '20px', color: COLORS.silverLight, marginBottom: '-12px', lineHeight: 1, animation: 'mysticalGlow 4s ease-in-out infinite'}}>{t(lang, 'houseOf')}</h1>
         <h1 className="h-italic artemis-title" style={{fontSize: '72px', color: COLORS.silverLight, animation: 'mysticalGlow 4s ease-in-out infinite', lineHeight: 1, marginBottom: '20px'}}>Artemis</h1>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '40px'}}>
           <div style={{height: '1px', width: '40px', background: 'linear-gradient(to right, transparent, ' + COLORS.silver + ')'}}/>
-          <p className="label-text artemis-divider-text" style={{fontSize: '11px', color: COLORS.silver, textTransform: 'uppercase'}}>Oracle Deck</p>
+          <p className="label-text artemis-divider-text" style={{fontSize: '11px', color: COLORS.silver, textTransform: 'uppercase'}}>{t(lang, 'oracleDeck')}</p>
           <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, ' + COLORS.silver + ')'}}/>
         </div>
-        <p className="body-text artemis-welcome" style={{fontStyle: 'italic', fontSize: '20px', color: COLORS.silverLight, opacity: 0.95, marginBottom: '6px'}}>Willkommen, {user.name}.</p>
-        <p className="body-text artemis-subtitle" style={{fontStyle: 'italic', fontSize: '18px', color: COLORS.silverLight, opacity: 0.85}}>Die Göttinnen, Wesen und Mysterien erwarten dich.</p>
+        <p className="body-text artemis-welcome" style={{fontStyle: 'italic', fontSize: '20px', color: COLORS.silverLight, opacity: 0.95, marginBottom: '6px'}}>{t(lang, 'welcome')}, {user.name}.</p>
+        <p className="body-text artemis-subtitle" style={{fontStyle: 'italic', fontSize: '18px', color: COLORS.silverLight, opacity: 0.85}}>{t(lang, 'homeSubtitle')}</p>
       </div>
 
       <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
@@ -1235,7 +2224,7 @@ export default function App() {
       </div>
 
       <div style={{textAlign: 'center', marginTop: '56px', marginBottom: '40px'}}>
-        <p className="label-text" style={{fontSize: '11px', color: COLORS.silver, opacity: 0.55}}>53 KARTEN · 9 MYSTERIEN</p>
+        <p className="label-text" style={{fontSize: '11px', color: COLORS.silver, opacity: 0.55}}>{t(lang, 'deckSubtitle')}</p>
       </div>
 
       <div style={{textAlign: 'center', marginTop: '64px'}}>
@@ -1245,7 +2234,7 @@ export default function App() {
           color: COLORS.silverLight, opacity: 0.7,
           cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px'
         }}>
-          Den Hain verlassen
+          {t(lang, 'leaveGrove')}
         </button>
       </div>
 
@@ -1256,7 +2245,7 @@ export default function App() {
           <div style={{height: '1px', width: '28px', background: COLORS.silver}}/>
         </div>
         <p className="h-italic" style={{fontSize: '16px', color: COLORS.silverLight}}>sheAwakens</p>
-        <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.7}}>© {new Date().getFullYear()} · ALL RIGHTS RESERVED</p>
+        <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.7}}>© {new Date().getFullYear()} · {t(lang, 'rights')}</p>
       </div>
     </div>
   );
@@ -1286,7 +2275,7 @@ export default function App() {
                   if (journalSaved) return; // schon gespeichert
                   saveToJournal('');
                 }}
-                aria-label={journalSaved ? "Bewahrt" : "Im Journal merken"}
+                aria-label={journalSaved ? t(lang, 'savedToJournal') : t(lang, 'saveToJournal')}
                 style={{
                   background: 'none', border: 'none',
                   cursor: journalSaved ? 'default' : 'pointer',
@@ -1317,7 +2306,7 @@ export default function App() {
                 letterSpacing: '0.02em',
                 userSelect: 'none'
               }}>
-                {journalSaved ? 'bewahrt' : 'merken'}
+                {journalSaved ? (lang === 'en' ? 'kept' : 'bewahrt') : (lang === 'en' ? 'keep' : 'merken')}
               </span>
             </div>
           </div>
@@ -1332,7 +2321,7 @@ export default function App() {
             cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px',
             borderRadius: '2px'
           }}>
-            <RotateCcw size={14}/> Neue Legung
+            <RotateCcw size={14}/> {t(lang, 'newReading')}
           </button>
         </div>
         <div style={{marginBottom: '64px', textAlign: 'center'}}>
@@ -1342,7 +2331,7 @@ export default function App() {
             color: COLORS.silverLight, opacity: 0.7,
             cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px'
           }}>
-            Zurück zur Übersicht
+            {t(lang, 'backToOverview')}
           </button>
         </div>
       </div>
@@ -1350,12 +2339,12 @@ export default function App() {
   };
 
   const renderDaily = () => {
-    if (shuffling || drawn.length === 0) return <ShuffleAnimation message="Die Göttin wählt deine Karte..."/>;
+    if (shuffling || drawn.length === 0) return <ShuffleAnimation message={t(lang, 'shuffleDaily')}/>;
     const c = drawn[0];
     // Fallback auf meaning + message, falls eine ältere Karte kein dailyReading hat
     const text = c.dailyReading || `${c.meaning} ${c.message}`;
     return (
-      <Shell title="Tagesorakel">
+      <Shell title={t(lang, 'optDailyTitle')}>
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '40px'}}>
           <CardDisplay card={c} size="lg"/>
           <div style={{maxWidth: '600px', margin: '0 auto', padding: '40px 32px', background: 'linear-gradient(135deg, rgba(58, 31, 93, 0.5), rgba(15, 18, 53, 0.7), rgba(45, 26, 61, 0.5))', border: '1px solid rgba(200, 196, 212, 0.3)', boxShadow: '0 0 30px rgba(93, 58, 122, 0.3), inset 0 0 20px rgba(15, 18, 53, 0.4)', borderRadius: '2px'}}>
@@ -1364,8 +2353,8 @@ export default function App() {
               <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke={COLORS.silver} strokeWidth="0.5"/><path d="M 12 6 A 6 6 0 0 1 12 18 A 4 6 0 0 0 12 6" fill={COLORS.silverLight}/></svg>
               <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, rgba(200, 196, 212, 0.5))'}}/>
             </div>
-            <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>Die Auslegung</h3>
-            <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>Was dich heute trägt</p>
+            <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>{t(lang, 'labelInterpretation')}</h3>
+            <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>{t(lang, 'labelTodayCarries')}</p>
             <p className="body-text" style={{fontStyle: 'italic', fontSize: '17px', lineHeight: 1.85, color: COLORS.silverLight, opacity: 0.95}}>{text}</p>
           </div>
         </div>
@@ -1374,11 +2363,11 @@ export default function App() {
   };
 
   const renderThree = () => {
-    if (shuffling || drawn.length === 0) return <ShuffleAnimation message="Drei Karten finden zu dir..."/>;
-    const storyParagraphs = generateThreeSynthesis(drawn);
-    const labels = ['Vergangenheit', 'Gegenwart', 'Zukunft'];
+    if (shuffling || drawn.length === 0) return <ShuffleAnimation message={t(lang, 'shuffleThree')}/>;
+    const storyParagraphs = generateThreeSynthesis(drawn, lang);
+    const labels = [t(lang, 'posPast'), t(lang, 'posPresent'), t(lang, 'posFuture')];
     return (
-      <Shell title="Drei Karten Legung">
+      <Shell title={t(lang, 'optThreeTitle')}>
         <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px', marginBottom: '48px'}}>
           {drawn.map((c, i) => <CardDisplay key={c.id} card={c} label={labels[i]}/>)}
         </div>
@@ -1388,8 +2377,8 @@ export default function App() {
             <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke={COLORS.silver} strokeWidth="0.5"/><path d="M 12 6 A 6 6 0 0 1 12 18 A 4 6 0 0 0 12 6" fill={COLORS.silverLight}/></svg>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, rgba(200, 196, 212, 0.5))'}}/>
           </div>
-          <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>Die Auslegung</h3>
-          <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>Deine Geschichte durch die drei Karten</p>
+          <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>{t(lang, 'labelInterpretation')}</h3>
+          <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>{t(lang, 'labelThreeSub')}</p>
           {storyParagraphs && storyParagraphs.map((para, i) => (
             <p key={i} className="body-text" style={{
               fontStyle: 'italic', fontSize: '17px', lineHeight: 1.85,
@@ -1403,19 +2392,19 @@ export default function App() {
   };
 
   const renderRelationship = () => {
-    if (shuffling || drawn.length === 0) return <ShuffleAnimation message="Eure Verbindung wird sichtbar..."/>;
-    const storyParagraphs = generateRelationshipSynthesis(drawn);
+    if (shuffling || drawn.length === 0) return <ShuffleAnimation message={t(lang, 'shuffleRel')}/>;
+    const storyParagraphs = generateRelationshipSynthesis(drawn, lang);
     const [me, other, connection, future] = drawn;
     return (
-      <Shell title="Beziehungsorakel">
+      <Shell title={t(lang, 'optRelTitle')}>
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px', marginBottom: '48px'}}>
           <div className="artemis-relationship-row" style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '120px', flexWrap: 'wrap'}}>
-            <CardDisplay card={me} label="Du"/>
-            <CardDisplay card={other} label="Sie oder Er"/>
+            <CardDisplay card={me} label={t(lang, 'posMe')}/>
+            <CardDisplay card={other} label={t(lang, 'posOther')}/>
           </div>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px'}}>
-            <CardDisplay card={connection} label="Eure Verbindung"/>
-            <CardDisplay card={future} label="Eure Zukunft"/>
+            <CardDisplay card={connection} label={t(lang, 'posConnection')}/>
+            <CardDisplay card={future} label={t(lang, 'posCommonFuture')}/>
           </div>
         </div>
         <div style={{maxWidth: '640px', margin: '0 auto', padding: '40px 32px', background: 'linear-gradient(135deg, rgba(58, 31, 93, 0.5), rgba(15, 18, 53, 0.7), rgba(45, 26, 61, 0.5))', border: '1px solid rgba(200, 196, 212, 0.3)', boxShadow: '0 0 30px rgba(93, 58, 122, 0.3), inset 0 0 20px rgba(15, 18, 53, 0.4)', borderRadius: '2px'}}>
@@ -1424,8 +2413,8 @@ export default function App() {
             <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke={COLORS.silver} strokeWidth="0.5"/><path d="M 12 6 A 6 6 0 0 1 12 18 A 4 6 0 0 0 12 6" fill={COLORS.silverLight}/></svg>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, rgba(200, 196, 212, 0.5))'}}/>
           </div>
-          <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>Die Auslegung</h3>
-          <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>Eure Geschichte durch die vier Karten</p>
+          <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>{t(lang, 'labelInterpretation')}</h3>
+          <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>{t(lang, 'labelFourSub')}</p>
           {storyParagraphs && storyParagraphs.map((para, i) => (
             <p key={i} className="body-text" style={{
               fontStyle: 'italic', fontSize: '17px', lineHeight: 1.85,
@@ -1439,17 +2428,17 @@ export default function App() {
   };
 
   const renderCross = () => {
-    if (shuffling || drawn.length === 0) return <ShuffleAnimation message="Das Kreuz formt sich..."/>;
+    if (shuffling || drawn.length === 0) return <ShuffleAnimation message={t(lang, 'shuffleCross')}/>;
     const [above, left, right, below, center] = drawn;
-    const storyParagraphs = buildCrossStory(drawn);
+    const storyParagraphs = buildCrossStory(drawn, lang);
     return (
-      <Shell title="Das Heilige Kreuz">
+      <Shell title={t(lang, 'optCrossTitle')}>
         <div className="artemis-cross-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(3, auto)', justifyContent: 'center', gap: '12px', marginBottom: '48px'}}>
-          <div/><div className="artemis-cross-card"><CardDisplay card={above} size="sm" label="Zukunft"/></div><div/>
-          <div className="artemis-cross-card"><CardDisplay card={left} size="sm" label="Weg links"/></div>
-          <div className="artemis-cross-card"><CardDisplay card={center} size="sm" label="Gegenwart"/></div>
-          <div className="artemis-cross-card"><CardDisplay card={right} size="sm" label="Weg rechts"/></div>
-          <div/><div className="artemis-cross-card"><CardDisplay card={below} size="sm" label="Vergangenheit"/></div><div/>
+          <div/><div className="artemis-cross-card"><CardDisplay card={above} size="sm" label={t(lang, 'posCrossFuture')}/></div><div/>
+          <div className="artemis-cross-card"><CardDisplay card={left} size="sm" label={t(lang, 'posCrossLeft')}/></div>
+          <div className="artemis-cross-card"><CardDisplay card={center} size="sm" label={t(lang, 'posCrossPresent')}/></div>
+          <div className="artemis-cross-card"><CardDisplay card={right} size="sm" label={t(lang, 'posCrossRight')}/></div>
+          <div/><div className="artemis-cross-card"><CardDisplay card={below} size="sm" label={t(lang, 'posCrossPast')}/></div><div/>
         </div>
         <div style={{maxWidth: '640px', margin: '0 auto', padding: '40px 32px', background: 'linear-gradient(135deg, rgba(58, 31, 93, 0.5), rgba(15, 18, 53, 0.7), rgba(45, 26, 61, 0.5))', border: '1px solid rgba(200, 196, 212, 0.3)', boxShadow: '0 0 30px rgba(93, 58, 122, 0.3), inset 0 0 20px rgba(15, 18, 53, 0.4)', borderRadius: '2px'}}>
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '28px'}}>
@@ -1457,8 +2446,8 @@ export default function App() {
             <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke={COLORS.silver} strokeWidth="0.5"/><path d="M 12 6 A 6 6 0 0 1 12 18 A 4 6 0 0 0 12 6" fill={COLORS.silverLight}/></svg>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, rgba(200, 196, 212, 0.5))'}}/>
           </div>
-          <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>Die Auslegung</h3>
-          <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>Deine Geschichte durch die fünf Karten</p>
+          <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>{t(lang, 'labelInterpretation')}</h3>
+          <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>{t(lang, 'labelFiveSub')}</p>
           {storyParagraphs && storyParagraphs.map((para, i) => {
             // Fragen visuell als Pause hervorheben: kurz und endet mit ?
             const isQuestion = para.trim().endsWith('?') && para.length < 120;
@@ -1487,13 +2476,13 @@ export default function App() {
   };
 
   const renderYear = () => {
-    if (shuffling || drawn.length === 0) return <ShuffleAnimation message="Dein Jahr offenbart sich..."/>;
-    const synth = generateYearSynthesis(drawn, user.name);
-    const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    if (shuffling || drawn.length === 0) return <ShuffleAnimation message={t(lang, 'shuffleYear')}/>;
+    const synth = generateYearSynthesis(drawn, user.name, lang);
+    const months = T[lang] ? T[lang].months : T.de.months;
     return (
-      <Shell title="Jahresorakel">
+      <Shell title={t(lang, 'optYearTitle')}>
         <p className="body-text" style={{textAlign: 'center', fontStyle: 'italic', fontSize: '16px', color: COLORS.silverLight, opacity: 0.75, marginBottom: '40px', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto'}}>
-          Zwölf Karten für zwölf Monate. Eine Schau auf dein kommendes Jahr.
+          {t(lang, 'yearIntro')}
         </p>
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '20px', marginBottom: '56px', maxWidth: '900px', margin: '0 auto 56px'}}>
           {drawn.map((c, i) => (
@@ -1509,8 +2498,8 @@ export default function App() {
               <SunIcon size={20}/>
               <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, rgba(200, 196, 212, 0.5))'}}/>
             </div>
-            <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>Dein Jahr</h3>
-            <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>Der Bogen durch alle zwölf Monate</p>
+            <h3 className="card-name" style={{fontSize: '14px', textAlign: 'center', color: COLORS.silverLight, marginBottom: '6px'}}>{t(lang, 'labelYour')}</h3>
+            <p className="label-text" style={{fontSize: '10px', textAlign: 'center', color: COLORS.silver, opacity: 0.6, marginBottom: '32px'}}>{t(lang, 'labelYearSub')}</p>
             {synth.paragraphs.map((para, i) => (
               <p key={i} className="body-text" style={{
                 fontStyle: 'italic', fontSize: '17px', lineHeight: 1.85,
@@ -1525,41 +2514,64 @@ export default function App() {
   };
 
   const renderJournal = () => {
-    const modeLabels = {
-      daily: 'Tagesorakel',
-      three: 'Drei Karten Legung',
-      relationship: 'Beziehungsorakel',
-      cross: 'Das Heilige Kreuz',
-      year: 'Jahresorakel'
+    const modeLabelsDE = {
+      daily: 'Tagesorakel', three: 'Drei Karten Legung',
+      relationship: 'Beziehungsorakel', cross: 'Das Heilige Kreuz', year: 'Jahresorakel'
     };
+    const modeLabelsEN = {
+      daily: 'Daily Oracle', three: 'Three-Card Reading',
+      relationship: 'Relationship Oracle', cross: 'The Sacred Cross', year: 'Year Oracle'
+    };
+    // Für Anzeige nutzen wir die Sprache des Eintrags, damit alte Einträge in ihrer
+    // Originalsprache angezeigt werden. Fallback ist die aktuelle UI-Sprache.
+    const labelFor = (entry) => {
+      const entryLang = entry.lang || 'de';
+      const labels = entryLang === 'en' ? modeLabelsEN : modeLabelsDE;
+      return labels[entry.mode] || entry.mode || '';
+    };
+
     const formatDate = (iso) => {
       try {
         const d = new Date(iso);
-        return d.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' · ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        const locale = lang === 'en' ? 'en-GB' : 'de-DE';
+        return d.toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' }) + ' · ' + d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
       } catch(e) { return iso; }
     };
+
+    // UI-Mikrotexte je Sprache
+    const journalIntro = lang === 'en'
+      ? 'Here rest the cards that have touched you. Your entries stay on this device.'
+      : 'Hier ruhen die Karten, die dich berührt haben. Deine Einträge bleiben auf diesem Gerät.';
+    const emptyHint = lang === 'en'
+      ? 'Draw a card and keep it here, if it speaks to you.'
+      : 'Ziehe eine Karte und bewahre sie hier, wenn sie dich anspricht.';
+    const exportLabel = lang === 'en' ? 'EXPORT JOURNAL' : 'JOURNAL EXPORTIEREN';
+    const removeWord = lang === 'en' ? 'remove' : 'entfernen';
+    const removeConfirm = lang === 'en' ? 'Really remove this entry?' : 'Diesen Eintrag wirklich entfernen?';
+    const essenceLabel = lang === 'en' ? 'THE ESSENCE' : 'DIE ESSENZ';
+    const yourNoteLabel = lang === 'en' ? 'YOUR NOTE' : 'DEINE NOTIZ';
 
     return (
       <div className="artemis-page" style={{position: 'relative', zIndex: 10, width: '100%', maxWidth: '720px', margin: '0 auto', padding: '48px 24px'}}>
         <div style={{textAlign: 'center', marginBottom: '40px'}}>
-          <h2 className="h-italic artemis-section-title" style={{fontSize: '36px', color: COLORS.silverLight, animation: 'mysticalGlow 4s ease-in-out infinite'}}>Orakel Journal</h2>
+          <h2 className="h-italic artemis-section-title" style={{fontSize: '36px', color: COLORS.silverLight, animation: 'mysticalGlow 4s ease-in-out infinite'}}>{t(lang, 'optJournalTitle')}</h2>
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '12px'}}>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to right, transparent, ' + COLORS.silver + ')'}}/>
             <BookOpen size={14} color={COLORS.silverLight}/>
             <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, ' + COLORS.silver + ')'}}/>
           </div>
           <p className="body-text" style={{fontStyle: 'italic', fontSize: '15px', color: COLORS.silverLight, opacity: 0.75, marginTop: '20px', maxWidth: '480px', marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6}}>
-            Hier ruhen die Karten, die dich berührt haben. Deine Einträge bleiben auf diesem Gerät.
+            {journalIntro}
           </p>
         </div>
 
         {journal.length === 0 ? (
           <div style={{textAlign: 'center', padding: '60px 24px', border: '1px solid rgba(200, 196, 212, 0.2)', borderRadius: '2px', background: 'linear-gradient(135deg, rgba(45, 26, 61, 0.3), rgba(15, 18, 53, 0.4))'}}>
             <p className="body-text" style={{fontStyle: 'italic', fontSize: '17px', color: COLORS.silverLight, opacity: 0.8, lineHeight: 1.7, marginBottom: '8px'}}>
-              Dein Journal ist noch leer.
+              {lang === 'en' ? 'Your journal is still empty.' : 'Dein Journal ist noch leer.'}
             </p>
             <p className="body-text" style={{fontStyle: 'italic', fontSize: '15px', color: COLORS.silverLight, opacity: 0.6, lineHeight: 1.6}}>
-              Ziehe eine Karte und bewahre sie hier, wenn sie dich anspricht.
+              {emptyHint}
             </p>
           </div>
         ) : (
@@ -1571,7 +2583,7 @@ export default function App() {
                 background: 'linear-gradient(135deg, rgba(45, 26, 61, 0.9), rgba(26, 27, 75, 0.9))',
                 border: '1px solid rgba(200, 196, 212, 0.35)',
                 cursor: 'pointer', borderRadius: '2px'
-              }}>JOURNAL EXPORTIEREN</button>
+              }}>{exportLabel}</button>
             </div>
 
             <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
@@ -1585,16 +2597,16 @@ export default function App() {
                 }}>
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '14px', flexWrap: 'wrap'}}>
                     <div>
-                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.65, marginBottom: '4px'}}>{(modeLabels[entry.mode] || entry.mode || '').toUpperCase()}</p>
+                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.65, marginBottom: '4px'}}>{labelFor(entry).toUpperCase()}</p>
                       <p className="body-text" style={{fontStyle: 'italic', fontSize: '13px', color: COLORS.silverLight, opacity: 0.75, margin: 0}}>{formatDate(entry.date)}</p>
                     </div>
-                    <button onClick={() => { if (window.confirm('Diesen Eintrag wirklich entfernen?')) deleteJournalEntry(entry.id); }} className="body-text" style={{
+                    <button onClick={() => { if (window.confirm(removeConfirm)) deleteJournalEntry(entry.id); }} className="body-text" style={{
                       background: 'none', border: 'none',
                       fontStyle: 'italic', fontSize: '12px',
                       color: COLORS.silverLight, opacity: 0.55,
                       cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '3px',
                       padding: 0
-                    }}>entfernen</button>
+                    }}>{removeWord}</button>
                   </div>
 
                   <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: (entry.summary || entry.note) ? '16px' : 0}}>
@@ -1613,14 +2625,14 @@ export default function App() {
 
                   {entry.summary && (
                     <div style={{marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(200, 196, 212, 0.15)'}}>
-                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.6, marginBottom: '8px'}}>DIE ESSENZ</p>
+                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.6, marginBottom: '8px'}}>{essenceLabel}</p>
                       <p className="body-text" style={{fontStyle: 'italic', fontSize: '15px', lineHeight: 1.65, color: COLORS.silverLight, opacity: 0.88, margin: 0}}>{entry.summary}</p>
                     </div>
                   )}
 
                   {entry.note && (
                     <div style={{marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(200, 196, 212, 0.15)'}}>
-                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.6, marginBottom: '8px'}}>DEINE NOTIZ</p>
+                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.6, marginBottom: '8px'}}>{yourNoteLabel}</p>
                       <p className="body-text" style={{fontStyle: 'italic', fontSize: '16px', lineHeight: 1.7, color: COLORS.silverLight, opacity: 0.95, whiteSpace: 'pre-wrap', margin: 0}}>{entry.note}</p>
                     </div>
                   )}
@@ -1637,7 +2649,7 @@ export default function App() {
             color: COLORS.silverLight, opacity: 0.7,
             cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px'
           }}>
-            Zurück zur Übersicht
+            {t(lang, 'backToOverview')}
           </button>
         </div>
       </div>
@@ -1648,6 +2660,7 @@ export default function App() {
     <div style={{minHeight: '100vh', width: '100%', position: 'relative', overflow: 'hidden', ...bgStyle}}>
       <StarsBg/>
       <ShootingStars onShootingStar={handleShootingStar} onComet={handleComet}/>
+      <LangSwitch lang={lang} setLang={setLang}/>
       <style>{sharedStyles}</style>
       {mode === 'home' && renderHome()}
       {mode === 'daily' && renderDaily()}

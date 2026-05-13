@@ -1,6 +1,6 @@
 // Service Worker für House of Artemis Oracle
 // Strategie: "Network first, Fallback Cache" - immer frisch laden, im Offline-Fall Cache nutzen
-const CACHE_NAME = 'artemis-oracle-v3';
+const CACHE_NAME = 'artemis-oracle-v4';
 const CORE_ASSETS = [
   '/',
   '/index.html',
