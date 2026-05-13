@@ -934,6 +934,25 @@ const SunIcon = ({ size = 18 }) => (
 
 // Journal: Helfer fuer localStorage
 const JOURNAL_KEY = 'artemis-oracle-journal-v1';
+const USER_KEY = 'artemis-oracle-user-v1';
+
+const loadUser = () => {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed.name === 'string' && parsed.name.trim()) return parsed;
+    return null;
+  } catch(e) { return null; }
+};
+
+const saveUser = (u) => {
+  try { localStorage.setItem(USER_KEY, JSON.stringify(u)); } catch(e) {}
+};
+
+const clearUser = () => {
+  try { localStorage.removeItem(USER_KEY); } catch(e) {}
+};
 const loadJournal = () => {
   try {
     const raw = localStorage.getItem(JOURNAL_KEY);
@@ -947,7 +966,15 @@ const saveJournal = (entries) => {
 };
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUserState] = useState(() => loadUser());
+
+  // Wrapper: speichert oder löscht den Nutzer beim Setzen automatisch
+  const setUser = React.useCallback((u) => {
+    if (u) saveUser(u);
+    else clearUser();
+    setUserState(u);
+  }, []);
+
   const [mode, setMode] = useState('home');
   const [drawn, setDrawn] = useState([]);
   const [shuffling, setShuffling] = useState(false);
