@@ -198,6 +198,12 @@ const sharedStyles = `
   @keyframes orbitParticle { from { transform: rotate(0deg) translateX(120px) rotate(0deg); } to { transform: rotate(360deg) translateX(120px) rotate(-360deg); } }
   @keyframes flipIn { from { transform: rotateY(180deg); opacity: 0; } to { transform: rotateY(0deg); opacity: 1; } }
   @keyframes twinkleDot { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.9; } }
+  @keyframes wishFade {
+    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  }
   .card-front { background: linear-gradient(180deg, #2d1a3d 0%, #1a1b4b 50%, #2d1a3d 100%); border: 1px solid rgba(200, 196, 212, 0.6); box-shadow: 0 0 40px rgba(93, 58, 122, 0.4), inset 0 0 30px #0f1235; }
   .h-mystical { font-family: 'Cormorant Garamond', serif; font-weight: 300; letter-spacing: 0.4em; }
   .h-italic { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; }
@@ -332,14 +338,12 @@ const MoonAuraGlow = () => (
   }}/>
 );
 
-function ShootingStars() {
+function ShootingStars({ onShootingStar, onComet }) {
   const [shots, setShots] = useState([]);
 
   useEffect(() => {
-    let counter = 0;
-    const spawn = () => {
-      counter++;
-      const isComet = counter % 5 === 0;
+    // Eine Sternschnuppe oder einen Kometen erzeugen
+    const spawn = (isComet) => {
       const side = Math.floor(Math.random() * 4);
       let startX, startY, dx, dy;
       const distance = isComet ? 1400 + Math.random() * 300 : 220 + Math.random() * 180;
@@ -369,12 +373,39 @@ function ShootingStars() {
       const duration = isComet ? 6000 : 1800 + Math.random() * 800;
       setShots(s => [...s, { id, startX, startY, dx, dy, angle, isComet, duration }]);
       setTimeout(() => setShots(s => s.filter(x => x.id !== id)), duration + 200);
+      // Eltern informieren, damit sie ggf. einen Wunsch-Hinweis zeigen können
+      if (isComet) {
+        if (typeof onComet === 'function') onComet();
+      } else {
+        if (typeof onShootingStar === 'function') onShootingStar();
+      }
     };
 
-    const initial = setTimeout(spawn, 4000);
-    const interval = setInterval(spawn, 28000 + Math.random() * 6000);
-    return () => { clearTimeout(initial); clearInterval(interval); };
-  }, []);
+    // Sternschnuppen: erste nach ~30 Sek, dann zwischen 4 und 6 Minuten variieren
+    let shootTimer;
+    const scheduleShoot = (initialDelay) => {
+      shootTimer = setTimeout(() => {
+        spawn(false);
+        scheduleShoot(240000 + Math.random() * 120000); // 4-6 Minuten
+      }, initialDelay);
+    };
+    scheduleShoot(30000); // erste Sternschnuppe nach 30 Sekunden
+
+    // Komet: erste nach ~3 Min, dann zwischen 12 und 18 Minuten
+    let cometTimer;
+    const scheduleComet = (initialDelay) => {
+      cometTimer = setTimeout(() => {
+        spawn(true);
+        scheduleComet(720000 + Math.random() * 360000); // 12-18 Minuten
+      }, initialDelay);
+    };
+    scheduleComet(180000); // erster Komet nach 3 Minuten
+
+    return () => {
+      clearTimeout(shootTimer);
+      clearTimeout(cometTimer);
+    };
+  }, [onShootingStar, onComet]);
 
   return (
     <div style={{position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden'}}>
@@ -899,11 +930,111 @@ const SunIcon = ({ size = 18 }) => (
   </svg>
 );
 
+// Journal: Helfer fuer localStorage
+const JOURNAL_KEY = 'artemis-oracle-journal-v1';
+const loadJournal = () => {
+  try {
+    const raw = localStorage.getItem(JOURNAL_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) { return []; }
+};
+const saveJournal = (entries) => {
+  try { localStorage.setItem(JOURNAL_KEY, JSON.stringify(entries)); } catch(e) {}
+};
+
 export default function App() {
   const [user, setUser] = useState(null);
   const [mode, setMode] = useState('home');
   const [drawn, setDrawn] = useState([]);
   const [shuffling, setShuffling] = useState(false);
+
+  // Journal-Zustand
+  const [journal, setJournal] = useState([]);
+  const [journalSaved, setJournalSaved] = useState(false); // Hinweis "im Journal bewahrt"
+  const [journalNote, setJournalNote] = useState('');
+  const [showNoteField, setShowNoteField] = useState(false);
+
+  // Wunsch-Hinweis: wird angezeigt, wenn eine Sternschnuppe oder Komet vorbeizieht
+  const [wishMessage, setWishMessage] = useState(null);
+
+  const handleShootingStar = React.useCallback(() => {
+    // Hinweis verzögert anzeigen, damit die Sternschnuppe vorher sichtbar war
+    setTimeout(() => {
+      setWishMessage({
+        id: Date.now(),
+        type: 'shooting',
+        text: 'Hast du die Sternschnuppe gesehen? Dann wünsche dir etwas.'
+      });
+    }, 600);
+  }, []);
+
+  const handleComet = React.useCallback(() => {
+    setTimeout(() => {
+      setWishMessage({
+        id: Date.now(),
+        type: 'comet',
+        text: 'Ein Grüner Komet zog vorüber. Etwas Seltenes berührt dich gerade.'
+      });
+    }, 1500); // Komet ist länger unterwegs, später Hinweis
+  }, []);
+
+  // Wunsch-Hinweis nach 9 Sekunden automatisch ausblenden
+  useEffect(() => {
+    if (!wishMessage) return;
+    const t = setTimeout(() => setWishMessage(null), 9000);
+    return () => clearTimeout(t);
+  }, [wishMessage]);
+
+  // Journal beim Start aus localStorage laden
+  useEffect(() => {
+    setJournal(loadJournal());
+  }, []);
+
+  // Reset des "gespeichert"-Hinweises und Notiz, wenn neue Karten gezogen werden
+  useEffect(() => {
+    setJournalSaved(false);
+    setJournalNote('');
+    setShowNoteField(false);
+  }, [drawn, mode]);
+
+  // Aktuelle Auslegung im Journal speichern
+  const saveToJournal = (note) => {
+    if (!drawn || drawn.length === 0) return;
+    const entry = {
+      id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      date: new Date().toISOString(),
+      mode,
+      cards: drawn.map(c => ({ id: c.id, name: c.name, category: c.category, symbol: c.symbol, message: c.message })),
+      note: (note || '').trim()
+    };
+    const updated = [entry, ...journal];
+    setJournal(updated);
+    saveJournal(updated);
+    setJournalSaved(true);
+    setShowNoteField(false);
+  };
+
+  // Einzelnen Eintrag aus dem Journal entfernen
+  const deleteJournalEntry = (id) => {
+    const updated = journal.filter(e => e.id !== id);
+    setJournal(updated);
+    saveJournal(updated);
+  };
+
+  // Gesamtes Journal als JSON-Datei exportieren
+  const exportJournal = () => {
+    const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), user: user?.name || null, entries: journal }, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `artemis-journal-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   useEffect(() => {
     const link = document.createElement('link');
@@ -952,7 +1083,8 @@ export default function App() {
      description: 'Für Zeiten großer Entscheidungen, innerer Wendepunkte und tiefer Fragen. Diese Legung führt dich durch verborgene Ebenen deiner Situation und zeigt, was unter der Oberfläche wirkt.'},
     {key: 'year', count: 12, title: 'Jahresorakel', icon: null, disabled: !yearAvailable, customIcon: 'sun', suffix: yearAvailable ? null : `in ${yearCountdown} ${yearCountdown === 1 ? 'Tag' : 'Tagen'}`,
      description: 'Für einen Blick auf die kommenden Monate und die größeren Bewegungen deines Weges. Jede Karte öffnet ein neues Kapitel deiner Reise.'},
-    {key: 'journal', count: 0, title: 'Orakel Journal', icon: BookOpen, disabled: true, suffix: 'bald'}
+    {key: 'journal', count: 0, title: 'Orakel Journal', icon: BookOpen, disabled: false,
+     description: 'Ein stiller Raum für die Karten, die dich berührt haben. Jede Legung darfst du hier bewahren, mit eigenen Worten, jederzeit zugaenglich auf diesem Gerät.'}
   ];
 
   const renderHome = () => (
@@ -981,7 +1113,16 @@ export default function App() {
           return (
             <button
               key={opt.key}
-              onClick={() => { if (!opt.disabled) draw(opt.count, opt.key); }}
+              onClick={() => {
+                if (opt.disabled) return;
+                if (opt.key === 'journal') {
+                  setDrawn([]);
+                  setShuffling(false);
+                  setMode('journal');
+                } else {
+                  draw(opt.count, opt.key);
+                }
+              }}
               disabled={opt.disabled}
               style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'stretch',
@@ -1042,6 +1183,7 @@ export default function App() {
   const Shell = ({ title, children }) => {
     const currentOption = options.find(o => o.key === mode);
     const drawAgain = () => { if (currentOption && !currentOption.disabled) draw(currentOption.count, currentOption.key); };
+    const canSaveToJournal = drawn && drawn.length > 0 && mode !== 'journal';
     return (
       <div className="artemis-page" style={{position: 'relative', zIndex: 10, width: '100%', maxWidth: '860px', margin: '0 auto', padding: '48px 24px'}}>
         <div style={{textAlign: 'center', marginBottom: '40px'}}>
@@ -1053,6 +1195,96 @@ export default function App() {
           </div>
         </div>
         {children}
+
+        {canSaveToJournal && (
+          <div style={{marginTop: '48px', maxWidth: '520px', marginLeft: 'auto', marginRight: 'auto'}}>
+            {/* Herz-Klick: zentral, klein, mystisch */}
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: showNoteField ? '20px' : 0}}>
+              <button
+                onClick={() => {
+                  if (journalSaved) return; // schon gespeichert, nichts tun
+                  if (showNoteField) { setShowNoteField(false); setJournalNote(''); }
+                  else setShowNoteField(true);
+                }}
+                aria-label={journalSaved ? "Bewahrt" : "Im Journal merken"}
+                style={{
+                  background: 'none', border: 'none',
+                  cursor: journalSaved ? 'default' : 'pointer',
+                  padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={e => { if (!journalSaved) e.currentTarget.style.transform = 'scale(1.1)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+              >
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={{
+                  filter: (journalSaved || showNoteField) ? `drop-shadow(0 0 8px ${COLORS.accent}) drop-shadow(0 0 14px rgba(155, 127, 184, 0.6))` : 'none',
+                  transition: 'filter 0.3s ease'
+                }}>
+                  <path d="M 12 20 C 12 20 3.5 14.5 3.5 8.5 C 3.5 5.8 5.7 4 8 4 C 10 4 12 5.5 12 7.5 C 12 5.5 14 4 16 4 C 18.3 4 20.5 5.8 20.5 8.5 C 20.5 14.5 12 20 12 20 Z"
+                    stroke={COLORS.silverLight}
+                    strokeWidth="1.3"
+                    fill={(journalSaved || showNoteField) ? COLORS.accent : 'none'}
+                    strokeLinejoin="round"
+                    style={{transition: 'fill 0.3s ease'}}
+                  />
+                </svg>
+              </button>
+              <span className="body-text" style={{
+                fontStyle: 'italic',
+                fontSize: '15px',
+                color: COLORS.silverLight,
+                opacity: journalSaved ? 0.95 : 0.75,
+                letterSpacing: '0.02em',
+                userSelect: 'none'
+              }}>
+                {journalSaved ? 'bewahrt' : 'merken'}
+              </span>
+            </div>
+
+            {/* Notiz-Feld klappt darunter auf */}
+            {showNoteField && !journalSaved && (
+              <div style={{padding: '24px', border: '1px solid rgba(200, 196, 212, 0.25)', borderRadius: '2px', background: 'linear-gradient(135deg, rgba(58, 31, 93, 0.35), rgba(15, 18, 53, 0.45))'}}>
+                <p className="label-text" style={{fontSize: '10px', color: COLORS.silver, opacity: 0.7, marginBottom: '14px', textAlign: 'center'}}>WAS HAT DICH BERÜHRT?</p>
+                <textarea
+                  value={journalNote}
+                  onChange={e => setJournalNote(e.target.value)}
+                  placeholder="Optional. Du musst nichts schreiben..."
+                  rows={4}
+                  autoFocus
+                  style={{
+                    width: '100%', boxSizing: 'border-box',
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontStyle: 'italic', fontSize: '16px', lineHeight: 1.6,
+                    background: 'rgba(15, 18, 53, 0.5)',
+                    border: '1px solid rgba(200, 196, 212, 0.2)',
+                    color: COLORS.silverLight,
+                    padding: '12px 14px', outline: 'none',
+                    borderRadius: '2px', resize: 'vertical'
+                  }}
+                />
+                <div style={{display: 'flex', gap: '18px', justifyContent: 'center', marginTop: '16px', alignItems: 'center'}}>
+                  <button onClick={() => saveToJournal(journalNote)} className="body-text" style={{
+                    background: 'none', border: 'none',
+                    fontStyle: 'italic', fontSize: '15px',
+                    color: COLORS.silverLight,
+                    cursor: 'pointer',
+                    textDecoration: 'underline', textUnderlineOffset: '4px',
+                    padding: '4px 8px'
+                  }}>bewahren</button>
+                  <span className="body-text" style={{fontStyle: 'italic', fontSize: '13px', color: COLORS.silver, opacity: 0.5}}>·</span>
+                  <button onClick={() => { setShowNoteField(false); setJournalNote(''); }} className="body-text" style={{
+                    background: 'none', border: 'none',
+                    fontStyle: 'italic', fontSize: '14px',
+                    color: COLORS.silverLight, opacity: 0.6,
+                    cursor: 'pointer',
+                    padding: '4px 8px'
+                  }}>abbrechen</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div style={{marginTop: '48px', marginBottom: '24px', display: 'flex', justifyContent: 'center'}}>
           <button onClick={drawAgain} className="label-text" style={{
             fontSize: '11px', padding: '12px 24px',
@@ -1254,10 +1486,122 @@ export default function App() {
     );
   };
 
+  const renderJournal = () => {
+    const modeLabels = {
+      daily: 'Tagesorakel',
+      three: 'Drei Karten Legung',
+      relationship: 'Beziehungsorakel',
+      cross: 'Das Heilige Kreuz',
+      year: 'Jahresorakel'
+    };
+    const formatDate = (iso) => {
+      try {
+        const d = new Date(iso);
+        return d.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' · ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      } catch(e) { return iso; }
+    };
+
+    return (
+      <div className="artemis-page" style={{position: 'relative', zIndex: 10, width: '100%', maxWidth: '720px', margin: '0 auto', padding: '48px 24px'}}>
+        <div style={{textAlign: 'center', marginBottom: '40px'}}>
+          <h2 className="h-italic artemis-section-title" style={{fontSize: '36px', color: COLORS.silverLight, animation: 'mysticalGlow 4s ease-in-out infinite'}}>Orakel Journal</h2>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '12px'}}>
+            <div style={{height: '1px', width: '40px', background: 'linear-gradient(to right, transparent, ' + COLORS.silver + ')'}}/>
+            <BookOpen size={14} color={COLORS.silverLight}/>
+            <div style={{height: '1px', width: '40px', background: 'linear-gradient(to left, transparent, ' + COLORS.silver + ')'}}/>
+          </div>
+          <p className="body-text" style={{fontStyle: 'italic', fontSize: '15px', color: COLORS.silverLight, opacity: 0.75, marginTop: '20px', maxWidth: '480px', marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6}}>
+            Hier ruhen die Karten, die dich berührt haben. Deine Einträge bleiben auf diesem Gerät.
+          </p>
+        </div>
+
+        {journal.length === 0 ? (
+          <div style={{textAlign: 'center', padding: '60px 24px', border: '1px solid rgba(200, 196, 212, 0.2)', borderRadius: '2px', background: 'linear-gradient(135deg, rgba(45, 26, 61, 0.3), rgba(15, 18, 53, 0.4))'}}>
+            <p className="body-text" style={{fontStyle: 'italic', fontSize: '17px', color: COLORS.silverLight, opacity: 0.8, lineHeight: 1.7, marginBottom: '8px'}}>
+              Dein Journal ist noch leer.
+            </p>
+            <p className="body-text" style={{fontStyle: 'italic', fontSize: '15px', color: COLORS.silverLight, opacity: 0.6, lineHeight: 1.6}}>
+              Ziehe eine Karte und bewahre sie hier, wenn sie dich anspricht.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div style={{display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '40px', flexWrap: 'wrap'}}>
+              <button onClick={exportJournal} className="label-text" style={{
+                fontSize: '10px', padding: '10px 20px',
+                color: COLORS.silverLight,
+                background: 'linear-gradient(135deg, rgba(45, 26, 61, 0.9), rgba(26, 27, 75, 0.9))',
+                border: '1px solid rgba(200, 196, 212, 0.35)',
+                cursor: 'pointer', borderRadius: '2px'
+              }}>JOURNAL EXPORTIEREN</button>
+            </div>
+
+            <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+              {journal.map(entry => (
+                <div key={entry.id} style={{
+                  padding: '24px 24px 20px',
+                  background: 'linear-gradient(135deg, rgba(58, 31, 93, 0.4), rgba(15, 18, 53, 0.55), rgba(45, 26, 61, 0.4))',
+                  border: '1px solid rgba(200, 196, 212, 0.25)',
+                  borderRadius: '2px',
+                  boxShadow: '0 0 20px rgba(93, 58, 122, 0.2)'
+                }}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '14px', flexWrap: 'wrap'}}>
+                    <div>
+                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.65, marginBottom: '4px'}}>{(modeLabels[entry.mode] || entry.mode || '').toUpperCase()}</p>
+                      <p className="body-text" style={{fontStyle: 'italic', fontSize: '13px', color: COLORS.silverLight, opacity: 0.75, margin: 0}}>{formatDate(entry.date)}</p>
+                    </div>
+                    <button onClick={() => { if (window.confirm('Diesen Eintrag wirklich entfernen?')) deleteJournalEntry(entry.id); }} className="body-text" style={{
+                      background: 'none', border: 'none',
+                      fontStyle: 'italic', fontSize: '12px',
+                      color: COLORS.silverLight, opacity: 0.55,
+                      cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '3px',
+                      padding: 0
+                    }}>entfernen</button>
+                  </div>
+
+                  <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: entry.note ? '16px' : 0}}>
+                    {entry.cards.map((c, i) => (
+                      <div key={i} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        padding: '6px 12px',
+                        border: '1px solid rgba(200, 196, 212, 0.3)',
+                        borderRadius: '999px',
+                        background: 'rgba(15, 18, 53, 0.4)'
+                      }}>
+                        <span className="card-name" style={{fontSize: '10px', color: COLORS.silverLight}}>{c.name}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {entry.note && (
+                    <div style={{marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(200, 196, 212, 0.15)'}}>
+                      <p className="body-text" style={{fontStyle: 'italic', fontSize: '16px', lineHeight: 1.7, color: COLORS.silverLight, opacity: 0.92, whiteSpace: 'pre-wrap', margin: 0}}>{entry.note}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div style={{marginTop: '56px', textAlign: 'center'}}>
+          <button onClick={reset} className="body-text" style={{
+            background: 'none', border: 'none',
+            fontStyle: 'italic', fontSize: '14px',
+            color: COLORS.silverLight, opacity: 0.7,
+            cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px'
+          }}>
+            Zurück zur Übersicht
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div style={{minHeight: '100vh', width: '100%', position: 'relative', overflow: 'hidden', ...bgStyle}}>
       <StarsBg/>
-      <ShootingStars/>
+      <ShootingStars onShootingStar={handleShootingStar} onComet={handleComet}/>
       <style>{sharedStyles}</style>
       {mode === 'home' && renderHome()}
       {mode === 'daily' && renderDaily()}
@@ -1265,6 +1609,48 @@ export default function App() {
       {mode === 'relationship' && renderRelationship()}
       {mode === 'cross' && renderCross()}
       {mode === 'year' && renderYear()}
+      {mode === 'journal' && renderJournal()}
+
+      {/* Wunsch-Hinweis: schwebt sanft am unteren Rand ein */}
+      {wishMessage && (
+        <div
+          key={wishMessage.id}
+          style={{
+            position: 'fixed',
+            bottom: '32px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 100,
+            maxWidth: '420px',
+            width: 'calc(100% - 32px)',
+            pointerEvents: 'none',
+            animation: 'wishFade 9s ease-in-out forwards'
+          }}
+        >
+          <div style={{
+            padding: '16px 22px',
+            background: wishMessage.type === 'comet'
+              ? 'linear-gradient(135deg, rgba(45, 90, 60, 0.85), rgba(20, 40, 30, 0.9))'
+              : 'linear-gradient(135deg, rgba(45, 26, 61, 0.92), rgba(15, 18, 53, 0.95))',
+            border: '1px solid ' + (wishMessage.type === 'comet' ? 'rgba(127, 255, 168, 0.5)' : 'rgba(232, 228, 240, 0.35)'),
+            borderRadius: '2px',
+            boxShadow: wishMessage.type === 'comet'
+              ? '0 0 30px rgba(127, 255, 168, 0.3), 0 0 60px rgba(127, 255, 168, 0.15)'
+              : '0 0 30px rgba(232, 228, 240, 0.18), 0 0 60px rgba(155, 127, 184, 0.2)',
+            textAlign: 'center'
+          }}>
+            <p className="body-text" style={{
+              fontStyle: 'italic',
+              fontSize: '15px',
+              lineHeight: 1.5,
+              color: wishMessage.type === 'comet' ? '#d4ffe2' : COLORS.silverLight,
+              margin: 0
+            }}>
+              {wishMessage.text}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

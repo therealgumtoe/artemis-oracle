@@ -1,0 +1,32 @@
+{
+  "name": "House of Artemis · Oracle",
+  "short_name": "Artemis",
+  "description": "Ein digitales Orakeldeck mit 53 Karten – Göttinnen, Symbole, Wesen, Monde und Mysterien.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08060f",
+  "theme_color": "#3a1f5d",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/moon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
