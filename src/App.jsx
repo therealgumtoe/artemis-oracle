@@ -1739,20 +1739,20 @@ function LangSwitch({ lang, setLang }) {
     background: 'transparent',
     border: 'none',
     color: COLORS.silverLight,
-    padding: '4px 6px',
+    padding: '4px 8px',
     fontFamily: "'Cormorant Garamond', serif",
     fontStyle: 'italic',
-    fontSize: '13px',
-    letterSpacing: '0.25em',
+    fontSize: '17px',
+    letterSpacing: '0.2em',
     cursor: active ? 'default' : 'pointer',
     opacity: active ? 0.95 : 0.4,
-    textShadow: active ? '0 0 12px rgba(232, 228, 240, 0.45)' : 'none',
+    textShadow: active ? '0 0 14px rgba(232, 228, 240, 0.5)' : 'none',
     transition: 'opacity 0.4s ease, text-shadow 0.4s ease',
     outline: 'none'
   });
   return (
     <div style={{
-      position: 'fixed', top: '18px', right: '20px',
+      position: 'fixed', top: 'max(56px, env(safe-area-inset-top, 18px) + 32px)', right: '20px',
       zIndex: 100,
       display: 'flex', alignItems: 'center',
       pointerEvents: 'auto'
@@ -1762,20 +1762,21 @@ function LangSwitch({ lang, setLang }) {
         style={buttonStyle(lang === 'de')}
         onMouseEnter={e => { if (lang !== 'de') e.currentTarget.style.opacity = 0.75; }}
         onMouseLeave={e => { if (lang !== 'de') e.currentTarget.style.opacity = 0.4; }}
-      >de</button>
+      >DE</button>
       <span style={{
         color: COLORS.silverLight,
-        opacity: 0.3,
-        fontSize: '11px',
+        opacity: 0.35,
+        fontSize: '15px',
         fontFamily: "'Cormorant Garamond', serif",
-        fontStyle: 'italic'
-      }}>·</span>
+        fontWeight: 300,
+        margin: '0 2px'
+      }}>|</span>
       <button
         onClick={() => setLang('en')}
         style={buttonStyle(lang === 'en')}
         onMouseEnter={e => { if (lang !== 'en') e.currentTarget.style.opacity = 0.75; }}
         onMouseLeave={e => { if (lang !== 'en') e.currentTarget.style.opacity = 0.4; }}
-      >en</button>
+      >EN</button>
     </div>
   );
 }
