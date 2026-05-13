@@ -723,11 +723,11 @@ const sharedStyles = `
     90% { opacity: 1; transform: translate(calc(var(--dx) * 0.9), calc(var(--dy) * 0.9)) rotate(var(--angle)) scaleX(1); }
     100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--angle)) scaleX(0.3); }
   }
-  @keyframes shuffleLeft { 0% { transform: translate(0, 0) rotate(0deg); z-index: 1; } 20% { transform: translate(-90px, -20px) rotate(-15deg); z-index: 5; } 40% { transform: translate(-60px, 30px) rotate(8deg); z-index: 2; } 60% { transform: translate(-30px, -10px) rotate(-5deg); z-index: 4; } 80% { transform: translate(-10px, 15px) rotate(3deg); z-index: 3; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 1; } }
-  @keyframes shuffleRight { 0% { transform: translate(0, 0) rotate(0deg); z-index: 1; } 20% { transform: translate(90px, 20px) rotate(15deg); z-index: 5; } 40% { transform: translate(60px, -30px) rotate(-8deg); z-index: 2; } 60% { transform: translate(30px, 10px) rotate(5deg); z-index: 4; } 80% { transform: translate(10px, -15px) rotate(-3deg); z-index: 3; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 1; } }
-  @keyframes shuffleUp { 0% { transform: translate(0, 0) rotate(0deg); z-index: 2; } 25% { transform: translate(40px, -50px) rotate(20deg); z-index: 6; } 50% { transform: translate(-40px, -30px) rotate(-12deg); z-index: 3; } 75% { transform: translate(20px, -20px) rotate(8deg); z-index: 5; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 2; } }
-  @keyframes shuffleDown { 0% { transform: translate(0, 0) rotate(0deg); z-index: 2; } 25% { transform: translate(-40px, 50px) rotate(-20deg); z-index: 6; } 50% { transform: translate(40px, 30px) rotate(12deg); z-index: 3; } 75% { transform: translate(-20px, 20px) rotate(-8deg); z-index: 5; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 2; } }
-  @keyframes shuffleCenter { 0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); z-index: 3; } 50% { transform: translate(0, 0) rotate(360deg) scale(0.95); z-index: 4; } }
+  @keyframes shuffleLeft { 0% { transform: translate(0, 0) rotate(0deg); z-index: 1; } 25% { transform: translate(-80px, -10px) rotate(-6deg); z-index: 5; } 50% { transform: translate(-50px, 15px) rotate(3deg); z-index: 2; } 75% { transform: translate(-20px, -5px) rotate(-2deg); z-index: 3; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 1; } }
+  @keyframes shuffleRight { 0% { transform: translate(0, 0) rotate(0deg); z-index: 1; } 25% { transform: translate(80px, 10px) rotate(6deg); z-index: 5; } 50% { transform: translate(50px, -15px) rotate(-3deg); z-index: 2; } 75% { transform: translate(20px, 5px) rotate(2deg); z-index: 3; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 1; } }
+  @keyframes shuffleUp { 0% { transform: translate(0, 0) rotate(0deg); z-index: 2; } 30% { transform: translate(20px, -45px) rotate(7deg); z-index: 6; } 60% { transform: translate(-25px, -20px) rotate(-4deg); z-index: 3; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 2; } }
+  @keyframes shuffleDown { 0% { transform: translate(0, 0) rotate(0deg); z-index: 2; } 30% { transform: translate(-20px, 45px) rotate(-7deg); z-index: 6; } 60% { transform: translate(25px, 20px) rotate(4deg); z-index: 3; } 100% { transform: translate(0, 0) rotate(0deg); z-index: 2; } }
+  @keyframes shuffleCenter { 0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); z-index: 3; } 50% { transform: translate(0, 0) rotate(180deg) scale(0.97); z-index: 4; } }
   @keyframes auraGlow { 0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.3); } }
   @keyframes orbitParticle { from { transform: rotate(0deg) translateX(120px) rotate(0deg); } to { transform: rotate(360deg) translateX(120px) rotate(-360deg); } }
   @keyframes flipIn { from { transform: rotateY(180deg); opacity: 0; } to { transform: rotateY(0deg); opacity: 1; } }
@@ -985,7 +985,7 @@ function ShootingStars({ onShootingStar, onComet }) {
 const CardBackArt = () => {
   const ink = "#e8e4f0";
   return (
-    <svg viewBox="0 0 200 280" style={{width: '100%', height: '100%'}} xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 200 280" style={{width: '100%', height: '100%', display: 'block'}} xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
       <defs>
         <linearGradient id="lavenderBg" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#d4c5e8"/>
@@ -1730,6 +1730,7 @@ function ShuffleAnimation({ message }) {
               position: 'absolute',
               width: '140px', height: '210px',
               borderRadius: '4px', overflow: 'hidden',
+              background: '#c8b5dc',
               border: '1px solid rgba(232, 228, 240, 0.6)',
               boxShadow: '0 0 30px rgba(200, 180, 220, 0.4)',
               animation: `${c.anim} 2.8s ease-in-out infinite`,
