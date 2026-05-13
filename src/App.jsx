@@ -1004,10 +1004,26 @@ const CardBackArt = () => {
   );
 };
 
+// Echter Zufall vom System (statt Math.random, das in Browsern oft schwach ist).
+// crypto.getRandomValues nutzt die echte Zufallsquelle des Betriebssystems.
+// Fallback auf Math.random, falls crypto in einer Umgebung nicht verfügbar ist.
+const secureRandom = () => {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      const buf = new Uint32Array(1);
+      crypto.getRandomValues(buf);
+      // Wert zwischen 0 (inkl.) und 1 (exkl.), wie Math.random
+      return buf[0] / 4294967296;
+    }
+  } catch(e) {}
+  return Math.random();
+};
+
 const shuffleArray = (arr) => {
   const a = [...arr];
+  // Fisher-Yates-Shuffle mit echtem Zufall
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(secureRandom() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
