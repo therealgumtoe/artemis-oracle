@@ -1134,7 +1134,7 @@ const T = {
     labelFiveSub: 'Deine Geschichte durch die fünf Karten',
     labelYour: 'Dein Jahr',
     labelYearSub: 'Der Bogen durch alle zwölf Monate',
-    yearIntro: '{t(lang, 'yearIntro')}',
+    yearIntro: 'Zwölf Karten für zwölf Monate. Eine Schau auf dein kommendes Jahr.',
     // Position labels
     posPast: 'Vergangenheit',
     posPresent: 'Gegenwart',
