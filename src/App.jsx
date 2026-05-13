@@ -116,7 +116,7 @@ const cardsEN = [
     futureMove: "Something in you is rising upright, and it cannot be talked down again",
     meaning: "The first woman who refused to bow. She is the untamed force, the raw truth.",
     message: "Say no. With your whole chest. You were created to live at your full height.",
-    dailyReading: "Lilith arrives today as the unbent one and turns your gaze toward what you have made small for too long. Something around you has earned a no that you should have spoken long ago. Old adjustments are slowly loosening their hold, and your true size begins to stretch out again. Follow today the impulse that draws you upright, even when it feels uncomfortable." }
+    dailyReading: "Lilith arrives today as the unbent one and turns your gaze toward what you have made small for too long. Something around you has earned a no that you should have spoken long ago. Old adjustments are slowly loosening their hold, and your true size begins to stretch out again. Follow today the impulse that draws you upright, even when it feels uncomfortable." },
 
   { id: 7, name: "Morrigan", category: "Goddess", symbol: "raven",
     image: "The Morrigan with ravens above the battlefield",
@@ -176,7 +176,7 @@ const cardsEN = [
     futureMove: "Something beloved is drawing near, and it knows your name",
     meaning: "Norse Goddess of love, beauty, and war.",
     message: "Love and war are one. You are allowed to be open-hearted and lethal at the same time.",
-    dailyReading: "Freya arrives today as Goddess of love and war and turns your gaze toward the unity of what you have been keeping apart. Something in your world is asking you to be open-hearted and clear at the same time, without splitting yourself in two. Old ideas that love must be soft and strength must be hard are slowly loosening. Follow today the courage to be both, for that is how you were always meant." }
+    dailyReading: "Freya arrives today as Goddess of love and war and turns your gaze toward the unity of what you have been keeping apart. Something in your world is asking you to be open-hearted and clear at the same time, without splitting yourself in two. Old ideas that love must be soft and strength must be hard are slowly loosening. Follow today the courage to be both, for that is how you were always meant." },
 
   { id: 13, name: "The Silver Bow", category: "Symbol", symbol: "bow_silver",
     image: "The silver bow, drawn between stillness and arrow",
@@ -266,7 +266,7 @@ const cardsEN = [
     futureMove: "You will taste, and it will become part of you",
     meaning: "Fruit of the Underworld and of fertility.",
     message: "What you eat becomes part of you. Choose with awareness.",
-    dailyReading: "The Pomegranate arrives today as fruit of conscious choice and turns your gaze toward what you are taking in right now. Something around you wants to become part of you, but you may decide whether you partake. Old habits of joining in automatically are slowly loosening, and you begin to choose what you let inside you. Follow today this awareness, for you become what you eat." }
+    dailyReading: "The Pomegranate arrives today as fruit of conscious choice and turns your gaze toward what you are taking in right now. Something around you wants to become part of you, but you may decide whether you partake. Old habits of joining in automatically are slowly loosening, and you begin to choose what you let inside you. Follow today this awareness, for you become what you eat." },
 
   { id: 22, name: "The Blood Moon", category: "Rare Moon", symbol: "blood_moon",
     image: "The Blood Moon, hanging heavy in the sky",
@@ -356,7 +356,7 @@ const cardsEN = [
     futureMove: "Your web becomes visible, and it is more beautiful than you thought",
     meaning: "Weaver of fate.",
     message: "You weave your own fate. Every thought is a thread.",
-    dailyReading: "The Spider arrives today as weaver of fate and turns your gaze toward the threads you yourself are knotting. Something in your thoughts today is weaving your reality, whether you wish it or not. Old stories you tell yourself are slowly loosening, and you become the conscious weaver. Follow today what you wish to create, for every thought is a thread." }
+    dailyReading: "The Spider arrives today as weaver of fate and turns your gaze toward the threads you yourself are knotting. Something in your thoughts today is weaving your reality, whether you wish it or not. Old stories you tell yourself are slowly loosening, and you become the conscious weaver. Follow today what you wish to create, for every thought is a thread." },
 
   { id: 31, name: "The Underworld", category: "Mystery", symbol: "underworld",
     image: "The Underworld with its still waters",
@@ -476,7 +476,7 @@ const cardsEN = [
     futureMove: "What you truly want becomes visible the moment all lights go out",
     meaning: "A second new moon in a month. The deepest darkness.",
     message: "In this darkness you have absolute clarity. What do you truly want?",
-    dailyReading: "The Black Moon arrives today as the deepest darkness and turns your gaze toward the clarity that only arises in complete stillness. Something in you knows its true longing the moment all noise is gone. Old blending with foreign desires is slowly loosening, and you hear yourself again. Follow today no outer light, for your own is becoming visible." }
+    dailyReading: "The Black Moon arrives today as the deepest darkness and turns your gaze toward the clarity that only arises in complete stillness. Something in you knows its true longing the moment all noise is gone. Old blending with foreign desires is slowly loosening, and you hear yourself again. Follow today no outer light, for your own is becoming visible." },
 
   { id: 43, name: "The Mother", category: "Human", symbol: "mother",
     image: "The Mother who carries her own children within her",
