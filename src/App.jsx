@@ -169,6 +169,8 @@ const SymbolSVG = ({ type, size = 120 }) => {
 const bgStyle = { background: 'radial-gradient(ellipse at top, #5d3a7a 0%, #3a1f5d 25%, #0f1235 60%, #08060f 100%)' };
 
 const sharedStyles = `
+  *, *::before, *::after { box-sizing: border-box; }
+  button { font-family: inherit; }
   @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
   @keyframes mysticalGlow {
     0%, 100% { text-shadow: 0 0 30px rgba(200, 196, 212, 0.5), 0 0 60px rgba(93, 58, 122, 0.6); }
@@ -1000,6 +1002,55 @@ export default function App() {
   }, [drawn, mode]);
 
   // Aktuelle Auslegung im Journal speichern
+  // Erzeugt eine kurze 3-4-Zeilen-Zusammenfassung der aktuellen Legung
+  // Wird beim Speichern ins Journal mit aufgenommen, damit der Eintrag später noch Kontext trägt.
+  const buildJournalSummary = () => {
+    if (!drawn || drawn.length === 0) return '';
+    const modeLabels = {
+      daily: 'Tagesorakel',
+      three: 'Drei Karten Legung',
+      relationship: 'Beziehungsorakel',
+      cross: 'Das Heilige Kreuz',
+      year: 'Jahresorakel'
+    };
+    const label = modeLabels[mode] || 'Legung';
+
+    if (mode === 'daily') {
+      const c = drawn[0];
+      const tone = cardTone[c.name] || 'eine eigene Qualität';
+      return `${label} · ${c.name}. ${c.name} bringt heute ${tone} in dein Feld. ${c.message}`;
+    }
+
+    if (mode === 'three') {
+      const [past, present, future] = drawn;
+      const presentTone = cardTone[present.name] || 'eine eigene Kraft';
+      return `${label} · ${past.name} · ${present.name} · ${future.name}. Aus ${past.name} kommst du, in der Gegenwart wirkt ${present.name} mit ${presentTone}, und am Horizont öffnet sich ${future.name}. ${present.message}`;
+    }
+
+    if (mode === 'relationship') {
+      const [me, other, connection, future] = drawn;
+      const connTone = cardTone[connection.name] || 'eine eigene Energie';
+      return `${label} · Du: ${me.name} · Sie/Er: ${other.name} · Verbindung: ${connection.name} · Zukunft: ${future.name}. Zwischen euch lebt ${connTone}. ${connection.message}`;
+    }
+
+    if (mode === 'cross') {
+      // Reihenfolge: above=Zukunft, left=Weg links, right=Weg rechts, below=Vergangenheit, center=Gegenwart
+      const [above, left, right, below, center] = drawn;
+      const presentTone = cardTone[center.name] || 'ein eigenes Thema';
+      return `${label} · Gegenwart: ${center.name} (${presentTone}). Aus ${below.name} kommst du, vor dir öffnen sich zwei Wege: ${left.name} oder ${right.name}. Am Horizont wartet ${above.name}. ${center.message}`;
+    }
+
+    if (mode === 'year') {
+      const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      const cardLine = drawn.map((c, i) => `${months[i]}: ${c.name}`).join(' · ');
+      const themeCard = drawn[5] || drawn[0]; // Juni als Sommerhöhe
+      const themeTone = cardTone[themeCard.name] || 'ein heimliches Thema';
+      return `${label}. ${cardLine}. Roter Faden des Jahres: ${themeTone}.`;
+    }
+
+    return `${label} · ${drawn.map(c => c.name).join(' · ')}.`;
+  };
+
   const saveToJournal = (note) => {
     if (!drawn || drawn.length === 0) return;
     const entry = {
@@ -1007,6 +1058,7 @@ export default function App() {
       date: new Date().toISOString(),
       mode,
       cards: drawn.map(c => ({ id: c.id, name: c.name, category: c.category, symbol: c.symbol, message: c.message })),
+      summary: buildJournalSummary(),
       note: (note || '').trim()
     };
     const updated = [entry, ...journal];
@@ -1128,13 +1180,15 @@ export default function App() {
                 display: 'flex', flexDirection: 'column', alignItems: 'stretch',
                 gap: '10px',
                 padding: '22px 24px',
+                width: '100%', boxSizing: 'border-box',
                 background: 'linear-gradient(135deg, rgba(45, 26, 61, 0.55), rgba(26, 27, 75, 0.55))',
                 border: '1px solid rgba(200, 196, 212, 0.28)',
                 color: COLORS.silverLight,
                 cursor: opt.disabled ? 'default' : 'pointer',
                 opacity: opt.disabled ? 0.45 : 1,
                 borderRadius: '2px',
-                textAlign: 'left'
+                textAlign: 'left',
+                font: 'inherit'
               }}>
               <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
                 {opt.customIcon === 'cross' ? <CrossIcon size={18}/> : opt.customIcon === 'heart' ? <HeartIcon size={18}/> : opt.customIcon === 'sun' ? <SunIcon size={18}/> : (Icon && <Icon size={18} style={{opacity: 0.9}}/>)}
@@ -1198,13 +1252,12 @@ export default function App() {
 
         {canSaveToJournal && (
           <div style={{marginTop: '48px', maxWidth: '520px', marginLeft: 'auto', marginRight: 'auto'}}>
-            {/* Herz-Klick: zentral, klein, mystisch */}
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: showNoteField ? '20px' : 0}}>
+            {/* Herz-Klick speichert direkt ohne Notiz-Feld */}
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px'}}>
               <button
                 onClick={() => {
-                  if (journalSaved) return; // schon gespeichert, nichts tun
-                  if (showNoteField) { setShowNoteField(false); setJournalNote(''); }
-                  else setShowNoteField(true);
+                  if (journalSaved) return; // schon gespeichert
+                  saveToJournal('');
                 }}
                 aria-label={journalSaved ? "Bewahrt" : "Im Journal merken"}
                 style={{
@@ -1216,14 +1269,14 @@ export default function App() {
                 onMouseEnter={e => { if (!journalSaved) e.currentTarget.style.transform = 'scale(1.1)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
               >
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={{
-                  filter: (journalSaved || showNoteField) ? `drop-shadow(0 0 8px ${COLORS.accent}) drop-shadow(0 0 14px rgba(155, 127, 184, 0.6))` : 'none',
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style={{
+                  filter: journalSaved ? `drop-shadow(0 0 8px ${COLORS.accent}) drop-shadow(0 0 14px rgba(155, 127, 184, 0.6))` : 'none',
                   transition: 'filter 0.3s ease'
                 }}>
                   <path d="M 12 20 C 12 20 3.5 14.5 3.5 8.5 C 3.5 5.8 5.7 4 8 4 C 10 4 12 5.5 12 7.5 C 12 5.5 14 4 16 4 C 18.3 4 20.5 5.8 20.5 8.5 C 20.5 14.5 12 20 12 20 Z"
                     stroke={COLORS.silverLight}
                     strokeWidth="1.3"
-                    fill={(journalSaved || showNoteField) ? COLORS.accent : 'none'}
+                    fill={journalSaved ? COLORS.accent : 'none'}
                     strokeLinejoin="round"
                     style={{transition: 'fill 0.3s ease'}}
                   />
@@ -1240,48 +1293,6 @@ export default function App() {
                 {journalSaved ? 'bewahrt' : 'merken'}
               </span>
             </div>
-
-            {/* Notiz-Feld klappt darunter auf */}
-            {showNoteField && !journalSaved && (
-              <div style={{padding: '24px', border: '1px solid rgba(200, 196, 212, 0.25)', borderRadius: '2px', background: 'linear-gradient(135deg, rgba(58, 31, 93, 0.35), rgba(15, 18, 53, 0.45))'}}>
-                <p className="label-text" style={{fontSize: '10px', color: COLORS.silver, opacity: 0.7, marginBottom: '14px', textAlign: 'center'}}>WAS HAT DICH BERÜHRT?</p>
-                <textarea
-                  value={journalNote}
-                  onChange={e => setJournalNote(e.target.value)}
-                  placeholder="Optional. Du musst nichts schreiben..."
-                  rows={4}
-                  autoFocus
-                  style={{
-                    width: '100%', boxSizing: 'border-box',
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontStyle: 'italic', fontSize: '16px', lineHeight: 1.6,
-                    background: 'rgba(15, 18, 53, 0.5)',
-                    border: '1px solid rgba(200, 196, 212, 0.2)',
-                    color: COLORS.silverLight,
-                    padding: '12px 14px', outline: 'none',
-                    borderRadius: '2px', resize: 'vertical'
-                  }}
-                />
-                <div style={{display: 'flex', gap: '18px', justifyContent: 'center', marginTop: '16px', alignItems: 'center'}}>
-                  <button onClick={() => saveToJournal(journalNote)} className="body-text" style={{
-                    background: 'none', border: 'none',
-                    fontStyle: 'italic', fontSize: '15px',
-                    color: COLORS.silverLight,
-                    cursor: 'pointer',
-                    textDecoration: 'underline', textUnderlineOffset: '4px',
-                    padding: '4px 8px'
-                  }}>bewahren</button>
-                  <span className="body-text" style={{fontStyle: 'italic', fontSize: '13px', color: COLORS.silver, opacity: 0.5}}>·</span>
-                  <button onClick={() => { setShowNoteField(false); setJournalNote(''); }} className="body-text" style={{
-                    background: 'none', border: 'none',
-                    fontStyle: 'italic', fontSize: '14px',
-                    color: COLORS.silverLight, opacity: 0.6,
-                    cursor: 'pointer',
-                    padding: '4px 8px'
-                  }}>abbrechen</button>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -1559,7 +1570,7 @@ export default function App() {
                     }}>entfernen</button>
                   </div>
 
-                  <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: entry.note ? '16px' : 0}}>
+                  <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: (entry.summary || entry.note) ? '16px' : 0}}>
                     {entry.cards.map((c, i) => (
                       <div key={i} style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -1573,9 +1584,17 @@ export default function App() {
                     ))}
                   </div>
 
+                  {entry.summary && (
+                    <div style={{marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(200, 196, 212, 0.15)'}}>
+                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.6, marginBottom: '8px'}}>DIE ESSENZ</p>
+                      <p className="body-text" style={{fontStyle: 'italic', fontSize: '15px', lineHeight: 1.65, color: COLORS.silverLight, opacity: 0.88, margin: 0}}>{entry.summary}</p>
+                    </div>
+                  )}
+
                   {entry.note && (
                     <div style={{marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(200, 196, 212, 0.15)'}}>
-                      <p className="body-text" style={{fontStyle: 'italic', fontSize: '16px', lineHeight: 1.7, color: COLORS.silverLight, opacity: 0.92, whiteSpace: 'pre-wrap', margin: 0}}>{entry.note}</p>
+                      <p className="label-text" style={{fontSize: '9px', color: COLORS.silver, opacity: 0.6, marginBottom: '8px'}}>DEINE NOTIZ</p>
+                      <p className="body-text" style={{fontStyle: 'italic', fontSize: '16px', lineHeight: 1.7, color: COLORS.silverLight, opacity: 0.95, whiteSpace: 'pre-wrap', margin: 0}}>{entry.note}</p>
                     </div>
                   )}
                 </div>
