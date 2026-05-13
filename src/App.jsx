@@ -1132,7 +1132,6 @@ const T = {
     optYearTitle: 'Jahresorakel',
     optYearDesc: 'Für einen Blick auf die kommenden Monate und die größeren Bewegungen deines Weges. Jede Karte öffnet ein neues Kapitel deiner Reise.',
     optJournalTitle: 'Orakel Journal',
-    optJournalDesc: 'Hier ruhen alle Karten, die du dir bewahrt hast. Eine stille Sammlung deiner Wege, die du immer wieder besuchen darfst.',
     optJournalDesc: 'Ein stiller Raum für die Karten, die dich berührt haben. Jede Legung darfst du hier bewahren, mit eigenen Worten, jederzeit zugänglich auf diesem Gerät.',
     // Shuffle messages
     shuffleDaily: 'Die Göttin wählt deine Karte...',
@@ -1226,7 +1225,6 @@ const T = {
     optYearTitle: 'Year Oracle',
     optYearDesc: 'For a view of the coming months and the larger movements of your path. Each card opens a new chapter of your journey.',
     optJournalTitle: 'Oracle Journal',
-    optJournalDesc: 'Here rest all the cards you have kept. A quiet collection of your ways, to return to whenever you wish.',
     optJournalDesc: 'A quiet place for the cards that have touched you. Each reading you may keep here, in your own words, available at any time on this device.',
     shuffleDaily: 'The Goddess is choosing your card...',
     shuffleThree: 'Three cards are finding their way to you...',
