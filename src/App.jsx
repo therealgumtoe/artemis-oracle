@@ -1151,6 +1151,13 @@ const T = {
     labelYour: 'Dein Jahr',
     labelYearSub: 'Der Bogen durch alle zwölf Monate',
     yearIntro: 'Zwölf Karten für zwölf Monate. Eine Schau auf dein kommendes Jahr.',
+    // Tagesorakel - eine Karte pro Tag
+    dailyAlreadyDrawn: 'Die Karte des Tages hat sich bereits gezeigt.',
+    dailyComeTomorrow: 'Ab 6:00 Uhr morgens kannst du eine neue Karte ziehen.',
+    dailyHoursLeft: (h) => h === 1 ? 'noch eine Stunde' : `noch ${h} Stunden`,
+    dailySeeCard: 'Karte von heute sehen',
+    dailyDrawAnyway: 'Trotzdem eine neue Karte ziehen',
+    dailyDrawAnywayHint: 'Nur wenn du es wirklich brauchst.',
     // Position labels
     posPast: 'Vergangenheit',
     posPresent: 'Gegenwart',
@@ -1236,6 +1243,13 @@ const T = {
     labelYour: 'Your year',
     labelYearSub: 'The arc through all twelve months',
     yearIntro: 'Twelve cards for twelve months. A look at your year to come.',
+    // Daily Oracle - one card per day
+    dailyAlreadyDrawn: 'The card of the day has already shown itself.',
+    dailyComeTomorrow: 'From 6:00 in the morning, a new card may be drawn.',
+    dailyHoursLeft: (h) => h === 1 ? 'one more hour' : `${h} more hours`,
+    dailySeeCard: 'See today\'s card',
+    dailyDrawAnyway: 'Draw a new card anyway',
+    dailyDrawAnywayHint: 'Only if you truly need to.',
     posPast: 'Past',
     posPresent: 'Present',
     posFuture: 'Future',
@@ -1294,6 +1308,61 @@ const daysUntilNextYearOracle = () => {
   const target = now < dec25ThisYear ? dec25ThisYear : new Date(year + 1, 11, 25, 0, 0, 0);
   const ms = target - now;
   return Math.ceil(ms / (1000 * 60 * 60 * 24));
+};
+
+// Tagesorakel: eine Karte pro "magischem Tag" (6 Uhr morgens bis 6 Uhr morgens)
+// Wir speichern die zuletzt gezogene Karte zusammen mit dem Zeitstempel im localStorage,
+// und prüfen, ob seit dem letzten 6-Uhr-Punkt schon gezogen wurde.
+const DAILY_KEY = 'artemis-oracle-daily-v1';
+
+// Gibt den Zeitpunkt des letzten "Tagwechsels" zurück (6 Uhr morgens des heutigen Tages,
+// oder gestern 6 Uhr, wenn es vor 6 Uhr ist).
+const lastDawnTime = () => {
+  const now = new Date();
+  const dawn = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0);
+  if (now < dawn) {
+    // Es ist vor 6 Uhr morgens, also gilt noch der gestrige "Tag"
+    dawn.setDate(dawn.getDate() - 1);
+  }
+  return dawn;
+};
+
+// Liest die heute schon gezogene Karte. Gibt null zurück, wenn noch nicht oder abgelaufen.
+const loadTodaysDraw = () => {
+  try {
+    const raw = localStorage.getItem(DAILY_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !parsed.timestamp || !parsed.card) return null;
+    const drawnAt = new Date(parsed.timestamp);
+    if (isNaN(drawnAt.getTime())) return null;
+    if (drawnAt < lastDawnTime()) return null; // schon ein neuer Tag angebrochen
+    return parsed.card;
+  } catch(e) { return null; }
+};
+
+const saveTodaysDraw = (card) => {
+  try {
+    localStorage.setItem(DAILY_KEY, JSON.stringify({
+      timestamp: new Date().toISOString(),
+      card: card
+    }));
+  } catch(e) {}
+};
+
+const clearTodaysDraw = () => {
+  try { localStorage.removeItem(DAILY_KEY); } catch(e) {}
+};
+
+// Wieviele Stunden bis 6 Uhr morgens (der nächste "Tag" beginnt)
+const hoursUntilNextDawn = () => {
+  const now = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0);
+  if (now >= next) {
+    next.setDate(next.getDate() + 1);
+  }
+  const ms = next - now;
+  return Math.max(1, Math.ceil(ms / (1000 * 60 * 60)));
 };
 
 // generateYearSynthesis wird weiter unten definiert (braucht themeCards)
@@ -2141,17 +2210,43 @@ export default function App() {
     };
   }, []);
 
-  const draw = (count, targetMode) => {
+  // Tagesorakel-State: war heute schon eine Karte gezogen?
+  const [dailyLockedCard, setDailyLockedCard] = useState(null);
+
+  // Wenn Daily ausgelöst wird: prüfen ob heute schon gezogen
+  // Wenn ja: gespeicherte Karte als "gesperrt" anzeigen (statt neu zu ziehen)
+  // Hier wird beim Modus-Wechsel die Daily-Logik gehandhabt.
+  const draw = (count, targetMode, force = false) => {
+    // Tagesorakel: prüfen ob heute schon gezogen
+    if (targetMode === 'daily' && !force) {
+      const todays = loadTodaysDraw();
+      if (todays) {
+        // Karte ist gesperrt, zeige Hinweis-Bildschirm
+        setDailyLockedCard(todays);
+        setMode('daily');
+        setDrawn([]);
+        setShuffling(false);
+        return;
+      }
+    }
+
+    // Normaler Zug
+    setDailyLockedCard(null);
     setShuffling(true);
     setDrawn([]);
     setMode(targetMode);
     setTimeout(() => {
-      setDrawn(shuffleArray(getCards(lang)).slice(0, count));
+      const newCards = shuffleArray(getCards(lang)).slice(0, count);
+      setDrawn(newCards);
       setShuffling(false);
+      // Daily-Ziehung speichern für den heutigen Tag
+      if (targetMode === 'daily' && newCards.length === 1) {
+        saveTodaysDraw(newCards[0]);
+      }
     }, 2800);
   };
 
-  const reset = () => { setDrawn([]); setShuffling(false); setMode('home'); };
+  const reset = () => { setDrawn([]); setShuffling(false); setMode('home'); setDailyLockedCard(null); };
 
   if (!user) return <AuthScreen onLogin={setUser} lang={lang} setLang={setLang}/>;
 
@@ -2357,6 +2452,71 @@ export default function App() {
   };
 
   const renderDaily = () => {
+    // Sperr-Bildschirm: heute schon gezogen
+    if (dailyLockedCard && drawn.length === 0 && !shuffling) {
+      const hours = hoursUntilNextDawn();
+      return (
+        <Shell title={t(lang, 'optDailyTitle')}>
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px', textAlign: 'center', padding: '40px 24px'}}>
+            <div style={{opacity: 0.7}}>
+              <svg width="64" height="64" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" fill="none" stroke={COLORS.silver} strokeWidth="0.5"/>
+                <path d="M 12 4 A 8 8 0 0 1 12 20 A 5 8 0 0 0 12 4" fill={COLORS.silverLight} opacity="0.8"/>
+              </svg>
+            </div>
+            <div style={{maxWidth: '480px'}}>
+              <h2 className="card-name" style={{fontSize: '22px', color: COLORS.silverLight, marginBottom: '20px', lineHeight: 1.4}}>
+                {t(lang, 'dailyAlreadyDrawn')}
+              </h2>
+              <p className="body-text" style={{fontStyle: 'italic', fontSize: '17px', lineHeight: 1.7, color: COLORS.silver, opacity: 0.9, marginBottom: '12px'}}>
+                {t(lang, 'dailyComeTomorrow')}
+              </p>
+              <p className="label-text" style={{fontSize: '11px', color: COLORS.silver, opacity: 0.55, letterSpacing: '0.2em', textTransform: 'uppercase'}}>
+                {t(lang, 'dailyHoursLeft', hours)}
+              </p>
+            </div>
+            <div style={{height: '1px', width: '120px', background: 'linear-gradient(to right, transparent, rgba(200, 196, 212, 0.4), transparent)', margin: '8px 0'}}/>
+            <button onClick={() => { setDrawn([dailyLockedCard]); }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(155, 127, 184, 0.2), rgba(93, 58, 122, 0.3))',
+                border: '1px solid rgba(200, 196, 212, 0.4)',
+                color: COLORS.silverLight,
+                padding: '14px 32px',
+                borderRadius: '2px',
+                fontSize: '15px',
+                fontStyle: 'italic',
+                fontFamily: "'Cormorant Garamond', serif",
+                letterSpacing: '0.1em',
+                cursor: 'pointer'
+              }}>
+              {t(lang, 'dailySeeCard')}
+            </button>
+            <div style={{marginTop: '48px', opacity: 0.4}}>
+              <button onClick={() => { clearTodaysDraw(); setDailyLockedCard(null); draw(1, 'daily', true); }}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: COLORS.silver,
+                  fontSize: '11px',
+                  fontStyle: 'italic',
+                  fontFamily: "'Cormorant Garamond', serif",
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  textDecorationStyle: 'dotted',
+                  textUnderlineOffset: '4px',
+                  padding: '4px 8px'
+                }}>
+                {t(lang, 'dailyDrawAnyway')}
+              </button>
+              <p style={{fontSize: '10px', color: COLORS.silver, opacity: 0.5, marginTop: '6px', fontStyle: 'italic'}}>
+                {t(lang, 'dailyDrawAnywayHint')}
+              </p>
+            </div>
+          </div>
+        </Shell>
+      );
+    }
     if (shuffling || drawn.length === 0) return <ShuffleAnimation message={t(lang, 'shuffleDaily')}/>;
     const c = drawn[0];
     // Fallback auf meaning + message, falls eine ältere Karte kein dailyReading hat
