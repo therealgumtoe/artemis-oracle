@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Evolve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F7F7F7;--ink:#2E333A;--soft:#6E7480;--teal:#678293;--ice:#C7CFD9;--sand:#E7E0D8;--rose:#F3EDEB;
+    --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--line:rgba(46,51,58,.08);
+    --card:rgba(255,255,255,.62);--cardb:rgba(255,255,255,.82);--shell:linear-gradient(160deg,#ECECEE,#E4E4E6);
+    --nav:rgba(247,247,247,.82);--readerBg:radial-gradient(130% 100% at 50% -5%,#EEF3F4 0%,#E4ECEE 55%,#D6E0E4 100%);--onTeal:#fff;--btnbg:var(--teal);--btntext:var(--onTeal);--tealText:#56707E}
+  [data-theme="dark"]{--bg:#172329;--ink:#EAF1F3;--soft:#9FB0B8;--line:rgba(255,255,255,.1);
+    --card:rgba(255,255,255,.07);--cardb:rgba(255,255,255,.14);--shell:#0E1418;
+    --nav:rgba(20,30,35,.85);--readerBg:radial-gradient(130% 100% at 50% -5%,#22343C 0%,#1C2A31 55%,#162127 100%);--btnbg:var(--teal);--btntext:var(--onTeal);--tealText:#AFC6D0}
+  [data-theme="dark"] .aura{opacity:.24}
+  #done .h1{color:#2E333A}#done .lead{color:#6E7480}
+  /* light container = dark text always */
+  [data-theme="dark"] .tile{background:var(--card)!important}
+  .tile .ic{color:var(--tealText)}
+  [data-theme="dark"] .tile .ic{background:rgba(255,255,255,.14)!important;color:#DCE8EE}
+  [data-theme="dark"] .tile .badge{color:#CFE0E7!important;background:rgba(199,221,230,.16)!important}
+  .tile .nm{color:var(--ink)}
+  /* day overview */
+  .dayrow{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:16px;background:var(--card);border:1px solid var(--cardb);margin-top:10px;cursor:pointer;transition:transform .15s}
+  .dayrow:active{transform:scale(.99)}
+  .dayrow .dn{width:36px;height:36px;border-radius:50%;background:rgba(103,130,147,.18);color:var(--tealText);display:grid;place-items:center;font-family:var(--serif);font-size:17px;font-weight:600;flex-shrink:0}
+  .dayrow.done .dn{background:var(--btnbg);color:var(--btntext)}
+  .dayrow .dt{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);flex:1;line-height:1.22}
+  .dayrow .da{color:var(--soft);font-size:18px}
+  /* calendar */
+  .calhd{display:flex;align-items:center;justify-content:space-between;margin:18px 0 12px}
+  .calhd button{background:none;border:none;color:var(--ink);font-size:22px;cursor:pointer;width:38px;height:38px;border-radius:50%}
+  .calhd .mn{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--ink)}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .cal .dow{font-size:10px;color:var(--soft);text-align:center;padding:2px 0 6px;font-weight:600;letter-spacing:.3px}
+  .cal .cell{aspect-ratio:1;border-radius:11px;display:grid;place-items:center;font-size:13.5px;color:var(--ink);cursor:pointer;position:relative;background:var(--card);border:1px solid transparent}
+  .cal .cell.empty{background:transparent;cursor:default}
+  .cal .cell.has{border-color:var(--teal)}
+  .cal .cell.sel{box-shadow:0 0 0 2px var(--teal)}
+  .cal .cell.today{background:var(--btnbg);color:var(--btntext)}
+  .cal .cell .dot{width:5px;height:5px;border-radius:50%;background:var(--teal);position:absolute;bottom:5px}
+  .cal .cell.today .dot{background:var(--btntext)}
+  .moed{margin-top:16px;padding:18px;border-radius:20px;background:var(--card);border:1px solid var(--cardb)}
+  .moed textarea{width:100%;min-height:74px;border:1px solid var(--line);background:transparent;border-radius:14px;padding:12px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;resize:none}
+  .moed .sv{margin-top:10px;width:100%;height:46px;border:none;border-radius:999px;background:var(--btnbg);color:var(--btntext);font-family:var(--serif);font-size:16px;font-weight:600;cursor:pointer}
+  .mo{padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--cardb);margin-top:10px}
+  .mo .md{font-size:11px;color:var(--tealText);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+  .mo .mt{font-size:14px;color:var(--ink);margin-top:5px;line-height:1.55}
+  .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .stat{padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--cardb)}
+  .stat .sv{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--ink);line-height:1}
+  .stat .sl{font-size:11.5px;color:var(--soft);margin-top:6px;line-height:1.35}
+  .wstat{flex:1;text-align:center;padding:12px 6px;border-radius:14px;background:var(--card);border:1px solid var(--cardb)}
+  .wstat b{display:block;font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);line-height:1}
+  .wstat span{font-size:10.5px;color:var(--soft);margin-top:4px;display:block}
+  .weeksatz{margin-top:12px;padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--cardb)}
+  .weeksatz .md{font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--tealText)}
+  .weeksatz .wq{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink);margin-top:6px;line-height:1.32}
+  .favitem{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--cardb);margin-top:8px}
+  .favitem .fq{flex:1;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink);line-height:1.3}
+  .favitem button{background:none;border:none;color:var(--soft);font-size:20px;cursor:pointer;line-height:1}
+  .avedit{position:absolute;right:-2px;bottom:-2px;width:21px;height:21px;border-radius:50%;background:var(--btnbg);color:var(--btntext);font-size:11px;display:grid;place-items:center;border:2px solid var(--neuBg)}
+  .afield{width:100%;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;margin-top:8px}
+  .afield::placeholder{color:var(--soft)}
+  .asave{margin-top:10px;width:100%;height:44px;border:none;border-radius:999px;background:var(--btnbg);color:var(--btntext);font-family:var(--serif);font-size:15px;font-weight:600;cursor:pointer}
+  .amsg{font-size:12.5px;color:var(--tealText);margin-top:8px;min-height:15px;font-weight:600}
+  .aborow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+  .abocancel{flex-shrink:0;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer}
+  #premModal{display:none;position:absolute;inset:0;z-index:30;background:rgba(12,18,22,.62);backdrop-filter:blur(3px);align-items:flex-end;justify-content:center}
+  #premModal.show{display:flex}
+  .premcard{width:100%;background:var(--cardBg);border-top:1px solid var(--cardb);border-radius:28px 28px 0 0;padding:26px 24px calc(34px + env(safe-area-inset-bottom,0px));box-shadow:0 -24px 60px rgba(0,0,0,.45);animation:premUp .35s ease}
+  @keyframes premUp{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
+  .premtitle{font-family:var(--serif);font-size:27px;font-weight:600;color:var(--ink)}
+  .premsub{font-size:13.5px;color:var(--ink);opacity:.72;margin-top:6px;line-height:1.5}
+  .premben{margin:16px 0 4px;display:flex;flex-direction:column;gap:9px}
+  .premben div{font-size:14px;color:var(--ink);display:flex;gap:9px;align-items:flex-start}
+  .premben span{color:var(--tealText);font-weight:700}
+  .premopts{display:flex;gap:10px;margin:18px 0 6px}
+  .premopt{flex:1;text-align:left;padding:14px;border-radius:16px;border:1.5px solid var(--line);background:var(--neuBg);cursor:pointer}
+  .premopt.on{border-color:var(--teal)}
+  .premopt b{display:block;font-family:var(--serif);font-size:17px;color:var(--ink);margin-top:3px}
+  .premopt small{font-size:11.5px;color:var(--soft)}
+  .premopt .tagbest{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--btntext);background:var(--btnbg);padding:2px 7px;border-radius:99px;float:right}
+  .premcta{width:100%;height:52px;border:none;border-radius:999px;background:var(--btnbg);color:var(--btntext);font-family:var(--serif);font-size:17px;font-weight:600;cursor:pointer;margin-top:8px}
+  .premlater{width:100%;background:none;border:none;color:var(--soft);font-size:13px;cursor:pointer;padding:12px 0 0}
+  #abend,#morning,#refocus{background:radial-gradient(130% 100% at 50% 0%,#7C97A8 0%,#678293 55%,#566E7E 100%);color:#EAF0F2;justify-content:space-between;padding:0 30px 40px}
+  .abtext{width:100%;min-height:130px;margin-top:18px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);border-radius:18px;padding:14px 16px;font-family:var(--sans);font-size:15px;color:#fff;outline:none;resize:none}
+  .abtext::placeholder{color:rgba(255,255,255,.6)}
+  .dayrow .derl{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--tealText);background:rgba(103,130,147,.18);padding:3px 8px;border-radius:999px;margin-right:6px}
+  .dayrow .lockl{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--soft);background:var(--line);padding:3px 8px;border-radius:999px;margin-right:6px}
+  .dayrow.locked{opacity:.6;cursor:default}
+  .dayrow.locked .dn{background:var(--line);color:var(--soft)}
+  .dayrow.open .dn{background:var(--btnbg);color:var(--btntext)}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:var(--shell);font-family:var(--sans);display:grid;place-items:center;min-height:100dvh;color:var(--ink)}
+  .frame{position:relative;width:390px;height:844px;border-radius:46px;overflow:hidden;background:var(--bg);
+    box-shadow:0 50px 110px rgba(60,64,72,.32),0 8px 30px rgba(0,0,0,.08);border:1px solid var(--cardb)}
+  @media (max-width:480px){html,body{height:100%;overflow:hidden}body{background:var(--bg)}.frame{width:100vw;height:100dvh;border-radius:0;border:none;box-shadow:none}}
+  .aura{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+  .blob{position:absolute;border-radius:50%;filter:blur(48px)}
+  .b1{width:340px;height:340px;left:-90px;top:-70px;background:radial-gradient(circle,var(--ice),transparent 70%);opacity:.6;animation:d1 26s ease-in-out infinite}
+  .b2{width:320px;height:320px;right:-100px;top:170px;background:radial-gradient(circle,var(--teal),transparent 70%);opacity:.26;animation:d2 32s ease-in-out infinite}
+  .b3{width:300px;height:300px;left:-60px;bottom:90px;background:radial-gradient(circle,var(--sand),transparent 70%);opacity:.6;animation:d1 30s ease-in-out infinite}
+  .b4{width:260px;height:260px;right:-50px;bottom:-40px;background:radial-gradient(circle,var(--rose),transparent 70%);opacity:.7;animation:d2 28s ease-in-out infinite}
+  @keyframes d1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(28px,34px) scale(1.12)}}
+  @keyframes d2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-26px,-30px) scale(1.1)}}
+  .grain{position:absolute;inset:0;z-index:7;pointer-events:none;opacity:.04;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .scr{position:absolute;inset:0;z-index:2;display:none;flex-direction:column;opacity:0;transition:opacity .55s ease}
+  .scr.on{display:flex;opacity:1}
+  .scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 28px;-webkit-overflow-scrolling:touch}
+  .scroll::-webkit-scrollbar{width:0}
+  .bar{display:flex;justify-content:space-between;align-items:center;padding:18px 30px 0;font-size:12px;letter-spacing:1px;color:var(--soft);z-index:3}
+  .bar b{font-weight:600;letter-spacing:3px;color:var(--ink);font-size:11px}
+  .eyebrow{font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--soft)}
+  .h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.05;color:var(--ink)}
+  .lead{font-size:14px;color:var(--soft);line-height:1.5}
+  .accentline{width:28px;height:2px;border-radius:2px;background:var(--teal);opacity:.7}
+
+  /* nav */
+  .nav{display:flex;justify-content:space-around;align-items:center;padding:12px 6px calc(14px + env(safe-area-inset-bottom,0px));
+    background:var(--nav);backdrop-filter:blur(18px);border-top:1px solid var(--line);z-index:4}
+  .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:var(--soft);flex:1;padding:4px 0}
+  .nav button.act{color:var(--tealText)}
+  .nav .ic{font-size:15px;line-height:1;height:18px;display:grid;place-items:center}
+  .nav .t{font-size:9px;font-weight:600;letter-spacing:.1px}
+  .nav button{gap:3px}
+
+  /* HOME */
+  #home .scroll{display:flex;flex-direction:column;justify-content:space-between;padding-bottom:26px}
+  .home-top{display:flex;justify-content:space-between;align-items:flex-start;margin-top:24px}
+  .ring-wrap{display:flex;align-items:center;gap:13px;margin-top:8px}
+  .ring-wrap .l{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft)}
+  .ring-wrap .l b{display:block;font-family:var(--serif);font-size:19px;letter-spacing:0;color:var(--ink);font-weight:600;text-transform:none}
+  .pill{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:999px;background:var(--btnbg);color:var(--btntext);font-size:12.5px;font-weight:600;cursor:pointer}
+  .affirm{font-family:var(--serif);font-style:italic;font-weight:500;font-size:33px;line-height:1.28;color:var(--ink);max-width:300px;cursor:pointer;margin:6px 0 0}
+  .renew{margin-top:16px;font-size:11px;font-weight:600;color:var(--tealText);cursor:pointer}
+  .ritcard{margin-top:14px;padding:20px;border-radius:24px;background:var(--card);border:1px solid var(--cardb);
+    box-shadow:0 14px 34px rgba(60,64,72,.07);display:flex;align-items:center;gap:16px;cursor:pointer;transition:transform .2s}
+  .ritcard:active{transform:scale(.985)}
+  .ritcard .ico{width:34px;height:34px;color:var(--tealText);flex-shrink:0}
+  .ritcard .meta{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--soft)}
+  .ritcard .tt{font-family:var(--serif);font-size:19px;font-weight:600;font-style:italic;margin:3px 0;line-height:1.2}
+  .ritcard .tt b{font-style:normal;font-weight:600}
+  .ritcard .ss{font-size:12.5px;color:var(--soft)}
+  .ritcard .arr{margin-left:auto;color:var(--soft)}
+
+  /* lists */
+  .pad{padding-top:14px;padding-bottom:24px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  .tile{padding:16px;border-radius:22px;background:var(--card);border:1px solid var(--cardb);
+    box-shadow:0 12px 28px rgba(60,64,72,.06);min-height:138px;display:flex;flex-direction:column;cursor:pointer;position:relative;transition:transform .2s}
+  .tile:active{transform:scale(.98)}
+  .tile .ic{width:34px;height:34px;border-radius:11px;background:var(--ice);display:grid;place-items:center;margin-bottom:auto;color:#46606D}
+  .tile .nm{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);margin-top:12px;line-height:1.15}
+  .tile .ct{font-size:12px;font-weight:600;color:var(--tealText);margin-top:6px}
+  .tile .badge{position:absolute;top:12px;right:12px;font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+    color:#46606D;background:rgba(103,130,147,.16);padding:3px 8px;border-radius:999px}
+  .row{padding:18px;border-radius:22px;background:var(--card);border:1px solid var(--cardb);
+    box-shadow:0 12px 28px rgba(60,64,72,.06);margin-top:12px;cursor:pointer}
+  .row .rt{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink)}
+  .row .rs{font-size:13px;color:var(--soft);margin-top:3px}
+  .row .rm{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:var(--soft)}
+  .row .rm b{color:var(--tealText);font-weight:600}
+  .ptag{font-family:var(--serif);font-style:italic;font-size:14px;font-weight:600;color:var(--tealText);flex-shrink:0;white-space:nowrap;margin-left:10px}
+  .sect{font-size:10.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft);margin:24px 2px 4px}
+  .back{display:inline-flex;gap:6px;align-items:center;background:none;border:none;color:var(--soft);font-size:14px;cursor:pointer;padding:6px 0;font-family:var(--sans)}
+
+  /* reader */
+  #reader{position:relative;background:var(--readerBg)}
+  #reader .scroll{padding-top:8px;position:relative;z-index:1}
+  .r-num{position:absolute;top:-10px;right:0;font-family:var(--serif);font-size:128px;line-height:1;font-weight:600;color:rgba(103,130,147,.10);pointer-events:none;z-index:0}
+  .rstep{animation:stepIn .5s ease}
+  @keyframes stepIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .r-sublabel{margin-top:20px;font-size:10.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--tealText)}
+  .r-head{font-family:var(--serif);font-size:21px;font-weight:600;margin-top:6px;color:var(--ink)}
+  .satzwrap{margin-top:28px;padding:26px 24px 30px;border-radius:26px;background:var(--card);border:1px solid var(--cardb);box-shadow:0 18px 44px rgba(60,64,72,.09)}
+  .satzlabel{font-size:10.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft);margin:18px 0 12px}
+  .prog{display:flex;gap:6px;padding:14px 0 24px}
+  .prog i{flex:1;height:4px;border-radius:99px;background:rgba(46,51,58,.12)}
+  .prog i.on{background:var(--teal)}
+  .r-tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tealText);
+    background:rgba(103,130,147,.12);padding:6px 12px;border-radius:999px;margin:14px 0 18px;line-height:1.3}
+  .r-title{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.14;color:var(--ink);margin-bottom:6px}
+  .r-body{font-size:16px;line-height:1.72;color:var(--ink);margin-top:18px}
+  .satzwrap .r-body{margin-top:0}
+  .r-satz{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.34;color:var(--ink);margin-top:0}
+
+  /* ritual */
+  #ritual{background:radial-gradient(130% 100% at 50% 0%,#7C97A8 0%,#678293 55%,#566E7E 100%);color:#EAF0F2;justify-content:space-between;padding:0 30px 40px}
+  #ritual .bar,#ritual .bar b{color:rgba(255,255,255,.85);padding-left:0;padding-right:0}
+  .rtop{display:flex;justify-content:space-between;align-items:center;padding-top:14px}
+  .rtop button{background:none;border:none;color:rgba(255,255,255,.85);font-size:24px;cursor:pointer;width:40px;height:40px}
+  .round{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--cardb)}
+  .rmid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:28px}
+  .breath{position:relative;width:240px;height:240px;display:grid;place-items:center}
+  .breath .r{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.32);transition:transform 4s ease-in-out}
+  .breath .r1{width:240px;height:240px;background:rgba(255,255,255,.06)}
+  .breath .r2{width:165px;height:165px;background:rgba(255,255,255,.10)}
+  .breath.inhale .r{transform:scale(1.05)}.breath.exhale .r{transform:scale(.66)}
+  .breath .bc{position:relative;display:flex;flex-direction:column;align-items:center}
+  .breath .p{font-family:var(--serif);font-style:italic;font-size:22px;color:#fff}
+  .breath .c{font-family:var(--serif);font-size:30px;color:rgba(255,255,255,.85);margin-top:2px;line-height:1}
+  .r-step{font-family:var(--serif);font-size:27px;line-height:1.3;max-width:300px;color:#fff}
+  .r-sub{font-size:14px;line-height:1.6;color:rgba(234,240,242,.78);max-width:290px;margin:10px auto 0}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:300px;margin:6px auto 0}
+  .chip{padding:9px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;font-size:13.5px;cursor:pointer;transition:.2s}
+  .chip.sel{background:#fff;color:#56707E}
+  .dots{display:flex;gap:7px;justify-content:center;margin-bottom:18px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.32);transition:.3s}
+  .dots i.on{background:#fff;width:22px;border-radius:99px}
+  .nextbtn{height:58px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);color:#fff;font-family:var(--serif);font-size:18px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px)}
+
+  /* done */
+  #done{background:radial-gradient(120% 90% at 50% 30%,#F8F3F1,#F3EDEB 60%,#E9E4E2);justify-content:center;align-items:center;text-align:center;gap:16px;padding:0 34px}
+  .bloom{position:relative;width:150px;height:150px;display:grid;place-items:center;margin-bottom:4px}
+  .bloom span{position:absolute;width:14px;height:14px;border-radius:50%;opacity:0}
+  #done.on .bloom span{animation:pop 1.1s cubic-bezier(.2,.8,.3,1) forwards}
+  .bloom .core{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7C97A8,#678293);box-shadow:0 12px 30px rgba(103,130,147,.4);opacity:0;transform:scale(.4)}
+  #done.on .bloom .core{animation:core .7s ease forwards}
+  @keyframes core{to{opacity:1;transform:scale(1)}}
+  @keyframes pop{0%{opacity:0;transform:translate(0,0) scale(.4)}40%{opacity:1}100%{opacity:0;transform:var(--end) scale(1)}}
+
+  /* ziele / profil */
+  .input{width:100%;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:14px 16px;font-family:var(--sans);font-size:15px;color:var(--ink);outline:none}
+  .add{margin-top:12px;display:flex;gap:10px}
+  .addbtn{width:48px;border-radius:16px;border:none;background:var(--btnbg);color:var(--btntext);font-size:22px;cursor:pointer;flex-shrink:0}
+  .goal{padding:18px;border-radius:20px;background:var(--card);border:1px solid var(--cardb);margin-top:12px}
+  .goalhd{display:flex;align-items:flex-start;gap:12px}
+  .goalhd .ck{width:24px;height:24px;border-radius:50%;border:1.6px solid var(--soft);flex-shrink:0;cursor:pointer;display:grid;place-items:center;color:#fff;font-size:13px;margin-top:2px}
+  .goalhd .ck.done{background:var(--teal);border-color:var(--teal)}
+  .gt{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);line-height:1.2}
+  .gmeta{font-size:12px;color:var(--soft);margin-top:3px}
+  .gdel{background:none;border:none;color:var(--soft);font-size:11.5px;cursor:pointer;flex-shrink:0;margin-top:2px}
+  .gbar{height:5px;border-radius:99px;background:var(--line);margin:14px 0 6px;overflow:hidden}
+  .gbar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .3s}
+  .gstep{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+  .gstep .sck{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--soft);cursor:pointer;display:grid;place-items:center;color:#fff;font-size:11px;flex-shrink:0}
+  .gstep.done .sck{background:var(--teal);border-color:var(--teal)}
+  .gstep .st{font-size:14px;color:var(--ink);flex:1}
+  .gstep.done .st{text-decoration:line-through;color:var(--soft)}
+  .gadd{display:flex;gap:8px;margin-top:12px}
+  .gadd input{flex:1;border:1px solid var(--line);background:transparent;border-radius:12px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--ink);outline:none}
+  .gadd button{border:none;background:rgba(103,130,147,.16);color:var(--tealText);border-radius:12px;padding:0 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .pcard{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--cardb);margin-top:14px}
+  .seg{display:flex;gap:7px;margin:8px 0 4px}
+  .seg button{flex:1;padding:8px 0;border-radius:11px;border:none;background:var(--cardb);color:var(--soft);font-size:12.5px;font-weight:600;cursor:pointer}
+  .seg button.on{background:var(--btnbg);color:var(--btntext)}
+  .sw{display:flex;gap:12px;margin:10px 0 4px}
+  .sw button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.14)}
+  .sw button.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5), 0 1px 4px rgba(0,0,0,.18)}
+  [data-theme="dark"] .sw button{box-shadow:inset 0 0 0 1px rgba(255,255,255,.22), 0 1px 3px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="aura"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+
+  <!-- HOME -->
+  <section class="scr on" id="home">
+    <div class="bar"><span>9:41</span><b>EVOLVE</b><span>● ●&nbsp;▮</span></div>
+    <div class="scroll">
+      <div class="home-top">
+        <div>
+          <div class="lead" data-i18n="Guten Morgen,">Guten Morgen,</div>
+          <div class="ring-wrap">
+            <svg width="42" height="42" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(110,116,128,.18)" stroke-width="3"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round" stroke-dasharray="119" stroke-dashoffset="40" transform="rotate(-90 22 22)"/></svg>
+            <span class="l"><span data-i18n="Dein Weg">Dein Weg</span><b>Tag 12</b></span>
+          </div>
+        </div>
+        <span class="pill" id="favPill" onclick="toggleFav()">♡ Merken</span>
+      </div>
+      <div onclick="renew()" style="margin:8px 0">
+        <div class="accentline" style="margin-bottom:18px"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span class="eyebrow" data-i18n="Dein Satz für heute">Dein Satz für heute</span><span class="renew" style="margin:0" data-i18n="↻ neuer Satz">↻ neuer Satz</span>
+        </div>
+        <div class="affirm" id="affirm">Was du ruhig tust, trägt weiter als alles Hetzen.</div>
+      </div>
+      <div>
+        <div class="ritcard" onclick="startMorning()"><span class="ico">☀</span><div><div class="meta">Morgen · 3–4 Min</div><div class="tt"><b>Morgen</b> Routine</div><div class="ss">Starte deinen Tag bewusst</div></div><span class="arr">→</span></div>
+        <div class="ritcard" onclick="startAbend()"><span class="ico">☾</span><div><div class="meta">Abend · 5 Fragen</div><div class="tt"><b>Abend</b> Ritual</div><div class="ss">Schließe deinen Tag bewusst ab</div></div><span class="arr">→</span></div>
+        <div class="ritcard" onclick="startRefocus()"><span class="ico">◇</span><div><div class="meta">Tagsüber · kurz innehalten</div><div class="tt"><b>Gedanken</b> sortieren</div><div class="ss">Wenn der Tag aus dem Ruder läuft</div></div><span class="arr">→</span></div>
+        <div class="ritcard" onclick="openTheme(0)"><span class="ico">✦</span><div><div class="meta">Weiter bei deinen Learnings</div><div class="tt">Bewusstsein</div><div class="ss">Tag 1 · Dein Tag braucht zuerst eine Richtung</div></div><span class="arr">→</span></div>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+  </section>
+
+  <!-- LEARNINGS -->
+  <section class="scr" id="learnings">
+    <div class="bar"><span>9:41</span><b>EVOLVE</b><span>● ●&nbsp;▮</span></div>
+    <div class="scroll pad" id="learnList"></div>
+    <nav class="nav"></nav>
+  </section>
+
+  <!-- READER -->
+  <section class="scr" id="reader">
+    <div class="bar"><button class="back" id="readerBack" onclick="backFromReader()">← Übersicht</button><span></span></div>
+    <div class="scroll" id="readerBody"></div>
+    <div style="padding:16px 30px 30px"><button class="cta nextbtn" style="width:100%;height:56px;border:none;background:var(--btnbg);color:var(--btntext);border-radius:999px;font-family:var(--serif);font-size:17px;font-weight:600;cursor:pointer" id="readerNext" onclick="readerNext()">Weiter</button></div>
+  </section>
+
+  <!-- KURSE -->
+  <section class="scr" id="kurse">
+    <div class="bar"><span>9:41</span><b>EVOLVE</b><span>● ●&nbsp;▮</span></div>
+    <div class="scroll pad" id="kurseList"></div>
+    <nav class="nav"></nav>
+  </section>
+
+  <!-- ZIELE -->
+  <section class="scr" id="ziele">
+    <div class="bar"><span>9:41</span><b>EVOLVE</b><span>● ●&nbsp;▮</span></div>
+    <div class="scroll pad">
+      <h1 class="h1" data-i18n="Ziele">Ziele</h1>
+      <p class="lead" style="margin-top:6px" data-i18n="Setze ein Ziel und teile es in kleine Etappen.">Setze ein Ziel und teile es in kleine Etappen.</p>
+      <div class="add"><input class="input" id="goalInput" data-i18n-ph="Neues Ziel …" placeholder="Neues Ziel …" onkeydown="if(event.key==='Enter')addGoal()"><button class="addbtn" onclick="addGoal()">+</button></div>
+      <div id="goalList" style="margin-top:14px"></div>
+    </div>
+    <nav class="nav"></nav>
+  </section>
+
+  <!-- PROFIL -->
+  <section class="scr" id="profil">
+    <div class="bar"><span>9:41</span><b>EVOLVE</b><span>● ●&nbsp;▮</span></div>
+    <div class="scroll pad">
+      <h1 class="h1" data-i18n="Profil">Profil</h1>
+      <div class="pcard" onclick="go('account')" style="display:flex;align-items:center;gap:14px;cursor:pointer">
+        <div id="avatar2" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--ice),var(--teal));background-size:cover;background-position:center;flex-shrink:0"></div>
+        <div style="flex:1"><div id="pname" style="font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink)">Nicole</div><div class="lead" style="font-size:13px" data-i18n="Konto, E-Mail & Passwort">Konto, E-Mail &amp; Passwort</div></div>
+        <span style="color:var(--soft);font-size:20px">›</span>
+      </div>
+      <div class="pcard">
+        <span class="eyebrow" data-i18n="Darstellung">Darstellung</span>
+        <div class="seg"><button class="on" onclick="theme('light',this)" data-i18n="Hell">Hell</button><button onclick="theme('dark',this)" data-i18n="Dunkel">Dunkel</button></div>
+        <span class="eyebrow" style="display:block;margin-top:14px" data-i18n="Akzentfarbe">Akzentfarbe</span>
+        <div class="sw">
+          <button class="on" style="background:#678293" onclick="accent('#678293',this)"></button>
+          <button style="background:#C7CFD9" onclick="accent('#C7CFD9',this)"></button>
+          <button style="background:#E7E0D8" onclick="accent('#E7E0D8',this)"></button>
+          <button style="background:#E7DDEC" onclick="accent('#E7DDEC',this)"></button>
+        </div>
+      </div>
+      <div class="pcard"><span class="eyebrow" data-i18n="Diese Woche">Diese Woche</span><div id="weekStats"></div></div>
+      <div class="pcard"><span class="eyebrow" data-i18n="Dein Tracking">Dein Tracking</span><div id="profilStats"></div></div>
+      <div class="pcard"><span class="eyebrow" data-i18n="Gemerkte Sätze">Gemerkte Sätze</span><div id="favList"></div></div>
+    </div>
+    <nav class="nav"></nav>
+  </section>
+
+  <!-- DAYS (Tagesübersicht) -->
+  <section class="scr" id="days">
+    <div class="bar"><button class="back" id="daysBack" onclick="go('learnings')">← Learnings</button><span></span></div>
+    <div class="scroll pad" id="daysBody"></div>
+    <nav class="nav"></nav>
+  </section>
+
+  <!-- MOMENTE -->
+  <section class="scr" id="momente">
+    <div class="bar"><span>9:41</span><b>EVOLVE</b><span>● ●&nbsp;▮</span></div>
+    <div class="scroll pad" id="momenteBody"></div>
+    <nav class="nav"></nav>
+  </section>
+
+  <!-- RITUAL -->
+  <section class="scr" id="ritual">
+    <div class="rtop"><button onclick="go('home')">×</button><span class="round" id="roundLbl"></span></div>
+    <div class="rmid">
+      <div class="breath" id="breath" style="display:none"><div class="r r1"></div><div class="r r2"></div><div class="bc"><div class="p" id="phase">Einatmen</div><div class="c" id="count">4</div></div></div>
+      <div><div class="r-step" id="ritStep"></div><div class="r-sub" id="ritSub"></div><div class="chips" id="chips" style="display:none"></div></div>
+    </div>
+    <div><div class="dots" id="dots"></div><button class="nextbtn" style="width:100%" id="nextBtn" onclick="ritNext()">Weiter</button></div>
+  </section>
+
+  <!-- DONE -->
+  <section class="scr" id="done">
+    <div class="bloom" id="bloom"><div class="core"></div></div>
+    <div class="eyebrow" style="color:#56707E">Abgeschlossen</div>
+    <div class="h1" style="font-size:34px">Gut gemacht.</div>
+    <div class="lead" style="max-width:280px">Dein Tag hat jetzt eine klare Richtung. Geh ihn Schritt für Schritt.</div>
+    <button id="doneGoal" class="abocancel" style="display:none;border-radius:999px;margin-top:6px" onclick="makeGoalFromStep()">Diesen Schritt als Ziel speichern</button>
+    <button class="addbtn" style="width:auto;padding:0 34px;height:54px;border-radius:999px;font-family:var(--serif);font-size:17px;margin-top:8px" onclick="go('home')">Zurück</button>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section class="scr" id="account">
+    <div class="bar"><button class="back" onclick="go('profil')" data-i18n="← Profil">← Profil</button><span></span></div>
+    <div class="scroll pad">
+      <h1 class="h1" data-i18n="Konto">Konto</h1>
+      <div class="pcard" style="display:flex;align-items:center;gap:14px">
+        <label style="cursor:pointer;position:relative;flex-shrink:0">
+          <input type="file" accept="image/*" id="photoIn" onchange="onPhoto(event)" style="display:none">
+          <div id="avatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--ice),var(--teal));background-size:cover;background-position:center"></div>
+          <span class="avedit">✎</span>
+        </label>
+        <div class="lead" style="font-size:13px" data-i18n="Tippe aufs Foto, um es zu ändern">Tippe aufs Foto, um es zu ändern</div>
+      </div>
+      <div class="pcard"><span class="eyebrow" data-i18n="Deine Daten">Deine Daten</span>
+        <input class="afield" id="acName" data-i18n-ph="Name" placeholder="Name">
+        <input class="afield" id="acEmail" type="email" data-i18n-ph="E-Mail-Adresse" placeholder="E-Mail-Adresse">
+        <button class="asave" onclick="saveAccount()" data-i18n="Speichern">Speichern</button>
+        <div id="acMsg" class="amsg"></div>
+      </div>
+      <div class="pcard"><span class="eyebrow" data-i18n="Passwort">Passwort</span><div id="pwArea"></div></div>
+      <div class="pcard"><span class="eyebrow" data-i18n="Abo">Abo</span><div id="aboState"></div></div>
+    </div>
+  </section>
+
+  <!-- REFOCUS (Tagsüber) -->
+  <section class="scr" id="refocus">
+    <div class="rtop"><button onclick="go('home')">×</button><span class="round" id="rfRound"></span></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="r-step" id="rfQ" style="text-align:left;max-width:none"></div>
+      <div id="rfSub" class="r-sub" style="text-align:left;margin:10px 0 0"></div>
+      <div class="chips" id="rfChips" style="display:none;justify-content:flex-start;margin:16px 0 0"></div>
+      <textarea id="rfText" class="abtext" placeholder="Dein nächster realistischer Schritt …"></textarea>
+    </div>
+    <div><div class="dots" id="rfDots"></div><button class="nextbtn" style="width:100%" id="rfNext" onclick="rfNext()">Weiter</button></div>
+  </section>
+
+  <!-- MORNING (Klarheit) -->
+  <section class="scr" id="morning">
+    <div class="rtop"><button onclick="go('home')">×</button><span class="round" id="moRound"></span></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="r-step" id="moQ" style="text-align:left;max-width:none"></div>
+      <div id="moSub" class="r-sub" style="text-align:left;margin:10px 0 0"></div>
+      <div id="moChoice" style="display:none;gap:10px;margin-top:18px"><button class="nextbtn" style="flex:1" onclick="moChoose(true)">Kurz durchatmen</button><button class="nextbtn" style="flex:1;background:rgba(255,255,255,.06)" onclick="moChoose(false)">Direkt starten</button></div>
+      <textarea id="moText" class="abtext" placeholder=""></textarea>
+      <div id="moBreathWrap" style="display:none;flex-direction:column;align-items:center;margin-top:16px">
+        <div class="breath" id="moBreath"><div class="r r1"></div><div class="r r2"></div><div class="bc"><div class="p" id="moPhase">Einatmen</div><div class="c" id="moCount">4</div></div></div>
+      </div>
+    </div>
+    <div><div class="dots" id="moDots"></div><button class="nextbtn" style="width:100%" id="moNext" onclick="moNext()">Weiter</button></div>
+  </section>
+
+  <!-- ABEND -->
+  <section class="scr" id="abend">
+    <div class="rtop"><button onclick="go('home')">×</button><span class="round" id="abRound"></span></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="r-step" id="abQ" style="text-align:left;max-width:none"></div>
+      <div class="chips" id="abChips" style="display:none;justify-content:flex-start;margin:16px 0 0"></div>
+      <textarea id="abText" class="abtext" placeholder="Schreib, was dir kommt …"></textarea>
+    </div>
+    <div><div class="dots" id="abDots"></div><button class="nextbtn" style="width:100%" id="abNext" onclick="abNext()">Weiter</button></div>
+  </section>
+
+  <div id="premModal"><div class="premcard">
+    <div class="premtitle" data-i18n="Evolve Premium">Evolve Premium</div>
+    <div class="premsub" data-i18n="Schalte alle Learnings, Kurse und deinen vollen Verlauf frei.">Schalte alle Learnings, Kurse und deinen vollen Verlauf frei.</div>
+    <div class="premben">
+      <div><span>✓</span><span data-i18n="Alle 8 Learning-Bereiche">Alle 8 Learning-Bereiche</span></div>
+      <div><span>✓</span><span data-i18n="Alle Kurse · Money Magnet & mehr">Alle Kurse · Money Magnet &amp; mehr</span></div>
+      <div><span>✓</span><span data-i18n="Voller Verlauf & Wochenrückblick">Voller Verlauf &amp; Wochenrückblick</span></div>
+      <div><span>✓</span><span data-i18n="Unbegrenzte Ziele & Momente">Unbegrenzte Ziele &amp; Momente</span></div>
+    </div>
+    <div class="premopts">
+      <button class="premopt on" id="planYear" onclick="selPlan('year')"><span class="tagbest" data-i18n="Beliebt">Beliebt</span><b data-i18n="49 € / Jahr">49 € / Jahr</b><small data-i18n="4,08 € pro Monat">4,08 € pro Monat</small></button>
+      <button class="premopt" id="planMonth" onclick="selPlan('month')"><b data-i18n="6,99 € / Monat">6,99 € / Monat</b><small data-i18n="monatlich kündbar">monatlich kündbar</small></button>
+    </div>
+    <button class="premcta" onclick="activatePrem()" data-i18n="Premium freischalten">Premium freischalten</button>
+    <button class="premlater" onclick="hidePrem()" data-i18n="Später">Später</button>
+  </div></div>
+
+  <div class="grain"></div>
+</div>
+
+<script>
+/* Evolve Inhalte – 1:1 aus Evolve App.html (V1) */
+
+window.BEWUSSTSEIN_DAYS = [{
+  n: 1,
+  title: "Dein Tag braucht zuerst eine Richtung",
+  s1: "Dein Tag bekommt mehr Kraft, wenn du ihm am Anfang eine Richtung gibst. Bevor alles von außen auf dich einströmt, darfst du selbst bestimmen, worauf es heute ankommt. Diese kurze innere Ausrichtung verändert, wie du durch den ganzen Tag gehst.",
+  s2: "Viele Menschen starten in den Tag und lassen alles sofort an sich heran. Termine, Nachrichten, Gedanken, Erwartungen, offene Themen, innere Unruhe. Bewusstsein bedeutet, am Anfang einmal stehen zu bleiben und dem Tag eine Richtung zu geben, bevor er sich mit allem füllt, was von außen kommt. Ein bewusster Start muss nicht groß sein. Ein einziger Satz reicht, wenn er echt gemeint ist.",
+  s3: "Heute bekommt dein Tag eine innere Richtung. Du wählst einen Gedanken, der dich trägt, und nimmst ihn bewusst mit. Immer wenn der Tag dich zieht, kannst du zu dieser Richtung zurückkehren.",
+  satz: "Heute gehe ich Schritt für Schritt in die Richtung, die mir wichtig ist."
+}, {
+  n: 2,
+  title: "Was du wiederholst, wird stärker",
+  s1: "Ein Gedanke wird stärker, wenn du ihn jeden Tag wiederholst. Was anfangs fremd klingt, wird durch Wiederholung vertraut und beginnt, dich von innen zu prägen. Genau darin liegt deine Chance, dein Denken bewusst zu formen.",
+  s2: "Dein Kopf lernt über Wiederholung. Was du immer wieder denkst, wird vertraut. Was du immer wieder sagst, fühlt sich irgendwann normal an. Genau deshalb ist es so wichtig, welche Sätze du dir am Tag gibst. Ein guter Satz, den du jeden Tag wiederholst, verändert die Art, wie du dich selbst siehst.",
+  s3: "Heute wiederholst du einen Satz, der dich stärkt. Sag ihn dir mehrmals, ruhig und ernst gemeint. Jede Wiederholung ist ein kleiner Schritt, der deinem Kopf eine neue Spur zeigt.",
+  satz: "Ich bin bereit, meinem Denken eine neue Richtung zu geben."
+}, {
+  n: 3,
+  title: "Aufmerksamkeit macht Dinge größer",
+  s1: "Was deine Aufmerksamkeit bekommt, bekommt mehr Gewicht in deinem Leben. Worauf du schaust, das wächst in dir, ob es dir guttut oder nicht. Deshalb ist es eine echte Entscheidung, wohin du sie lenkst.",
+  s2: "Aufmerksamkeit ist wertvoll. Sie entscheidet, was in deinem Kopf größer wird, was mehr Raum bekommt und was deinen inneren Zustand prägt. Ein Thema kann klein beginnen und durch ständiges inneres Wiederholen riesig werden. Bewusstsein bedeutet, deine Aufmerksamkeit bewusst zu setzen. Der Tag wird geordneter, wenn deine Energie an die Stellen geht, die dir dienen.",
+  s3: "Heute bekommt deine Aufmerksamkeit eine gute Aufgabe. Du lenkst sie auf das, was dich nach vorne bringt, statt auf das, was dich runterzieht. So gibst du deinem Tag mehr Klarheit.",
+  satz: "Meine Energie geht dorthin, wo mein Leben wachsen soll."
+}, {
+  n: 4,
+  title: "Ein Gedanke ist ein Angebot",
+  s1: "Ein Gedanke taucht auf. Du entscheidest, welchen Platz er bekommt. Nicht jeder Gedanke ist wahr, und nicht jeder verdient deine Energie. Du darfst wählen, welchem du folgst.",
+  s2: "Der Kopf produziert am Tag viele Sätze. Manche sind hilfreich. Manche ziehen Energie. Manche kommen aus alten Erfahrungen. Manche wirken groß, weil sie im ersten Moment laut sind. Bewusstsein bedeutet, Gedanken als Angebote zu sehen. Du darfst wahrnehmen, was auftaucht, und dann wählen, welcher Gedanke dich führen darf. Damit entsteht Abstand.",
+  s3: "Heute wählst du den Gedanken, der dich weiterbringt. Du musst nicht jedem Impuls glauben. Du kannst kurz innehalten und dich für den Gedanken entscheiden, der dich stärkt.",
+  satz: "Ich folge dem Gedanken, der mich stärkt und in Bewegung bringt."
+}, {
+  n: 5,
+  title: "Dein innerer Ton prägt den Tag",
+  s1: "Der Ton, mit dem du innerlich mit dir sprichst, verändert deinen ganzen Tag. Er begleitet jede Entscheidung, jeden Fehler und jeden Moment, in dem du Mut brauchst. Wie du mit dir redest, entscheidet mit, wie viel Kraft dir bleibt.",
+  s2: "Menschen achten sehr darauf, wie andere mit ihnen sprechen. Der eigene innere Ton bekommt viel weniger Aufmerksamkeit. Dabei läuft er den ganzen Tag mit. Ein harter Satz macht enger. Ein guter Satz macht handlungsfähiger. Du brauchst am Anfang des Tages Worte, die dich sammeln und stärken. Worte, die dir helfen, dich selbst ernst zu nehmen.",
+  s3: "Heute sprichst du innerlich mit mehr Respekt zu dir. Wenn dir ein harter Satz auffällt, formst du ihn bewusst freundlicher um. Du behandelst dich so, wie du einen guten Freund behandeln würdest.",
+  satz: "Ich rede mit mir so, dass ich Kraft bekomme."
+}, {
+  n: 6,
+  title: "Der Tag folgt dem, was du wichtig machst",
+  s1: "Dein Tag verändert sich, sobald du entscheidest, was heute Gewicht bekommt. Wenn alles gleich dringend wirkt, verlierst du dich. Wenn eine Sache klar Vorrang hat, bekommt der Tag Form.",
+  s2: "Viele Dinge wollen Aufmerksamkeit. Alles wirkt wichtig, sobald es laut genug wird. Bewusstsein bedeutet, Bedeutung aktiv zu vergeben. Du entscheidest, was heute wirklich zählen soll. Eine Aufgabe. Ein Ziel. Ein Gespräch. Ein Schritt. Damit entsteht innere Ordnung. Es muss nur eine Sache sein, die dich am Ende des Tages sagen lässt: Das habe ich ernst genommen.",
+  s3: "Heute bekommt eine Sache Vorrang. Du wählst sie bewusst aus und gibst ihr deinen Fokus. Alles andere darf danach kommen.",
+  satz: "Ich gebe meine Energie dem, was heute wirklich zählt."
+}, {
+  n: 7,
+  title: "Deine Energie braucht einen Platz",
+  s1: "Energie wird leichter nutzbar, wenn sie eine Richtung bekommt. Verteilt sie sich auf zu viele Dinge, fühlt sich alles anstrengend an. Gesammelt an einem Ort wird sie zu echter Kraft.",
+  s2: "Energie kann sich verteilen. In Gedanken, in Sorgen, in Ideen, in Pläne, in Menschen, in alte Themen, in neue Wünsche. Bewusstsein bedeutet, diese Energie zu sammeln und ihr einen Platz zu geben. Dort, wo du sie heute wirklich brauchst. Sobald deine Energie einen Platz bekommt, entsteht mehr Kraft. Du musst weniger innerlich kämpfen und kommst leichter in Bewegung.",
+  s3: "Heute bündelst du deine Energie. Du fragst dich, wo sie heute am meisten gebraucht wird, und richtest sie dorthin. So hörst du auf, dich zu verzetteln.",
+  satz: "Meine Energie sammelt sich dort, wo mein nächster Schritt liegt."
+}, {
+  n: 8,
+  title: "Kleine Entscheidungen formen deinen Tag",
+  s1: "Ein Tag verändert sich durch kleine Entscheidungen, die du ernst nimmst. Nicht die große Wende macht den Unterschied, sondern die vielen kleinen Momente, in denen du dich neu ausrichtest.",
+  s2: "Große Veränderungen wirken am Anfang weit weg. Der Alltag verändert sich aber durch kleine Entscheidungen. Aufstehen und den ersten Gedanken bewusst wählen. Eine Sache abschließen. Den Körper kurz bewegen. Eine Nachricht später beantworten. Bewusstsein bedeutet, diese kleinen Entscheidungen zu sehen. Sie wirken unscheinbar, aber sie formen deine Richtung.",
+  s3: "Heute zählt eine kleine Entscheidung. Du triffst sie bewusst und nimmst sie ernst, auch wenn sie unscheinbar wirkt. Genau hier beginnt Veränderung.",
+  satz: "Ich nehme den kleinen Schritt ernst, der mich in die richtige Richtung bringt."
+}, {
+  n: 9,
+  title: "Du brauchst einen Satz, der dich zurückholt",
+  s1: "Ein guter Satz kann dich mitten am Tag wieder sammeln. Wenn der Kopf voll wird und du dich verlierst, brauchst du etwas Einfaches, das dich zurückbringt. Ein Anker, der immer verfügbar ist.",
+  s2: "Es gibt Momente, in denen der Kopf voll wird. Der Tag zieht, Menschen wollen etwas, Aufgaben wechseln, Gedanken springen. Genau dann hilft ein Satz, der dich zurückholt. Ein Satz, der kurz genug ist, damit du ihn im Alltag verwenden kannst. Bewusstsein bedeutet, einen Anker zu haben, den du wiederholen kannst, bis du wieder bei deiner Richtung bist.",
+  s3: "Heute nutzt du deinen Rückhol-Satz. Wenn du merkst, dass du dich verlierst, sagst du ihn dir innerlich und kommst zurück zu dir und deinem nächsten Schritt.",
+  satz: "Zurück zu mir. Zurück zu meinem nächsten Schritt."
+}, {
+  n: 10,
+  title: "Bewusstsein wächst durch Übung",
+  s1: "Bewusstsein entsteht durch tägliche Wiederholung, durch kleine Momente und durch ehrliche Aufmerksamkeit. Es ist nichts, das man einmal versteht und dann hat, sondern etwas, das mit jeder Übung wächst.",
+  s2: "Bewusstsein ist keine große Sache, die einmal verstanden wird und dann erledigt ist. Es wächst durch tägliche Übung. Durch einen Moment am Morgen. Durch einen Satz. Durch eine Entscheidung. Durch einen Atemzug. Durch einen kurzen inneren Stopp, bevor du automatisch weiterläufst. Mit der Zeit merkst du schneller, was dich stärkt und was dich aus deiner Richtung zieht.",
+  s3: "Heute zählt die Wiederholung. Du übst bewusst zu wählen, wohin deine Energie geht, ganz ohne Druck. Jede Übung macht dich ein Stück klarer.",
+  satz: "Ich übe heute, bewusster zu wählen, wohin meine Energie geht."
+}, {
+  n: 11,
+  title: "Handy am Morgen und am Abend",
+  s1: "Das Handy ist morgens der erste fremde Input und abends der letzte Reiz, der deinen Kopf wach hält. Wenn du Anfang und Ende deines Tages schützt, gibst du dir Raum, der nur dir gehört.",
+  s2: "Morgens braucht dein Kopf zuerst einen eigenen Moment. Sobald du direkt aufs Handy schaust, kommen Nachrichten, Bilder, Aufgaben und Themen anderer Menschen in deinen Tag, bevor du selbst eine Richtung gesetzt hast. Am Abend will der Körper herunterfahren, der Kopf bekommt durch Scrollen, Schreiben und Schauen immer weiter neuen Input. Ein kurzer Blick wird länger, der Schlaf rückt nach hinten.",
+  s3: "Heute schützt du den Anfang und das Ende deines Tages. Du gibst dir morgens einen eigenen Moment, bevor die Welt hereinkommt, und abends Ruhe, bevor du wieder alles an dich heranlässt.",
+  satz: "Erst mein eigener Moment. Dann die Welt."
+}];;
+
+window.MINDSET_DAYS = [{
+  n: 1,
+  title: `Keep going`,
+  s1: `Jeder Schritt formt deinen wahren Charakter. Besonders an den harten Tagen beweist du deine echte Stärke. Der Weg fordert dich massiv heraus, und du antwortest mit purer Entschlossenheit. Bleib unaufhaltsam in Bewegung.`,
+  s2: `Aufgeben lockt mit kurzer Erleichterung, doch das Durchziehen schenkt dir dauerhaften Stolz. Echtes Selbstvertrauen entsteht exakt in dem Moment, in dem du dem Widerstand trotzt und entschlossen weitergehst. Du wählst den anspruchsvollen Weg.`,
+  s3: `Ein einziger neuer Schritt reicht völlig aus. Bündle deine gesamte Kraft für diesen einen Moment. Du durchbrichst den Stillstand, holst dir die Kontrolle zurück und bestimmst dein eigenes Tempo.`
+}, {
+  n: 2,
+  title: `Start where you are`,
+  s1: `Der perfekte Moment existiert ausschließlich im Jetzt. Beginne genau hier, inmitten von Chaos und unperfekten Bedingungen. Genau hier erwacht deine unbändige Macher-Energie. Du startest heute.`,
+  s2: `Dein Verstand sehnt sich nach dem idealen Zeitpunkt. Dein großer Erfolg fordert jedoch den mutigen Start sofort. Bündle all deine vorhandenen Ressourcen und setze den allerersten Meilenstein.`,
+  s3: `Starke Frauen verändern ihre Welt an völlig gewöhnlichen Tagen. Dieser Moment besitzt unbändige Macht, weil du dich exakt heute für den Start entscheidest. Ergreife diese Chance und leg los.`
+}, {
+  n: 3,
+  title: `Break it down`,
+  s1: `Ein gewaltiges Ziel erfordert eine extrem clevere Strategie. Zerlege deine große Vision in greifbare Mikro-Etappen. Kleine, tägliche Schritte nehmen dem Berg die Steilheit und bringen dir sofortige Erfolgserlebnisse.`,
+  s2: `Du attackierst ab heute ausschließlich die nächste Etappe vor dir. Jeder erreichte Zwischenschritt feuert deine Motivation massiv an. Du sammelst gezielt kleine Siege und baust ein gigantisches Momentum auf, das dich vorantreibt.`,
+  s3: `Die Summe dieser kleinen Etappen erschafft dein großes Meisterwerk. Du fokussierst dich auf die Machbarkeit und hakst Aufgabe für Aufgabe ab. Diese glasklare Aufteilung macht das Erreichen deines ultimativen Ziels absolut unausweichlich.`
+}, {
+  n: 4,
+  title: `Discipline`,
+  s1: `Disziplin ist dein stärkster Muskel. An den leichten Tagen treibt dich die Motivation voran. An den extrem anstrengenden Tagen übernimmt deine eiserne Disziplin das Steuer. Sie bringt dich sicher ans Ziel.`,
+  s2: `Dein bequemer Teil fordert nach Pausen. Dein großes Ziel verlangt deinen bedingungslosen Einsatz. Genau in diesem täglichen Kräftemessen formst du deinen unbrechbaren Willen und deine Führungskraft.`,
+  s3: `Du triffst die bewusste Wahl für den Erfolg. Du ziehst deinen Plan durch, ganz gleich wie steil der Weg aussieht. Diese absolute Konsequenz macht dich auf deinem Weg unbesiegbar.`
+}, {
+  n: 5,
+  title: `Focus`,
+  s1: `Fokus ist deine schärfste Waffe. Ein glasklarer Blick auf dein Ziel bündelt deine gesamte Energie für den entscheidenden Durchbruch. Du richtest deine volle Aufmerksamkeit auf die Umsetzung.`,
+  s2: `Ablenkungen lauern überall. Du blendest sie radikal aus. Du widmest deine Zeit und Kraft ausschließlich den Dingen, die dich deiner nächsten Etappe spürbar näherbringen.`,
+  s3: `Du beschützt deinen Fokus wie einen wertvollen Schatz. Deine Prioritäten stehen felsenfest. Diese kompromisslose Ausrichtung bringt dich mit maximalem Tempo an dein Ziel.`
+}, {
+  n: 6,
+  title: `Courage`,
+  s1: `Mut beginnt mit einem klopfenden Herzen. Wahre Stärke bedeutet, den Respekt vor der Aufgabe zu spüren und trotzdem loszustürmen. Du kämpfst für deine Vision, auch bei heftigem Gegenwind.`,
+  s2: `Großartige Ergebnisse verlangen mutige Taten. Du stellst dich den schwierigen Gesprächen, triffst beinharte Entscheidungen und stehst für deinen Traum ein. Du forderst deinen Platz ein.`,
+  s3: `Jeder mutige Schritt erweitert deine Komfortzone. Du wächst weit über dich hinaus. Du erkämpfst dir den Raum, der dir zusteht, und zeigst der Welt deine volle Größe.`
+}, {
+  n: 7,
+  title: `Patience & Persistence`,
+  s1: `Wahrer Aufbau gleicht einem Marathon. Du respektierst den Prozess und gibst deinen Bemühungen die nötige Zeit zur Reifung. Echter Erfolg erfordert kontinuierliche harte Arbeit und starke Nerven.`,
+  s2: `Du investierst täglich Schweiß und Fokus. Der schnelle Erfolg lässt oft auf sich warten, doch du baust unbeirrt weiter an deinem Fundament. Genau hier beweist du absolute Größe.`,
+  s3: `Du bleibst dauerhaft im Spiel. Der anfängliche Hype verfliegt schnell, aber deine Ausdauer bleibt bestehen. Am Ende gehört der Sieg den Frauen, die bis zur Ziellinie durchziehen.`
+}, {
+  n: 8,
+  title: `Resilience`,
+  s1: `Rückschläge testen deinen echten Willen. Jeder Fehler bietet dir pures Lernmaterial für deinen nächsten Angriff. Du stehst nach jedem Fall sofort wieder auf und kehrst stärker zurück.`,
+  s2: `Harte Zeiten wecken deinen Kampfgeist. Du analysierst die Situation glasklar, passt deine Strategie an und greifst erneut an. Du lässt dich von Widerständen formen und immer weiter vorwärts treiben.`,
+  s3: `Du bist eine absolute Kämpfernatur. Jede überstandene Krise macht dich widerstandsfähiger. Deine Erfolgsgeschichte lebt von deiner Fähigkeit, dem Druck standzuhalten und weiterzumachen.`
+}, {
+  n: 9,
+  title: `Dedication`,
+  s1: `Bedingungslose Hingabe unterscheidet Gewinnerinnen von Träumerinnen. Du verpflichtest dich deinem Ziel mit jeder Faser deines Körpers. Du brennst lichterloh für diese eine Sache.`,
+  s2: `Deine Prioritäten zeigen sich in deinen Taten. Du opferst bequeme Abende für harte Arbeit. Du investierst deine Ressourcen vollkommen in den Aufbau deiner großen Vision.`,
+  s3: `Du ziehst deine Entscheidung bis zum Ende durch. Halbe Sachen streichst du komplett aus deinem Leben. Dein voller Einsatz bringt dir die Resultate, die du verdienst.`
+}, {
+  n: 10,
+  title: `Growth`,
+  s1: `Wachstum schmerzt oft und formt dich komplett neu. Du brichst aus alten Rahmen aus. Diese Entwicklung fordert dich heraus, bisher völlig unbekannte Stärken in dir zu aktivieren.`,
+  s2: `Du stellst dich bewusst in den Sturm. Du wählst den steilen Weg, weil er dir die beste Aussicht bietet. Jede überwundene Grenze beweist dir deine grenzenlose Leistungsfähigkeit.`,
+  s3: `Du eroberst dir ständig neues Terrain. Dein Hunger nach Entwicklung bleibt unstillbar. Du verwandelst jede Herausforderung in ein massives Upgrade deiner eigenen Fähigkeiten.`
+}, {
+  n: 11,
+  title: `Radical Ownership`,
+  s1: `Du übernimmst die radikale Verantwortung für dein Leben. Du rettest dich selbst. Du erschaffst dein Glück aus eigener Kraft. Diese ehrliche Erkenntnis macht dich absolut unbesiegbar.`,
+  s2: `Du nimmst das Ruder fest in beide Hände. Du steuerst dein Schiff gezielt durch jede raue See. Du formst die Umstände nach deinen eigenen Vorstellungen.`,
+  s3: `Deine Ergebnisse liegen zu hundert Prozent in deiner Hand. Du erkämpfst dir jeden einzelnen Erfolg. Diese totale Eigenverantwortung verleiht dir absolute Macht über dein Leben.`
+}, {
+  n: 12,
+  title: `Tenacity`,
+  s1: `Durchziehen ist deine tägliche, bewusste Entscheidung. Du bleibst felsenfest auf deinem Kurs. Egal wie ungemütlich die Phase wird, du lieferst deine Arbeit ab.`,
+  s2: `Du beweist dem Leben deinen eisernen Willen. Viele starten euphorisch, doch du gehörst zu den wenigen Frauen, die das Ziel überqueren. Deine Zähigkeit ist dein absolutes Markenzeichen.`,
+  s3: `Du machst den Sack zu. Du arbeitest hart, bis das fertige Ergebnis auf dem Tisch liegt. Dein Name steht für absolute Zuverlässigkeit und geschaffene Tatsachen.`
+}, {
+  n: 13,
+  title: `Mindset Control`,
+  s1: `Dein Verstand ist dein wichtigstes Werkzeug. Du kontrollierst deine inneren Dialoge mit eiserner Hand. Du fütterst deinen Geist ausschließlich mit puren Sieger-Gedanken.`,
+  s2: `Jeder Gedanke formt deine Handlungen. Du wählst Worte der Stärke, der Macht und des Durchsetzungsvermögens. Du programmierst dich selbst auf den unbedingten Erfolg.`,
+  s3: `Ein starkes Mindset trotzt jedem Sturm. Du bleibst ruhig, fokussiert und handlungsfähig. Deine mentale Stärke entscheidet jeden Kampf eindeutig zu deinen Gunsten.`
+}, {
+  n: 14,
+  title: `Massive action`,
+  s1: `Massive Tatkraft bringt greifbare Ergebnisse. Du beendest das endlose Planen und springst direkt in die Umsetzung. Du produzierst ab heute harte Fakten.`,
+  s2: `Echte Arbeit fordert Schweiß. Du packst die schwierigsten Aufgaben zuerst an. Du baust dir deinen Weg durch puren, ehrlichen Einsatz Stein für Stein auf.`,
+  s3: `Deine Geschwindigkeit und deine Umsetzungskraft beeindrucken. Du setzt Dinge in massive Bewegung. Dein Erfolg ist das direkte Resultat deiner unermüdlichen Handlungsbereitschaft.`
+}, {
+  n: 15,
+  title: `The Choice`,
+  s1: `Der Weg an die Spitze erfordert unbändigen Willen. Der einfache Weg führt in den Durchschnitt. Du wählst ganz bewusst den anspruchsvollen Pfad für ein außergewöhnliches Leben.`,
+  s2: `Du beweist dir selbst jeden Tag deine Stärke. Du beißt dich durch die härtesten Phasen. Du kämpfst für das Leben, das du tief in deinem Inneren als deins erkennst.`,
+  s3: `Du bist eine Macherin. Du stehst auf, du kämpfst und du siegst. Du schreibst deine eigene, mächtige Geschichte durch dein unaufhaltsames Weitermachen.`
+}];;
+
+window.MANIFEST10_DAYS = [{
+  n: 1,
+  title: `See it first`,
+  s1: `Alles beginnt mit einem inneren Bild. Ein Wunsch entsteht tief in dir als klare Ahnung, und du spürst genau, wie dein Leben wachsen will. Dieser erste innere Blick setzt deine Energie in Bewegung und gibt ihr eine Richtung. Gib diesem Moment bewusst Raum.`,
+  s2: `Dieses Bild verlangt nach Konturen. Betrachte dein Leben in der Form, die du erschaffen willst. Erlebe dich in deinem neuen Alltag, spüre deine Schritte und höre deine eigenen Worte. Je genauer deine Vision wird, desto stärker reagiert deine Wahrnehmung darauf, und die Dinge rücken näher an dich heran.`,
+  s3: `Mach diese Vision zu deinem festen Anker. Sie erschafft einen inneren Ort, der dich immer wieder an deine Ausrichtung erinnert. Was du innerlich klar sehen kannst, durchdringt deine Energie, beeinflusst deine Entscheidungen und nimmt schließlich Form in deinem Leben an.`
+}, {
+  n: 2,
+  title: `Feel it real`,
+  s1: `Dein inneres Bild erwacht in dem Moment, in dem du es mit Gefühl auflädst. Gedanken formen die Richtung, deine Emotionen atmen Leben hinein. Spüre deinen Wunsch körperlich und erlebe den Moment der Erfüllung im Hier und Jetzt.`,
+  s2: `Dein Gefühl wirkt als stärkster Verstärker. Dein Körper erkennt die neue Realität an, und dein Auftreten verändert sich von Grund auf. Du triffst andere Wahlen und gehst mit einer völlig neuen Klarheit durch deinen Tag.`,
+  s3: `Mache dieses Gefühl der Erfüllung zu deiner Heimat. Füttere diese Emotionen, bis sie dir völlig vertraut sind. Verstand und Körper verschmelzen, und diese gebündelte Kraft richtet dein gesamtes Feld dauerhaft neu aus.`
+}, {
+  n: 3,
+  title: `Decide the outcome`,
+  s1: `Eine klare Entscheidung bündelt all deine Energie. Sag innerlich Ja zu deiner Ausrichtung, um deinen Verstand zu fokussieren. Aus einem Traum wird eine feste Absicht, und dein Ziel bekommt ein echtes Gewicht in deinem Leben.`,
+  s2: `Dieses entschiedene Innere strahlt absolute Klarheit aus. Dein Ziel nimmt einen festen Platz in dir ein und prägt deine Gedanken sowie deine Sprache. Deine Entscheidung erhebt dich und verleiht dir Tag für Tag mehr Stabilität.`,
+  s3: `Deine Entscheidung ist die volle Zustimmung zu dem Leben vor deinem inneren Auge. Du umarmst die Version von dir, die dieses Ergebnis bereits lebt. Dieses Ja macht deinen Wunsch zu einem festen Teil deiner Identität.`
+}, {
+  n: 4,
+  title: `Become the match`,
+  s1: `Dein Wunsch sucht nach deiner größten Version, denn jede Manifestation braucht eine innere Entsprechung. Ein weites Leben verlangt nach weitem Denken, und Erfolg erfordert klare Selbstführung. Finde die Version in dir, die dieses Ergebnis ausstrahlt.`,
+  s2: `Verkörpere die Energie deines Ziels in vollen Zügen. Denke in Freiheit, blicke aus der Fülle heraus und trage dich mit Gewissheit. Dein Inneres gleicht sich an, Denken und Handeln fließen zusammen, und dein Signal wird magnetisch.`,
+  s3: `Die Wiederholung formt diese neue Energie dauerhaft. Kehre immer wieder zu deiner höchsten Version zurück und erlebe sie in all deinen Taten. Du wirst zu der Person, die dein Wunsch braucht, und ihr bewegt euch stetig aufeinander zu.`
+}, {
+  n: 5,
+  title: `Speak it into form`,
+  s1: `Deine Worte lenken deine Energie und formen dein Feld. Sätze über dich, dein Leben und deine Zukunft wecken Bilder und Gefühle. Deine Sprache ist das Werkzeug deiner Manifestation, also sprich im tiefen Vertrauen in deinen Weg.`,
+  s2: `Wähle bewusst Sätze, die deine Realität aufbauen. „Möglichkeiten finden mich", „Ich lebe in Fülle" und „Ich empfange" transformieren deine innere Haltung. Deine Wahrnehmung öffnet sich für Wege, die dir vorher verborgen blieben.`,
+  s3: `Deine Sprache materialisiert diese Energie direkt. Du hörst deine eigenen Worte, sie prägen dein Inneres und erschaffen einen tiefen Glauben. Sprich so groß über dein Leben, dass deine neue Version den gesamten Raum in dir einnimmt.`
+}, {
+  n: 6,
+  title: `Hold the vision`,
+  s1: `Deine Vision braucht deine Treue. Der Alltag umgibt dich, doch du hältst dein Bild genau jetzt fest. Der aktuelle Stand im Außen ist eine reine Momentaufnahme, während deine Vision dir den wahren Weg leuchtet.`,
+  s2: `Deine Vision zieht dich weit über das Bekannte hinaus. Sie lädt dich ein, Wunder zu erwarten und Fülle zu empfangen. Dein Körper geht mit, dein Verstand findet Wege, und deine Energie fließt stetig vorwärts.`,
+  s3: `Durch stetige Präsenz gewinnt deine Vision an Kraft. Lade sie mit Gefühlen, starken Worten und ehrlicher Dankbarkeit auf. Dein Leben formt sich neu, und deine Vision bleibt dein verlässlicher Kompass.`
+}, {
+  n: 7,
+  title: `Live from the end`,
+  s1: `Betrete den geistigen Ort, an dem dein Wunsch bereits erfüllt ist. Denke und fühle vom Ergebnis aus. Lass diese Version von dir aus Liebe heraus leben und empfangen, und dein Blick auf die Welt wird sich komplett wandeln.`,
+  s2: `Das Ende erschafft deinen Anfang. Frage dich bei jeder Entscheidung, was die Person tut, die dieses Leben bereits führt. Du verschmilzt mit der Frequenz deines Wunsches und betrittst dein Leben mit innerer Gewissheit.`,
+  s3: `Deine erfüllte Version ist dein stärkster Anker. Verbinde dich mit ihr, erkenne ihren Glauben und beobachte, wie sie Türen aufstößt. Erlebe die Welt durch ihre Augen, denn dein Wunsch atmet bereits in dir.`
+}, {
+  n: 8,
+  title: `Gratitude opens more`,
+  s1: `Dankbarkeit lenkt deinen Fokus direkt auf die Fülle. Sie verbindet dich mit dem Guten im Hier und Jetzt und weitet dein Herz. Du empfängst aus Wertschätzung heraus und erkennst die Unterstützung, die dich umgibt.`,
+  s2: `Gelebte Dankbarkeit ist pures Empfangen. Du zeigst dem Leben deine Wertschätzung für alles Vorhandene und öffnest dich für neue Türen. Feiere jede Idee und jeden Kontakt, denn das macht alles Bestehende groß und das Kommende einladend.`,
+  s3: `Dein dankbarer Blick erschafft Bedeutung und vermehrt die Fülle. Erkenne Fortschritt und Möglichkeiten bewusst an. Dankbarkeit durchdringt deine Energie, macht deinen Wunsch magnetisch und bereitet den Raum für Wunder.`
+}, {
+  n: 9,
+  title: `Believe until it feels normal`,
+  s1: `Dein Glaube wächst durch beständige Wiederholung. Du siehst dein Bild, fühlst es, sprichst es aus und triffst deine Wahl. Du lebst die Erfüllung, strahlst vor Dankbarkeit und erlebst, wie dir dein Wunsch zutiefst vertraut wird.`,
+  s2: `Echte Vertrautheit bringt Nähe. Dein Inneres weiß genau, dass dieses Ergebnis zu dir gehört. Dein Glaube macht dich sehend für Chancen, lässt dich mutig neue Wege gehen und führt dich mit klarer Erwartung durch den Tag.`,
+  s3: `Dein Glaube verankert den Wunsch in dir, bis er zu deiner Normalität wird. Dein Verstand legt alle Grenzen ab, und deine Energie umarmt das Ergebnis. Dein Wunsch pulsiert in deinem Alltag, und dein Glaube trägt dich sicher.`
+}, {
+  n: 10,
+  title: `Receive and move`,
+  s1: `Empfangen ist ein innerer Raum, den du dir erschaffen hast. Öffne dich für die Wege des Lebens, die sich in brillanten Ideen, perfekten Timings oder überraschenden Gelegenheiten zeigen. Deine Manifestation arbeitet in voller Kraft.`,
+  s2: `Wahres Empfangen verlangt deine Hingabe. Erkenne die Zeichen, ehre jeden Impuls und durchschreite geöffnete Türen. Gib deinem Wunsch den physischen Raum und weite dein Herz für das Wachstum, das jetzt zu dir kommt.`,
+  s3: `Bewege dich voller Vertrauen im Rhythmus des Lebens. Manifestation ist eine lebendige Entfaltung aus Begegnungen und innerer Führung. Das Leben antwortet auf deine Energie, und du gehst freudvoll mit deinem erfüllten Wunsch voran.`
+}];;
+
+window.UNIVERSUM10_DAYS = [{
+  n: 1,
+  title: `The Divine Connection`,
+  s1: `Dein Bewusstsein ist direkt mit der unendlichen Quelle verbunden. Du bist Teil einer gigantischen, lebendigen Energie, die alles erschafft. Diese Kraft steht dir jederzeit in vollem Umfang zur Verfügung.`,
+  s2: `Richte dich bewusst auf diese Verbindung aus. Dein inneres Signal ist der Anker für alles, was in dein Leben fließt. Du aktivierst deine Schöpferkraft durch reine, klare Aufmerksamkeit.`,
+  s3: `Spüre diese gewaltige Rückendeckung. Das Universum arbeitet ab heute exakt nach deinem Signal. Deine tiefe Verbundenheit macht dich unaufhaltsam und absolut stark.`
+}, {
+  n: 2,
+  title: `The Power of Gratitude`,
+  s1: `Dankbarkeit ist dein direkter Draht zur Fülle. Sobald du das Vorhandene ehrst, öffnest du deine Tore für das Zukünftige. Dankbarkeit katapultiert deine Schwingung sofort auf das Level deiner Träume.`,
+  s2: `Feiere das, was bereits da ist. Jedes „Danke" sendet eine Nachricht an das Universum, dass du bereit für mehr bist. Du ziehst durch diese Haltung automatisch weitere Gründe an, um dankbar zu sein.`,
+  s3: `Deine Dankbarkeit ist ein kraftvoller Magnet. Sie wandelt dein gesamtes Energiefeld in eine Einladung für Reichtum und Wunder um. Du bist ab heute ein lebendiges Symbol für Fülle.`
+}, {
+  n: 3,
+  title: `Living in Abundance`,
+  s1: `Überfluss ist dein natürlicher Zustand. Das Universum lebt in reiner Fülle und hält ausschließlich grenzenlose Möglichkeiten bereit. Du hast ein unantastbares Recht auf diesen riesigen Reichtum.`,
+  s2: `Lebe heute in der Gewissheit von Überfluss. Dein Denken, dein Handeln und deine Erwartung spiegeln diese Fülle wider. Du handelst aus einer Position absoluter Kraft und Fülle heraus.`,
+  s3: `Du badest im unendlichen Strom der Möglichkeiten. Alles steht dir in vollem Umfang zur Verfügung. Dein Leben spiegelt diesen Überfluss ab sofort in jeder Faser wider.`
+}, {
+  n: 4,
+  title: `The Frequency of Receiving`,
+  s1: `Das Universum antwortet präzise auf deine persönliche Frequenz. Dein Feld formt deine Realität. Eine hohe, klare Energie zieht exakt dieselben Ergebnisse aus dem Kosmos an.`,
+  s2: `Wähle die Frequenz des puren Empfangens. Du öffnest dich für die absolute Fülle und stellst dich auf den Kanal des Reichtums ein. Du ziehst großartige Möglichkeiten zielgerichtet in dein Leben.`,
+  s3: `Dein Energiefeld vibriert auf dem absoluten Maximum. Du bist ein riesiger Magnet für Erfolg und glückliche Fügungen. Dein Empfang ist auf unendliches Wachstum programmiert.`
+}, {
+  n: 5,
+  title: `Radical Self-Worth`,
+  s1: `Du bist eine energetische Kostbarkeit. Dein Wert ist angeboren und absolut unverhandelbar. Das Universum erkennt dich als Meisterwerk an, das nur das Beste verdient.`,
+  s2: `Verankere dieses Wissen über deinen Wert tief in deinen Zellen. Du forderst ab heute das Beste für dich ein, weil du es dir selbst wert bist. Dein Selbstwert ist der Motor für deinen Erfolg.`,
+  s3: `Du strahlst die Frequenz deiner unendlichen Wertigkeit aus. Die Welt spiegelt dir diesen Wert sofort wider. Du ziehst Fülle an, die exakt deiner Größe entspricht.`
+}, {
+  n: 6,
+  title: `Radical Trust`,
+  s1: `Wahres Vertrauen ist deine Verbindung zum Kosmos. Du übergibst deine Träume an eine Kraft, die weit über deinen Verstand hinausgeht. Dieses Vertrauen beschleunigt jede deiner Manifestationen massiv.`,
+  s2: `Das Universum kennt geniale Wege, die sich dir Schritt für Schritt zeigen. Erlaube dem Leben, meisterhaft für dich zu arbeiten. Du lehnst dich in diese Führung zurück.`,
+  s3: `Du gehst in der absoluten Gewissheit deines Erfolgs durch jeden Tag. Das Timing des Universums greift perfekt. Dein Weg entfaltet sich auf eine absolut magische Weise.`
+}, {
+  n: 7,
+  title: `Perfect Synchronicities`,
+  s1: `Magische Fügungen sind die Wegweiser des Universums. Plötzliche Begegnungen und geniale Momente sind perfekte Arrangements. Das Feld ordnet sich exakt für deine Vision.`,
+  s2: `Achte auf diese brillanten Zeichen. Du nimmst jede Synchronizität als klare Bestätigung deines Weges wahr. Du nutzt diese Momente als Sprungbrett für deinen Erfolg.`,
+  s3: `Diese Momente häufen sich in deinem Leben. Du erkennst die meisterhafte Regie des Universums. Alles greift perfekt und harmonisch ineinander.`
+}, {
+  n: 8,
+  title: `Energetic Alignment`,
+  s1: `Die perfekte Ausrichtung ist dein goldener Schlüssel. Dein Denken, Fühlen und Handeln schwingen auf der exakten Frequenz deines Ziels. Diese Übereinstimmung wirkt wie ein kosmischer Laserstrahl.`,
+  s2: `Du stimmst dich jeden Morgen auf die Energie deiner Wünsche ein. Du handelst als die Person, die bereits alles besitzt. Das Universum spiegelt dir diese kraftvolle Haltung sofort wider.`,
+  s3: `Deine Resonanz ist zielgenau. Das Universum antwortet auf deine Klarheit mit schnellen Manifestationen. Du lebst in der vollkommenen Frequenz der Erfüllung.`
+}, {
+  n: 9,
+  title: `Cosmic Guidance`,
+  s1: `Das Universum spricht durch deine starke Intuition. Jeder plötzliche Impuls ist eine direkte kosmische Nachricht. Diese innere Stimme navigiert dich absolut sicher und zielgerichtet.`,
+  s2: `Folge diesen Hinweisen sofort und voller Tatendrang. Du setzt diese Impulse in kraftvolle Taten um. Das Universum liebt deine Geschwindigkeit und belohnt deinen Einsatz.`,
+  s3: `Deine innere Führung bringt dich auf dem direkten Weg an dein Ziel. Du bist jederzeit perfekt angebunden. Dein Instinkt führt dich punktgenau zu deinen Wünschen.`
+}, {
+  n: 10,
+  title: `Pure Sovereignty`,
+  s1: `Du bist die Souveränin deines Lebens. Deine Anbindung ans Universum verleiht dir eine unbesiegbare innere Stärke. Du stehst in deiner vollen Macht und definierst deine Regeln selbst.`,
+  s2: `Du ehrst dich als Schöpferin deiner Realität. Jedes Handeln ist ein Ausdruck deines hohen Wertes. Du lebst deine Souveränität mit jeder Faser deines Seins.`,
+  s3: `Du empfängst dein Leben in Dankbarkeit und Freude. Dein gesamtes Sein ist im perfekten Einklang mit dem Universum. Du bist bereit für die nächste große Stufe deiner Entwicklung.`
+}];;
+
+window.SELBSTLIEBE12_DAYS = [{
+  n: 1,
+  title: `Die Basis`,
+  s1: `Alles beginnt mit der Entscheidung dir selbst uneingeschränkt zu vertrauen. Selbstliebe ist die Voraussetzung für deine gesamte Stärke. Sie ist das feste Fundament für dein tägliches Handeln. Du kennst deine eigenen Fähigkeiten ganz genau. Du handelst ab heute aus dieser tiefen Gewissheit heraus.`,
+  s2: `Betrachte dich heute als deine wichtigste Verbündete. Du hast den ersten Platz in deinem Leben verdient. Deine konsequente Haltung definiert den Erfolg deines Tages. Du nimmst dich wichtig und setzt deine eigenen Standards ab sofort selbst fest. Deine Prioritäten sind glasklar.`,
+  s3: `Diese innere Sicherheit verleiht dir absolute Souveränität. Wenn du bei dir ankommst behältst du auch im größten Trubel die volle Kontrolle. Du bist dein eigener sicherer Hafen und stehst felsenfest. Du bestimmst ab jetzt die Richtung deines Erfolgs.`
+}, {
+  n: 2,
+  title: `Annahme`,
+  s1: `Dein Leben wächst genau dort wo du deine aktuelle Situation vollkommen annimmst. Dein heutiger Status ist der perfekte Startpunkt für deinen nächsten großen Schritt. Alles bisher Erlebte hat dich extrem stark gemacht. Du nutzt diese Erfahrung ab sofort als reinen Treibstoff für deine Ziele.`,
+  s2: `Erkenne dich in deiner ganzen Echtheit an. Jede Facette deines Wesens trägt zu deiner Einzigartigkeit bei. Deine persönliche Handschrift hebt dich von der Masse ab. Du nutzt diese Eigenheit als dein stärkstes Alleinstellungsmerkmal. Deine Präsenz füllt jeden Raum.`,
+  s3: `Das bedingungslose Ja zu dir selbst setzt enorme Kraft frei. Du beendest jeden inneren Widerstand und bündelst deine Energie. Du richtest deinen Blick ausschließlich nach vorne. Deine gesamte Kraft fließt jetzt direkt in deine Umsetzung.`
+}, {
+  n: 3,
+  title: `Dein Wert`,
+  s1: `Dein Wert ist angeboren und absolut unantastbar. Er existiert völlig losgelöst von jeder erbrachten Leistung. Du bringst diese Substanz von Natur aus mit. Deine Existenzberechtigung steht fest wie ein Fels. Du forderst ab heute das Maximum für dich ein.`,
+  s2: `Erinnere dich an deine Größe selbst an herausfordernden Tagen. Dein Wert bleibt in jeder Situation vollkommen bestehen. Wahre Größe zeigt sich in der Beständigkeit deines Selbstbildes. Du bleibst in jeder Lage die Souveränin deines Handelns. Du ruhst in deiner eigenen Autorität.`,
+  s3: `Du bist die einzige Instanz die deinen Wert bestimmt. Heute schreibst du dir selbst den höchsten Wert zu. Du agierst ab jetzt aus dieser absoluten Fülle heraus. Dein Wert ist das Fundament auf dem du dein Imperium baust.`
+}, {
+  n: 4,
+  title: `Fokus`,
+  s1: `Dein innerer Dialog formt deine tägliche Energie. Sprich mit dir wie mit einer Verbündeten der du blind vertraust. Deine Worte haben die absolute Macht dich aufzurichten. Wähle deine Sätze mit Bedacht und voller Klarheit. Du steuerst deinen Fokus allein durch deine Sprache.`,
+  s2: `Ersetze harte Kritik durch konsequente Klarheit. Ein starker Umgangston mit dir selbst macht dich extrem resilient. Du gibst dir selbst den nötigen Raum zum Wachsen. Wahre Stärke braucht eine Basis aus Respekt. Du baust deine Zukunft auf dieser soliden Grundlage auf.`,
+  s3: `Du bist das Ergebnis deiner eigenen Gedanken. Heute wählst du einen wertschätzenden Ton für deine Ziele. Du behandelst dich selbst wie dein absolutes Vorbild. Dein Erfolg beginnt exakt mit deinem inneren Zuspruch.`
+}, {
+  n: 5,
+  title: `Grenzen`,
+  s1: `Dein Ja zu dir erfordert eine glasklare Abgrenzung von Energiefressern. Grenzen schützen deinen Fokus und deine kostbare Zeit. Du behältst deine Energie wirksam bei dir. Dein Raum gehört dir allein. Du setzt deine Ressourcen ab jetzt hochgradig gezielt ein.`,
+  s2: `Du entscheidest wer Platz in deinem Leben bekommt. Deine Grenzen sind ein Zeichen tiefer Selbstachtung. Nur wer klare Linien zieht lenkt seine Energie in die richtigen Bahnen. Du bist die alleinige Hüterin deiner Kraft. Dein Umfeld passt sich deinen Standards an.`,
+  s3: `Setze deine Grenzen aus einer Position der Stärke heraus. Damit schaffst du den Raum den deine Ziele zwingend brauchen. Du bestimmst wer in deinem Energiefeld willkommen ist. Dein Fokus bleibt dadurch messerscharf und zielgerichtet.`
+}, {
+  n: 6,
+  title: `Körperkraft`,
+  s1: `Dein Körper ist das Instrument deiner gesamten Umsetzungskraft. Er leistet jeden Tag Großartiges und verdient deine tägliche Wertschätzung. Du feierst deine physische Leistungsfähigkeit. Du pflegst diese Basis mit voller Absicht für deine Höchstleistung. Deine Gesundheit ist dein größtes Kapital.`,
+  s2: `Begegne deinem Körper mit purem Respekt. Wähle Nahrung und Bewegung die dir echte Vitalität schenken. Dein Wohlgefühl ist die Basis für alles was du aufbaust. Du sorgst aktiv für deine maximale Energie. Du triffst bewusste Entscheidungen für deine Kraft.`,
+  s3: `Dein Körper ist dein treuester Partner auf diesem Weg. Wenn du ihn ehrst zahlst du direkt auf dein Erfolgskonto ein. Du steigerst deine Ausdauer spürbar durch diese Wertschätzung. Du bereitest dich physisch auf deinen großen Durchbruch vor.`
+}, {
+  n: 7,
+  title: `Wachstum`,
+  s1: `Ein Rückschlag ist nur ein wertvoller Hinweis für deinen nächsten Versuch. Er zeigt deine Bereitschaft für große Taten. Du nutzt jede Erfahrung als direkte Stufe auf deiner Leiter nach oben. Du integrierst dieses Wissen sofort in deinen Masterplan.`,
+  s2: `Passe deine Strategie an sobald Pläne sich ändern. Nutze die Lektion und richte den Blick sofort wieder nach vorne. Du gehst direkt zur nächsten Etappe über. Dein schnelles Handeln zählt mehr als langes Analysieren. Du bleibst unaufhaltsam in Bewegung.`,
+  s3: `Selbstliebe zeigt sich in deiner lösungsorientierten Haltung. Du bleibst auf Kurs und lernst rasend schnell. Jede Herausforderung ist ein Baustein für deinen späteren Erfolg. Du gewinnst an strategischer Schärfe und Handlungsfähigkeit.`
+}, {
+  n: 8,
+  title: `Deine Zeit`,
+  s1: `Deine Energie erfordert regelmäßige Momente der bewussten Erholung. Du schaffst dir diese Zeit aktiv um deine innere Batterie aufzuladen. Deine Zeit ist ein kostbares Gut. Du priorisierst deine eigene Erholung als Teil deiner Erfolgsstrategie. Du startest danach mit maximaler Effizienz durch.`,
+  s2: `Diese Pausen sind die lebensnotwendige Basis deiner Leistungsfähigkeit. Deine Auszeit gibt dir deinen Fokus zurück. Du siehst danach sofort klarer was wirklich Priorität hat. Du hältst inne um das große Ganze zu überblicken.`,
+  s3: `Investiere in deine Regeneration bevor deine Kräfte nachlassen. Wenn du in dich investierst wächst deine Kapazität für neue Meilensteine. Dein Leben gewinnt durch diese aktiven Pausen an Qualität. Deine Zeit mit dir selbst ist dein exklusives Upgrade.`
+}, {
+  n: 9,
+  title: `Anerkennung`,
+  s1: `Du übergehst deine eigenen Siege viel zu oft. Fang heute damit an dir deine Erfolge ganz bewusst klar zu machen. Du ehrst jeden einzelnen Meilenstein deiner Reise. Diese Wertschätzung feuert deine Motivation massiv an. Du bist stolz auf deine erbrachte Leistung.`,
+  s2: `Feiere deine Fortschritte an jedem einzelnen Tag. Jeder Haken auf deiner Liste beweist deine enorme Umsetzungskraft. Du siehst genau was du bereits alles geschafft hast. Diese Bestätigung pusht dich direkt auf das nächste Level.`,
+  s3: `Anerkennung ist der beste Treibstoff für deinen nächsten Erfolg. Wer die eigenen Siege feiert setzt automatisch immer höhere Standards. Du programmierst deinen Verstand auf puren Erfolg. Du bist bereit für noch größere Aufgaben.`
+}, {
+  n: 10,
+  title: `Dein Versprechen`,
+  s1: `Du bist die einzige Person mit der du dein gesamtes Leben verbringst. Dieses Versprechen dich immer zu stützen ist deine wichtigste Verpflichtung. Du verlässt dich vollkommen auf dich selbst. Du handelst ab heute als deine eigene zuverlässigste Partnerin. Du baust auf dein eigenes Fundament.`,
+  s2: `Du bleibst dir treu egal welche Umstände dich gerade fordern. Dein Selbstvertrauen wächst durch jede bewusste Entscheidung für dein Wachstum. Du bist die oberste Priorität in deinem Leben. Deine Verlässlichkeit dir selbst gegenüber ist unerschütterlich.`,
+  s3: `Du bist bereit für alles was vor dir liegt. Mit der absoluten Rückendeckung für dich selbst eroberst du jeden Tag dein Ziel. Du weißt dass du diesen Erfolg verdienst. Du gehst deinen Weg mit eiserner Entschlossenheit.`
+}, {
+  n: 11,
+  title: `Deine Standards`,
+  s1: `Dein Selbstwert definiert die Qualität deines gesamten Lebens. Du legst den Maßstab für deine Beziehungen und Ziele selbst fest. Dein Leben spiegelt deine hohen Standards exakt wider. Du duldest ausschließlich Qualität in deinem Umfeld.`,
+  s2: `Deine Standards bewahren deine Kraft und deinen klaren Fokus. Du wählst ganz bewusst wer Zugang zu deiner Welt bekommt. Du bist die alleinige Hüterin deines Erfolgs. Du umgibst dich mit Menschen die dich voranbringen.`,
+  s3: `Hohe Standards sind der direkteste Ausdruck deines starken Selbstwerts. Du erlaubst dir ab heute nur noch das Beste für deine Entwicklung. Du sagst ein klares Ja zu deinen Ambitionen. Dein Leben wächst genau auf das Niveau deiner Ansprüche.`
+}, {
+  n: 12,
+  title: `Treue`,
+  s1: `Sei dir selbst die loyalste Partnerin in absolut jeder Situation. Deine Unbeirrbarkeit dir selbst gegenüber ist dein wichtigstes Fundament. Du bist dein eigener Anker der allem standhält. Du nimmst deinen Platz mit Stolz und Klarheit ein.`,
+  s2: `Stehe fest zu deinen Entscheidungen und deiner inneren Wahrheit. Integrität macht dich extrem stark und verleiht dir natürliche Autorität. Diese Kraft spüren alle Menschen um dich herum. Wenn du zu dir stehst folgen die Ergebnisse ganz automatisch.`,
+  s3: `Treue zu dir selbst ist deine größte Freiheit und deine unbändige Macht. Du vertrittst deine Werte mit absoluter Überzeugung. Du weißt genau wer du bist und wohin du willst. Dein Leben gehört dir allein.`
+}];;
+
+window.LOSLASSEN11_DAYS = [{
+  n: 1,
+  title: `Strategische Freiheit`,
+  s1: `Loslassen ist die bewusste Entscheidung für dein persönliches Wachstum. Du befreist dich von allem was dich bremst. Dein Fokus liegt auf den riesigen Möglichkeiten der Zukunft.`,
+  s2: `Du schaffst dir heute enormen Raum für neue Meilensteine. Du entscheidest dich alten Ballast vollständig abzugeben. Deine operative Geschwindigkeit steigt dadurch massiv an.`,
+  s3: `Spüre die sofortige Erleichterung durch diesen klaren Schnitt. Du gewinnst wertvolle Ressourcen für deine wichtigsten Projekte zurück. Du handelst ab jetzt aus purer Leichtigkeit heraus.`
+}, {
+  n: 2,
+  title: `Ballast abwerfen`,
+  s1: `Dein Aufstieg wird durch deine geistige Leichtigkeit bestimmt. Wahre Größe zeigt sich im konsequenten Aussortieren von Überflüssigem. Du behältst nur die Dinge die dich wirklich voranbringen.`,
+  s2: `Du wählst heute die absolute Freiheit für deinen Weg. Jede losgelassene Sorge bedeutet einen Meter mehr an Fortschritt. Du genießt deine neue mentale Beweglichkeit in vollen Zügen.`,
+  s3: `Dein Weg wird sofort leichter und sichtbarer. Du konzentrierst dich vollkommen auf das Hier und Jetzt. Du bewegst dich ab heute viel schneller auf deine Ziele zu.`
+}, {
+  n: 3,
+  title: `Kontrolle abgeben`,
+  s1: `Wahre Souveränität zeigt sich im Vertrauen auf den Prozess. Du entspannst dich und siehst das große Ganze wieder klar. Du gewinnst wertvolle Zeit für strategische Entscheidungen zurück.`,
+  s2: `Überlasse die Ausführung der kleinen Schritte deinem fähigen Umfeld. Du definierst das Ziel und vertraust auf die perfekte Umsetzung. Diese Delegation ist ein Zeichen deiner enormen Führungsqualität.`,
+  s3: `Deine Anspannung verwandelt sich in produktive Ruhe. Du bist bereit für Ergebnisse die deine Vorstellungen weit übertreffen. Du agierst jetzt als die wahre Regisseurin deines Erfolgs.`
+}, {
+  n: 4,
+  title: `Mentale Ruhe`,
+  s1: `Ein ruhiger Geist ist die Quelle deiner brillantesten Ideen. Du schiebst heute alle kreisenden Gedanken einfach zur Seite. Diese Stille in deinem Kopf schafft den perfekten Raum für Innovationen.`,
+  s2: `Schalte den Lärm der äußeren Erwartungen ganz bewusst ab. Du findest deinen Frieden in der Klarheit deiner eigenen Absichten. Du triffst Entscheidungen aus einer tiefen inneren Stabilität heraus.`,
+  s3: `Deine Präsenz wird durch deine innere Ruhe massiv verstärkt. Du strahlst eine Gelassenheit aus die andere sofort beeindruckt. Du bist vollkommen zentriert und bereit für den Durchbruch.`
+}, {
+  n: 5,
+  title: `Raum für Fülle`,
+  s1: `Mit offenen Händen bist du bereit für neue Geschenke des Lebens. Jedes Loslassen ist eine direkte Einladung an den Überfluss. Du schaffst bewusst Leere um sie mit deiner großen Vision zu füllen.`,
+  s2: `Wahre Fülle entsteht durch den absoluten Fokus auf das Wesentliche. Du ziehst genau die Möglichkeiten an die zu deiner neuen Leichtigkeit passen. Dein Raum füllt sich mit wertvollen Gelegenheiten.`,
+  s3: `Du bist ein Magnet für Wohlstand und Erfolg. Dein Vertrauen in die kommende Fülle ist absolut und unerschütterlich. Alles fließt jetzt harmonisch und zielgerichtet direkt zu dir.`
+}, {
+  n: 6,
+  title: `Emotionale Freiheit`,
+  s1: `Du befreist dich heute von alten und schweren Gefühlen. Jedes Vergeben ist ein Akt der puren Selbstliebe. Du schenkst dir die Freiheit wieder ganz im Moment zu sein.`,
+  s2: `Lass alte Enttäuschungen einfach abfließen wie Wasser. Du bewahrst nur die wertvollen Lektionen deiner Geschichte. Dein Herz ist offen für wunderbare neue Begegnungen.`,
+  s3: `Deine emotionale Unabhängigkeit macht dich extrem stark. Du bist die alleinige Herrscherin über deine innere Welt. Du fühlst dich heute so leicht und frei wie noch nie.`
+}, {
+  n: 7,
+  title: `Delegieren als Kraft`,
+  s1: `Abgeben ist eine deiner wichtigsten Fähigkeiten auf dem Weg nach oben. Das Teilen von Verantwortung vervielfacht deine Wirkung in der Welt. Du schaffst Synergien die dich und dein Umfeld voranbringen.`,
+  s2: `Vertraue auf meisterhafte Lösungen auch ohne dein direktes Eingreifen. Du förderst das Wachstum anderer durch deinen gewährten Freiraum. Du konzentrierst dich ab jetzt nur noch auf deine Geniezone.`,
+  s3: `Deine Last nimmt ab und deine Schlagkraft nimmt drastisch zu. Du bist die strategische Spitze die alles mit ruhiger Hand steuert. Du gewinnst die volle Freiheit über deinen Kalender zurück.`
+}, {
+  n: 8,
+  title: `Die Kunst des Innehaltens`,
+  s1: `In der Pause liegt die Kraft für deinen nächsten großen Sprung. Du erlaubst dir das Tempo bewusst zu drosseln und durchzuatmen. Du tankst deine Reserven mit frischer und klarer Energie auf.`,
+  s2: `Nutze die Stille um deine aktuelle Ausrichtung in Ruhe zu überprüfen. Du justierst deinen Kompass und richtest dich wieder perfekt aus. Diese bewusste Zeit für dich selbst ist dein wertvollstes Investment.`,
+  s3: `Deine Ruhe ist die Basis für deine souveräne Ausstrahlung. Du handelst nach dieser Pause mit doppelter Präzision und Klarheit. Das Innehalten macht dich fit für die wirklich großen Aufgaben.`
+}, {
+  n: 9,
+  title: `Sanftheit statt Härte`,
+  s1: `Du begegnest dir heute mit einer neuen und stärkenden Sanftheit. Diese wohlwollende Haltung setzt enorme kreative Energien in dir frei. Du erreichst deine Ziele mit Leichtigkeit und großer Freude.`,
+  s2: `Du fließt im Einklang mit der Energie deines Lebens. Diese harmonische Ausrichtung bringt dir brillante Ergebnisse ein. Du bist im Einklang mit deiner starken inneren Schöpferkraft.`,
+  s3: `Dein Erfolg fühlt sich ab heute absolut verdient und mühelos an. Du gleitest durch deinen Alltag und meisterst Hürden mit spielerischer Souveränität. Deine Sanftheit macht dich paradoxerweise noch viel belastbarer.`
+}, {
+  n: 10,
+  title: `Die neue Leichtigkeit`,
+  s1: `Du strahlst eine neue und absolut kraftvolle Leichtigkeit aus. Du hast verinnerlicht was wirklich zählt für dein Wachstum. Dein Weg liegt nun glasklar und weit offen vor dir.`,
+  s2: `Trage diese neue Ruhe als deinen ständigen Begleiter in die Zukunft. Jedes Loslassen war ein wichtiger Schritt zu deiner Meisterschaft. Du bist bereit für das höchste Level deiner persönlichen Entwicklung.`,
+  s3: `Du empfängst dein neues Leben mit weiten Armen und vollem Vertrauen. Du handelst als die souveräne Schöpferin die Ruhe und Erfolg vereint. Du bist vollkommen eins mit deiner großen Mission.`
+}, {
+  n: 11,
+  title: `Der friedliche Abschied`,
+  s1: `Jede Erfahrung formte deine heutige enorme Stärke. Du ehrst die wertvollen Lektionen deiner eigenen Geschichte. Diese Erlebnisse machten dich zur absolut souveränen Macherin.`,
+  s2: `Du sagst heute ein ehrliches Danke zu deiner Vergangenheit. Deine bewusste Entscheidung befreit dein gesamtes System. Du gibst alte Emotionen in tiefer Dankbarkeit endgültig frei.`,
+  s3: `Dieser friedliche Abschied schafft sofort wertvollen Raum. Du füllst diese Weite mit glasklarer und frischer Energie. Du handelst ab heute mit maximaler Freiheit und voller Kraft.`
+}];;
+
+window.DANKBARKEIT_DAYS = [{
+  n: 1,
+  title: `Der erste Blick auf die Fülle`,
+  t1: `Wahrnehmen`,
+  s1: `Jeder einzelne Moment hat einen Wert. Nimm dir die Zeit für einen bewussten Start in den neuen Morgen. Bleib einfach mal kurz stehen und erkenne, dass jede Situation eine Chance ist.`,
+  t2: `Fokus wählen`,
+  s2: `Du hast jeden Tag die Wahl, worauf du deine Aufmerksamkeit richtest. Konzentriere dich auf all das, was dich unterstützt. So steuerst du deine Energie aktiv dorthin, wo sie dir wirklich nützt.`,
+  t3: `Anerkennen`,
+  s3: `Nimm den jetzigen Moment genau so an, wie er sich dir präsentiert. Bewerte ihn nicht gleich, sondern registriere ganz sachlich die Fakten. Du bist da und der Tag beginnt jetzt mit all seinen Möglichkeiten.`
+}, {
+  n: 2,
+  title: `Der Morgen als Fundament`,
+  t1: `Der erste Gedanke`,
+  s1: `Beginne den Tag ganz für dich, noch bevor die Anforderungen anderer Menschen laut werden. Setze deinen eigenen Ton für die Stunden, die direkt vor dir liegen. Damit sicherst du dir die Kontrolle über deinen Start.`,
+  t2: `Die eigene Haltung`,
+  s2: `Überlege dir schon vorher ganz genau, mit welcher Einstellung du durch den Tag gehen willst. Die bewusste Entscheidung für Dankbarkeit gibt dir eine klare innere Richtung und macht dich resistenter gegen Stress.`,
+  t3: `Raum für Gutes`,
+  s3: `Bleib stets offen für die vielen kleinen Momente, die im Laufe des Tages ganz automatisch auftauchen. Lade diese Erlebnisse bewusst in deinen Alltag ein und gib ihnen den Platz, den sie verdienen.`
+}, {
+  n: 3,
+  title: `Der Blickwechsel im Alltag`,
+  t1: `Umdenken`,
+  s1: `Wenn es im Job oder privat schwierig wird, tritt erst einmal einen großen Schritt zurück. Betrachte auftretende Probleme nicht nur als Last. Frag dich stattdessen konkret, was du aus dieser Situation lernen kannst.`,
+  t2: `Die Lektion sehen`,
+  s2: `Sei dankbar für absolut jeden Moment, auch wenn er dich gerade stark fordert. Genau diese anstrengenden Phasen sind es, die dir wichtige Erfahrungen bringen und dich etwas Neues lehren.`,
+  t3: `Den Druck nehmen`,
+  s3: `Mach dir bewusst, dass nicht immer alles komplett glattlaufen muss. Akzeptiere die Tatsache, dass auch holprige Tage enorm wertvoll sind. Das nimmt dir sofort eine große Anspannung aus dem Körper.`
+}, {
+  n: 4,
+  title: `Die unscheinbaren Schätze ehren`,
+  t1: `Das Gewöhnliche feiern`,
+  s1: `Betrachte Dinge wie den ersten Kaffee oder das Licht am Fenster als echte Bereicherung. Diese kleinen Details machen dein Leben aus. Schenke diesen Momenten deine volle Aufmerksamkeit.`,
+  t2: `Pausen wertschätzen`,
+  s2: `Gib den stillen Momenten zwischen deinen Aufgaben einen echten Sinn. Nutze diese kurzen Unterbrechungen als Kraftquellen für deinen Geist. Du darfst diese Zeit ohne schlechtes Gewissen genießen.`,
+  t3: `Einfachheit schätzen`,
+  s3: `Mach dir immer wieder klar, dass du oft gar nicht viel im Außen brauchst, um wirklich zufrieden zu sein. Die Besinnung auf das Wesentliche schafft eine sehr angenehme und stabile Grundruhe in dir.`
+}, {
+  n: 5,
+  title: `Wertschätzung für die eigene Person`,
+  t1: `Die eigene Leistung sehen`,
+  s1: `Erkenne ganz ehrlich an, was du jeden Tag alles bewältigst und erfolgreich schaffst. Sei stolz auf das, was du tagtäglich leistest. Deine Ergebnisse verdienen deine eigene und aufrichtige Anerkennung.`,
+  t2: `Fair mit sich umgehen`,
+  s2: `Wenn dir ein Fehler passiert oder dir schlicht die Energie fehlt, bleib unterstützend zu dir selbst. Behandle dich in solchen Momenten exakt so, wie du es bei einer guten Freundin tun würdest.`,
+  t3: `Die eigenen Stärken nutzen`,
+  s3: `Erinnere dich immer wieder ganz gezielt daran, was du wirklich richtig gut kannst. Dieses tiefe Wissen gibt dir viel Sicherheit. Das hilft dir besonders an sehr anstrengenden Tagen effektiv weiter.`
+}, {
+  n: 6,
+  title: `Halt finden in fordernden Zeiten`,
+  t1: `Realität annehmen`,
+  s1: `An manchen Tagen fehlt dir schlicht die Kraft und das ist völlig in Ordnung so. Du musst nicht jeden Tag zu hundert Prozent funktionieren. Halte schwere Momente bewusst aus, ohne sie dir künstlich schönzureden.`,
+  t2: `Dankbarkeit für Hindernisse`,
+  s2: `Erkenne den Wert im Widerstand. Jede Hürde zwingt dich dazu, neue Wege zu finden und deine Fähigkeiten voll auszuschöpfen. Diese Erkenntnis gibt dir auch an miesen Tagen einen echten Halt.`,
+  t3: `Handlungsfähig bleiben`,
+  s3: `Verabschiede dich endgültig von dem hinderlichen Gedanken, dass immer alles perfekt sein muss. Nimm die unvermeidbaren Aufgaben des Alltags an. Dann wirst du im entscheidenden Moment viel schneller wieder klar entscheiden können.`
+}, {
+  n: 7,
+  title: `Klarheit in Begegnungen mit anderen`,
+  t1: `Wahres Zuhören`,
+  s1: `Sei in allen Gesprächen gedanklich ganz bei der Sache. Schenk deinem Gegenüber deine volle und ungeteilte Aufmerksamkeit. Genau das ist pure Wertschätzung im direkten Kontakt mit anderen Menschen.`,
+  t2: `Direktes Danke`,
+  s2: `Sprich im passenden Moment ein ehrliches und klares Dankeschön aus. Das kostet dich absolut nichts. Es macht das Miteinander aber sofort wesentlich persönlicher und verbindlicher für beide Seiten.`,
+  t3: `Gutes weitergeben`,
+  s3: `Wenn du anderen Menschen grundlegend offen und dankbar begegnest, reagieren sie meist ganz genauso auf dich. Dieses Verhalten macht den gesamten Alltag für alle Beteiligten sofort spürbar leichter und effizienter.`
+}, {
+  n: 8,
+  title: `Der bewusste Prozess des Loslassens`,
+  t1: `Danke sagen`,
+  s1: `Schau auf vergangene Situationen zurück. Sei dankbar für jeden einzelnen Moment, besonders für die schweren. Jede Erfahrung hat dich etwas Wichtiges gelehrt und dich genau an diesen Punkt gebracht.`,
+  t2: `Verabschieden`,
+  s2: `Zieh an den richtigen Stellen ganz bewusst einen finalen Schlussstrich. Löse dich aktiv von Dingen oder Mustern, die einfach nicht mehr zu dir passen. Nur so machst du wieder ausreichend Platz für neue Erfahrungen.`,
+  t3: `Frieden finden`,
+  s3: `Gib den inneren Widerstand auf und lass die Dinge einfach mal genau so stehen, wie sie jetzt sind. Wenn der ständige Kampf gegen die Realität aufhört, kehrst du automatisch wieder in deine gewohnte Balance zurück.`
+}, {
+  n: 9,
+  title: `Das Verankern durch das Schreiben`,
+  t1: `Den Kopf entlasten`,
+  s1: `Schreib deine gesammelten Gedanken jeden Abend auf ein Blatt Papier oder in die App. Dein Gehirn muss sie danach nicht mehr krampfhaft festhalten. Auf diese Weise gewinnst du sofort enorm viel mentalen Freiraum zurück.`,
+  t2: `Konkret werden`,
+  s2: `Beschreibe beim Schreiben ganz genau, was heute richtig gut war. Notiere dir, welcher spezifische Moment oder welcher bestimmte Satz dir besonders gutgetan hat. Das macht das Erlebte im Nachhinein viel greifbarer.`,
+  t3: `Den Schatz sammeln`,
+  s3: `Nutze das regelmäßige Aufschreiben gezielt als Werkzeug, um den vergangenen Tag zu strukturieren. Es hilft dir effektiv dabei, das wirklich Wichtige ganz klar vom Unwichtigen zu trennen und deine Fortschritte zu sehen.`
+}, {
+  n: 10,
+  title: `Die eigene Wirkung der Dankbarkeit spüren`,
+  t1: `Positiver Fokus`,
+  s1: `Konzentriere dich konsequent auf Lösungen, dann siehst du automatisch auch mehr Lösungen in deinem Umfeld. Deine innere Haltung bestimmt maßgeblich darüber, in welche Richtung sich dein gesamter Tag entwickelt.`,
+  t2: `Vertrauen aufbauen`,
+  s2: `Lerne jeden Tag ein Stück mehr, dich voll und ganz auf deine eigenen Stärken zu verlassen. So entwickelst du mit der Zeit das beruhigende Gefühl, auch unvorhergesehene Dinge jederzeit gut meistern zu können.`,
+  t3: `Chancen wahrnehmen`,
+  s3: `Verlasse den ständigen Stressmodus ganz bewusst. Eine dankbare Grundhaltung ermöglicht es dir, gute Gelegenheiten und neue Möglichkeiten, die sich dir im Alltag bieten, viel schneller wahrzunehmen.`
+}, {
+  n: 11,
+  title: `Der Abend als Grenze und Abschluss`,
+  t1: `Den Tag beenden`,
+  s1: `Mach einen ganz klaren und unmissverständlichen Punkt hinter alle Erledigungen des Tages. Was für heute getan ist, ist getan. Alles andere hat jetzt erst einmal Pause und wird heute nicht mehr bewegt.`,
+  t2: `Sorgen abgeben`,
+  s2: `Lass all das, was heute definitiv nicht mehr gelöst wird, ganz beruhigt bis morgen liegen. Gib dir selbst die ausdrückliche Erlaubnis, dich jetzt in diesem Moment um absolut nichts mehr kümmern zu müssen.`,
+  t3: `Ruhe finden`,
+  s3: `Stopp das ständige Grübeln und Nachdenken ganz aktiv. Nutze deinen Abend stattdessen dafür, wieder frische Energie aufzutanken und den abgeschlossenen Tag wirklich final für dich abzuhaken.`
+}, {
+  n: 12,
+  title: `Dankbarkeit als lebenslange Stärke`,
+  t1: `Jeden Tag neu`,
+  s1: `Verstehe Dankbarkeit nicht als ein einmaliges Projekt, das du irgendwann einfach abschließt. Es ist eine bewusste Entscheidung, für die du dich jeden Tag aufs Neue aktiv und ohne Zwang entscheidest.`,
+  t2: `Geduld mit dem Prozess`,
+  s2: `Akzeptiere die Tatsache, dass es dir an manchen Tagen sehr leicht fällt und an anderen Tagen mehr Überwindung kostet. Das ist ein völlig normaler Vorgang und einfach ein fester Teil deines persönlichen Weges.`,
+  t3: `Ein fester Anker`,
+  s3: `Mach dieses bewährte Prinzip zu deiner verlässlichen täglichen Routine. Auf diese Weise baust du dir eine sehr starke innere Sicherheit auf. Diese Sicherheit bleibt bestehen, ganz egal was im Außen gerade passiert.`
+}];;
+
+window.RESET_DAYS = [{
+  n: 1,
+  title: `Negative Gedanken stoppen`,
+  s1: `Bemerke den Moment in dem ein negativer Gedanke auftaucht. Registriere wie dieser Satz deine Stimmung sofort nach unten zieht und dich innerlich einengt.`,
+  s2: `Unterbrich diesen Gedanken jetzt aktiv und ohne Zögern. Stell dir ein klares Stoppschild vor oder zieh den Stecker aus der Maschine in deinem Kopf.`,
+  s3: `Sag innerlich Danke für den Hinweis deines Verstandes. Er wollte dich lediglich vor einer Gefahr warnen oder dich durch diesen Gedanken schützen.`,
+  s4: `Verabschiede den Gedanken jetzt aus deinem Bewusstsein. Er hat seine Aufgabe als Signal erfüllt und darf jetzt wieder vollständig von dir gehen.`,
+  s5: `Finde deinen Frieden in der einsetzenden Stille. Du bist nicht deine Gedanken und entscheidest ab jetzt selbst was du als Nächstes denken willst.`
+}, {
+  n: 2,
+  title: `Wenn du dir selbst Druck machst`,
+  s1: `Bemerke wie du dir den Druck gerade selbst aufbaust. Es ist kein Stress von außen sondern deine eigene Erwartung an dich selbst die dich gerade antreibt.`,
+  s2: `Stopp das Karussell in deinem Kopf sofort. Du hast diesen Druck selbst erzeugt und kannst ihn in diesem Moment auch ganz allein wieder abschalten.`,
+  s3: `Sag Danke für deinen hohen Anspruch an deine eigene Leistung. Dein Wille zum Erfolg hat dich schon weit gebracht und gehört zu deiner Identität.`,
+  s4: `Verabschiede den Zwang alles perfekt machen zu müssen. Erlaube dir heute einfach nur gut genug zu sein anstatt das Unmögliche von dir zu verlangen.`,
+  s5: `Finde deinen Frieden in der Entscheidung den Druck jetzt loszulassen. Du bist sicher auch wenn du heute nicht das Maximum aus dir herausholst.`
+}, {
+  n: 3,
+  title: `Überforderung beenden`,
+  s1: `Nimm das Gefühl wahr dass alles über dir zusammenbricht. Dein Kopf ist voll mit Aufgaben und du verlierst gerade den Überblick über das Wesentliche.`,
+  s2: `Unterbrich das Chaos in deinem Kopf jetzt radikal. Hör auf zu planen oder zu grübeln und schließ für einen Augenblick deine Augen.`,
+  s3: `Sag Danke für deine hohe Einsatzbereitschaft und deinen starken Willen. Dein Verstand zeigt dir lediglich dass deine Kapazitäten gerade eine Grenze erreichen.`,
+  s4: `Verabschiede den Druck alles gleichzeitig erledigen zu müssen. Streiche die endlose Liste in deinem Kopf in diesem Moment radikal auf den jetzigen Augenblick zusammen.`,
+  s5: `Finde deinen Frieden in der Einfachheit. Es gibt jetzt gerade nur diesen einen Atemzug und sonst gar nichts was deine Aufmerksamkeit erfordert.`
+}, {
+  n: 4,
+  title: `Wut und Groll loslassen`,
+  s1: `Registriere die aufsteigende Hitze in deinem Körper. Eine Situation oder eine Person hat dich getroffen und du spürst den Impuls sofort hart zu reagieren.`,
+  s2: `Halte die automatische Reaktion auf der Stelle an. Bevor du sprichst oder handelst trittst du mental zwei große Schritte von dem Auslöser zurück.`,
+  s3: `Sag Danke für die Kraft deiner Wut. Dieses Gefühl zeigt dir ganz deutlich dass eine deiner persönlichen Grenzen verletzt oder missachtet wurde.`,
+  s4: `Verabschiede das Bedürfnis jetzt sofort recht haben zu müssen. Lass die Situation unkommentiert so stehen wie sie ist und entzieh ihr deine Energie.`,
+  s5: `Finde deinen Frieden in deiner eigenen Souveränität. Du behältst die volle Kontrolle und entscheidest später mit kühlem Kopf über den nächsten Schritt.`
+}, {
+  n: 5,
+  title: `Selbstkritik verstummen lassen`,
+  s1: `Höre die scharfen Worte die du gerade innerlich gegen dich selbst richtest. Du bewertest dich hart und machst dich durch deine eigenen Sätze klein.`,
+  s2: `Beende diesen inneren Dialog sofort. Du musst dir diese Vorwürfe nicht länger anhören und darfst das Gespräch mit dir selbst an dieser Stelle abbrechen.`,
+  s3: `Sag Danke für den Versuch deines Verstandes dich durch Kritik anzuspornen. Er möchte dich eigentlich nur vor Fehlern schützen oder dich verbessern.`,
+  s4: `Verabschiede die harten Urteile über deine eigene Person. Du darfst unperfekt sein und bist trotzdem in diesem Moment vollkommen richtig so wie du bist.`,
+  s5: `Finde deinen Frieden in deinem unerschütterlichen Selbstwert. Deine echte Substanz bleibt von diesen flüchtigen und kritischen Gedanken absolut unberührt und sicher.`
+}, {
+  n: 6,
+  title: `Sorgen um die Zukunft beruhigen`,
+  s1: `Bemerke wie du dich in Sorgen über die Zukunft verlierst. Dein Kopf baut Szenarien auf die noch gar nicht existieren und dich unruhig machen.`,
+  s2: `Stopp diese Reise in die Zukunft jetzt sofort. Komm mit deiner gesamten Aufmerksamkeit zurück in den Raum und in den Moment in dem du bist.`,
+  s3: `Sag Danke für das Sicherheitsbedürfnis deines Verstandes. Er möchte lediglich sicherstellen dass du auf alle kommenden Ereignisse gut vorbereitet und geschützt bist.`,
+  s4: `Verabschiede die Sorgen über Dinge die du heute nicht beeinflussen kannst. Gib die Kontrolle über das Ungewisse für diesen Augenblick bewusst an das Leben ab.`,
+  s5: `Finde deinen Frieden im Hier und Jetzt. Du bist in diesem Moment sicher und hast alles was du für diesen Augenblick wirklich brauchst.`
+}, {
+  n: 7,
+  title: `Angst und Panik beruhigen`,
+  s1: `Bemerke die aufsteigende Panik in dir. Dein Herz schlägt bis zum Hals und dein Kopf spielt Schreckensszenarien ab die sich sehr real anfühlen.`,
+  s2: `Unterbrich diesen Zustand sofort. Du steckst gerade in einer körperlichen Reaktion fest und musst den Fokus jetzt zwingend aus dem Kopf in den Körper verlagern.`,
+  s3: `Sag Danke für dein Alarmsystem. Es versucht dich gerade mit aller Kraft vor einer Gefahr zu schützen die dein Verstand als lebensbedrohlich einstuft.`,
+  s4: `Verabschiede den Gedanken dass du in Gefahr bist. Nimm wahr dass du in diesem Moment sicher bist und nichts passiert.`,
+  s5: `Finde deinen Frieden in der Stabilität deines Körpers. Du bist hier im Raum und alles um dich herum ist ruhig und sicher.`
+}];;
+
+window.MM_DAYS = [{
+  day: 1,
+  phase: 1,
+  title: "Geld ist mehr als eine Zahl",
+  s1: "Geld war lange eine Zahl, die sofort ein Gefühl ausgelöst hat. Ein Blick aufs Konto konnte Druck machen, eine Rechnung konnte den ganzen Körper anspannen, ein Geldeingang konnte kurz erleichtern und danach direkt wieder neue Sorge bringen. Dadurch bekam Geld mehr Macht über den Tag, als eine Zahl eigentlich haben sollte.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld ist ein Mittel für Austausch. Es bewegt Wert von einem Menschen zum anderen und macht Dinge möglich, die ein Leben tragen: Essen, Räume, Wärme, Unterstützung, Lernen, Mobilität, Zeit und Entscheidungen. Geld ist kein Beweis für den eigenen Wert. Geld zeigt, wo Wert fließt.",
+  s3: "Heute beginnt ein neuer Blick auf Geld. Geld darf verständlicher werden, menschlicher werden und weniger Druck auslösen. Dankbarkeit beginnt dort, wo ich sehe, was Geld bereits ermöglicht hat.",
+  statement: "Geld darf für mich verständlicher, ruhiger und menschlicher werden.",
+  clicks: ["Ich sehe Geld neu.", "Ich will Geld besser verstehen.", "Ich bin bereit für einen neuen Umgang."],
+  frage: "Was hat Geld in meinem Leben bereits möglich gemacht?"
+}, {
+  day: 2,
+  phase: 1,
+  title: "Warum Geld emotional ist",
+  s1: "Wenn Geld auftaucht, tauchen oft alte Geschichten mit auf. Familie, Erwartungen, Vergleiche, frühere Erfahrungen, Scham, Druck oder der Wunsch nach mehr Freiheit können in einem einzigen Geldmoment mitschwingen. Deshalb fühlt sich Geld schnell größer an als der eigentliche Betrag.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Geld berührt Versorgung, Freiheit, Zugehörigkeit, Wert und Entscheidung. Diese Themen sind menschlich, deshalb reagieren Menschen emotional auf Geld. Ein Geldmoment zeigt, welche Geschichte gerade aktiv ist. Bewusstsein beginnt damit, die Reaktion zu bemerken, bevor sie den ganzen Moment übernimmt.",
+  s3: "Heute darf Geld gefühlt werden, ohne dass dieses Gefühl die Führung übernimmt. Jede Reaktion zeigt nur, wo ein neuer Umgang entstehen darf. Dankbarkeit hilft, aus Druck wieder in Verbindung zu kommen.",
+  statement: "Ich kann Geld fühlen und trotzdem bewusst wählen.",
+  clicks: ["Ich bemerke meine Reaktion.", "Ich bleibe bei mir.", "Ich mache Geld kleiner im Kopf und klarer im Leben."],
+  frage: "Welche Emotion taucht bei Geld am häufigsten in mir auf?"
+}, {
+  day: 3,
+  phase: 1,
+  title: "Geld als Versorgung",
+  s1: "Bei Geld fällt der Blick schnell auf das, was offen ist. Eine Rechnung, ein fehlender Betrag, eine kommende Ausgabe oder ein Wunsch, der gerade noch weiter weg wirkt. Dadurch wird übersehen, wie viel Geld bereits getragen hat. Der Kopf sucht Mangel, obwohl das Leben an vielen Stellen bereits durch Geld unterstützt wurde.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld versorgt. Es bringt Essen auf den Tisch, Strom in die Wohnung, ein Dach über den Kopf, Kleidung, Technik, Wege, Hilfe und kleine Freiheiten im Alltag. Auch in Phasen mit weniger Geld gibt es Spuren von Versorgung.",
+  s3: "Heute richte ich meinen Blick auf das, was Geld bereits ermöglicht hat. Dankbarkeit bedeutet hier, den vorhandenen Wert zu sehen, auch wenn noch Wünsche offen sind. Diese Sicht macht Geld innerlich weniger eng.",
+  statement: "Geld darf für mich ein Gefühl von Versorgung und Möglichkeit bekommen.",
+  clicks: ["Ich erkenne Versorgung.", "Ich danke für Geld.", "Ich sehe, was schon da ist."],
+  frage: "Wofür bin ich Geld heute dankbar?"
+}, {
+  day: 4,
+  phase: 1,
+  title: "Geld als Austausch",
+  s1: "Geld konnte sich anfühlen, als würde es einfach verschwinden. Beim Bezahlen stand der Verlust im Vordergrund, beim Ausgeben blieb das Gefühl zurück, weniger zu haben. Dadurch wurde jede Geldbewegung schnell zu einem inneren Stressmoment. Der Wert dahinter wurde kaum gesehen.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld ist Austausch. Es geht von einer Seite zur anderen, weil Wert geflossen ist: Leistung, Zeit, Nahrung, Raum, Wissen, Hilfe, Erfahrung oder Zugang. Geld ist Bewegung, kein Stillstand. Wer Geld nur als Verlust betrachtet, übersieht den Wert, der dadurch ins Leben gekommen ist.",
+  s3: "Heute sehe ich Geld als Austausch. Wenn Geld geht, darf ich erkennen, was ich dafür erhalten habe. Wenn Geld kommt, darf ich den Wert meiner Arbeit, meiner Ideen oder meiner Entscheidungen anerkennen.",
+  statement: "Geld bewegt Wert durch mein Leben, und ich darf diesen Wert bewusster sehen.",
+  clicks: ["Ich sehe den Austausch.", "Ich erkenne den Wert.", "Ich bewege Geld bewusster."],
+  frage: "Welchen Wert habe ich zuletzt durch Geld erhalten?"
+}, {
+  day: 5,
+  phase: 1,
+  title: "Geld ist mein Werkzeug",
+  s1: "Geld fühlte sich manchmal an wie etwas, das über mich entscheidet. Es bestimmte Stimmung, Mut, Tempo, Selbstbild oder den Blick auf die Zukunft. Wenn Geld eng wurde, wurde innerlich vieles kleiner. Dadurch bekam Geld eine Rolle, die ihm im eigenen Leben zu viel Raum gab.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld ist ein Werkzeug. Ein Werkzeug kann Türen öffnen, Entscheidungen erleichtern, Dinge bezahlen, Entwicklung ermöglichen und Verantwortung sichtbar machen. Ein Werkzeug braucht Führung. Je bewusster es genutzt wird, desto mehr kann es unterstützen.",
+  s3: "Heute gebe ich Geld einen neuen Platz. Geld darf wichtig sein, aber es muss meinen inneren Zustand nicht bestimmen. Ich darf lernen, Geld zu führen, statt mich von Geld führen zu lassen.",
+  statement: "Geld darf ein Werkzeug werden, das ich bewusster und stärker führe.",
+  clicks: ["Ich führe Geld.", "Ich nutze Geld bewusster.", "Ich gebe Geld einen neuen Platz."],
+  frage: "Wo möchte ich Geld als Werkzeug bewusster einsetzen?"
+}, {
+  day: 6,
+  phase: 2,
+  title: "Kontostand ansehen",
+  s1: "Der Kontostand konnte sich anfühlen wie ein Urteil. Eine Zahl auf dem Bildschirm wurde schnell zu einer Aussage über Wert, Zukunft, Können oder Erfolg. Dadurch wurde der Blick auf diese Zahl emotional aufgeladen. Aus Information wurde Druck.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Ein Kontostand zeigt den aktuellen Stand. Er ist eine Momentaufnahme. Von dort aus kann eine Entscheidung entstehen, ein nächster Schritt, eine neue Ordnung oder ein bewussterer Umgang. Eine Zahl braucht keinen inneren Angriff, sondern einen klaren Blick.",
+  s3: "Heute sehe ich eine Geldzahl an und bleibe ruhig genug, um sie als Information zu nehmen. Dankbarkeit entsteht für den Mut hinzusehen und für die Möglichkeit, von hier aus zu wählen.",
+  statement: "Ich kann Geld ansehen und bei mir bleiben.",
+  clicks: ["Ich sehe hin.", "Ich bleibe ruhig.", "Ich nehme die Zahl als Information."],
+  frage: "Was wurde klarer, als ich hingesehen habe?"
+}, {
+  day: 7,
+  phase: 2,
+  title: "Die erste Geldreaktion",
+  s1: "Die erste Reaktion auf Geld fühlte sich oft wie Wahrheit an. Zu teuer, zu wenig, das reicht nie, das geht sich kaum aus, mehr darf ich mir gerade kaum erlauben. Solche Gedanken kommen schnell und wirken stark, weil sie vertraut sind. Genau deshalb konnten sie viele Entscheidungen übernehmen.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Die erste Reaktion ist ein altes Muster. Sie zeigt, welche innere Spur schon lange genutzt wurde. Zwischen dem ersten Impuls und der nächsten Entscheidung liegt ein kurzer Moment, der alles verändern kann. Dort entsteht Selbstführung.",
+  s3: "Heute halte ich bei einem Geldgedanken kurz an. Ein Atemzug reicht, um aus dem alten Muster auszusteigen und die nächste Entscheidung bewusster zu treffen. Dankbarkeit entsteht für diesen kleinen Raum.",
+  statement: "Ich kann einen Geldmoment stoppen, atmen und neu wählen.",
+  clicks: ["Ich halte an.", "Ich atme zuerst.", "Ich wähle bewusster."],
+  frage: "Wo habe ich heute kurz angehalten?"
+}, {
+  day: 8,
+  phase: 2,
+  title: "Alte Geldsätze erkennen",
+  s1: "Alte Geldsätze klingen oft so selbstverständlich, dass sie kaum auffallen. Geld ist immer knapp. Mehr Geld bringt mehr Stress. Ich bin schlecht mit Geld. Solche Sätze können sich anfühlen wie Fakten, obwohl sie nur oft wiederholt wurden.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Ein alter Geldsatz zeigt eine erlernte Verbindung. Er kann aus Familie, früheren Erfahrungen, Enttäuschungen oder Angst entstanden sein. Sobald der Satz sichtbar wird, verliert er einen Teil seiner Macht. Ein Gedanke, der erkannt wird, kann neu gewählt werden.",
+  s3: "Heute erkenne ich einen alten Geldsatz und lasse ihn stehen, statt ihm den ganzen Tag zu folgen. Ich danke für die Erkenntnis, weil sie mir eine neue Richtung öffnet.",
+  statement: "Meine Geldgeschichte darf sich ab heute weiterentwickeln.",
+  clicks: ["Ich erkenne den Satz.", "Ich wähle neu.", "Ich schreibe meine Geldgeschichte weiter."],
+  frage: "Welcher alte Geldsatz hat heute weniger Macht bekommen?"
+}, {
+  day: 9,
+  phase: 2,
+  title: "Rechnungen öffnen",
+  s1: "Eine Rechnung konnte sich anfühlen wie ein Angriff auf den eigenen Spielraum. Sobald sie kam, entstand Druck, Widerstand oder das Bedürfnis, sie wegzuschieben. Der Körper reagierte oft schneller als der klare Verstand. Dadurch wurde eine Rechnung zu einem Gegner.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Eine Rechnung zeigt auch, dass etwas erhalten wurde. Strom, Wärme, Räume, Technik, Essen, Unterstützung, Wissen, Transport oder eine Leistung. Geld bewegt hier Wert, der bereits genutzt wurde. Diese Sicht nimmt einer Rechnung den inneren Angriff.",
+  s3: "Heute öffne ich eine Rechnung und erkenne, was sie möglich gemacht hat. Ich danke für den Wert dahinter und wähle den nächsten Schritt.",
+  statement: "Ich kann Rechnungen ansehen und den Wert dahinter erkennen.",
+  clicks: ["Ich öffne sie.", "Ich sehe den Wert.", "Ich plane den nächsten Schritt."],
+  frage: "Was habe ich durch diese Rechnung erhalten oder genutzt?"
+}, {
+  day: 10,
+  phase: 2,
+  title: "Geld im Körper wahrnehmen",
+  s1: "Geld wurde vielleicht zuerst im Kopf verstanden, aber im Körper gespürt. Enge im Bauch, Druck im Brustraum, Unruhe, Hitze, Müdigkeit oder der Impuls, schnell weiterzumachen. Diese Reaktion zeigte, wie stark Geld körperlich gespeichert sein kann.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Geldmomente bringen alte innere Zustände an die Oberfläche. Das ist ein Hinweis, kein Problem. Der Körper zeigt, wo eine neue Erfahrung entstehen darf. Wenn Geld gesehen und gefühlt werden kann, entsteht mehr Freiheit im nächsten Schritt.",
+  s3: "Heute nehme ich meinen Körper ernst, wenn Geld auftaucht. Ich danke ihm für die Hinweise und entscheide, einen Geldmoment bewusster zu halten.",
+  statement: "Mein Körper darf mit Geld neue Ruhe und neue Stärke lernen.",
+  clicks: ["Ich spüre hin.", "Ich bleibe da.", "Ich lerne neu."],
+  frage: "Wo habe ich Geld heute körperlich gespürt?"
+}, {
+  day: 11,
+  phase: 3,
+  title: "Danke sagen, wenn Geld geht",
+  s1: "Wenn Geld ging, stand oft zuerst der Verlust im Vordergrund. Eine Zahlung wirkte wie weniger Freiheit, weniger Spielraum oder weniger Sicherheit. Dadurch wurde das Geben von Geld innerlich hart. Der erhaltene Wert verschwand hinter dem Gefühl von Abzug.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld, das geht, hat meistens etwas bewegt. Es hat versorgt, unterstützt, ermöglicht, geöffnet oder eine Leistung bezahlt. Eine Zahlung kann bewusst gesehen werden: Geld verlässt einen Ort und bringt Wert an einen anderen.",
+  s3: "Heute sage ich bei einer Zahlung innerlich Danke. Danke für das, was dadurch möglich war. Danke für Geld, das Wert bewegt hat. Danke für die Fähigkeit, bewusster zu geben.",
+  statement: "Ich kann Geld ausgeben und gleichzeitig Dankbarkeit fühlen.",
+  clicks: ["Ich sage Danke.", "Ich erkenne den Wert.", "Ich gebe bewusster."],
+  frage: "Welche Zahlung konnte ich heute bewusster sehen?"
+}, {
+  day: 12,
+  phase: 3,
+  title: "Rechnungen anders sehen",
+  s1: "Eine Rechnung war schnell ein Symbol für Belastung. Sie kam rein und löste sofort eine innere Bewertung aus. Manchmal fühlte sie sich größer an als der Betrag selbst. Der Fokus lag auf dem Weggehen von Geld, selten auf dem Wert, der vorher gekommen ist.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Eine Rechnung ist Teil eines Austauschs. Sie zeigt, dass im Leben etwas genutzt wurde, das einen Wert hatte. Wenn dieser Wert gesehen wird, entsteht mehr Bewusstsein. Der Geldmoment wird dadurch klarer und führbarer.",
+  s3: "Heute betrachte ich eine Rechnung mit einem weiteren Blick. Ich sehe den Betrag und den Wert dahinter. Ich danke für den Nutzen und wähle den nächsten Schritt mit mehr Ruhe.",
+  statement: "Rechnungen dürfen zu Momenten von Bewusstsein, Wert und Klarheit werden.",
+  clicks: ["Ich sehe den Nutzen.", "Ich danke für den Wert.", "Ich wähle den nächsten Schritt."],
+  frage: "Welche Rechnung kann ich heute mit mehr Bewusstsein betrachten?"
+}, {
+  day: 13,
+  phase: 3,
+  title: "Bewusst bezahlen",
+  s1: "Bezahlen war oft ein Moment, der schnell passieren sollte. Karte hinhalten, Überweisung machen, Rechnung abhaken, weitergehen. Innerlich blieb manchmal Druck zurück, auch wenn die Zahlung erledigt war. Der Moment wurde erledigt, aber selten bewusst geführt.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Bezahlen ist eine Entscheidung. Geld bewegt sich in eine Richtung, weil ein Wert gewählt wurde oder eine Verpflichtung abgeschlossen wird. Bewusstes Bezahlen bedeutet, den Moment wahrzunehmen und danach weiterzugehen, statt in Schuld oder Ärger hängen zu bleiben.",
+  s3: "Heute bezahle ich bewusster. Ich erkenne die Entscheidung, den Wert und den Abschluss. Ich danke für Geld, das notwendige Dinge zahlen kann.",
+  statement: "Ich kann bezahlen, abschließen und innerlich weitergehen.",
+  clicks: ["Ich bezahle bewusst.", "Ich schließe ab.", "Ich gehe weiter."],
+  frage: "Welche Zahlung habe ich heute klarer abgeschlossen?"
+}, {
+  day: 14,
+  phase: 3,
+  title: "Geld ausgeben mit Entscheidung",
+  s1: "Ausgaben konnten automatisch passieren. Ein Kauf aus Stress, ein Ja aus Gewohnheit, ein Betrag aus schlechtem Gewissen oder eine Entscheidung aus Druck. Danach kam oft ein inneres Ziehen, weil die Ausgabe gar keine klare Wahl war.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Jede Ausgabe zeigt eine Priorität. Sie sagt, was gerade wichtig war, was versorgt wurde oder welcher Zustand geführt hat. Eine bewusste Ausgabe stärkt die Verbindung zu Geld. Eine klare Wahl macht Geld wieder zu einem Werkzeug.",
+  s3: "Heute halte ich vor einer Ausgabe kurz an. Ich frage, ob diese Geldbewegung zu meinem neuen Leben passt. Ich danke für die Möglichkeit zu wählen.",
+  statement: "Ich kann Geld ausgeben, ohne mich selbst zu verlieren.",
+  clicks: ["Ich halte an.", "Ich wähle bewusst.", "Ich bewege Geld klarer."],
+  frage: "Welche Ausgabe war heute wirklich bewusst?"
+}, {
+  day: 15,
+  phase: 3,
+  title: "Geldfluss im Alltag erkennen",
+  s1: "Geld wurde oft in einzelnen Momenten betrachtet. Hier eine Rechnung, dort ein Geldeingang, da eine Ausgabe. Dadurch wirkte Geld manchmal chaotisch oder knapp. Der größere Fluss wurde kaum gesehen.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld bewegt sich ständig. Es kommt, geht, bleibt, verändert Form und bringt Wert in verschiedene Bereiche des Lebens. Geldfluss bedeutet Versorgung, Austausch, Entscheidung und Bewegung. Wer diesen Fluss erkennt, kann Geld mit mehr Bewusstsein führen.",
+  s3: "Heute sehe ich Geldfluss in meinem Alltag. Ich danke für Geld, das kommt, für Geld, das geht, für Geld, das bleibt. Dieser Blick macht Geld lebendiger und weniger eng.",
+  statement: "Geld darf in meinem Leben fließen, Wert bewegen und wiederkommen.",
+  clicks: ["Ich erkenne Geldfluss.", "Ich danke für Bewegung.", "Ich führe bewusster."],
+  frage: "Wo habe ich heute Geldfluss gesehen?"
+}, {
+  day: 16,
+  phase: 4,
+  title: "Einnahmen bewusst empfangen",
+  s1: "Wenn Geld kam, war der Kopf oft direkt beim nächsten offenen Punkt. Eine Einnahme wurde gesehen und innerlich sofort weiterverteilt. Die Freude bekam kaum Raum. Geld kam an, aber der Körper hat es kaum empfangen.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Ein Geldeingang ist ein Moment von Wertbewegung zu dir. Er kann aus Arbeit, Rückzahlung, Geschenk, Buchung, Verkauf, Unterstützung oder Möglichkeit kommen. Empfangen bedeutet, diesen Moment kurz anzuerkennen.",
+  s3: "Heute halte ich bei einem Geldeingang kurz inne. Ich sage Danke, bevor ich rechne, plane oder weitergehe. Ich trainiere, Geld bewusst in mein Leben zu lassen.",
+  statement: "Ich darf Geld empfangen und es einen Moment wirklich ankommen lassen.",
+  clicks: ["Ich empfange.", "Ich sage Danke.", "Ich lasse es ankommen."],
+  frage: "Wie fühlt es sich an, Geld zuerst zu empfangen?"
+}, {
+  day: 17,
+  phase: 4,
+  title: "Danke sagen, wenn Geld kommt",
+  s1: "Kleine Einnahmen wurden vielleicht kaum beachtet. Ein Betrag kam rein und wurde sofort als zu klein, zu spät oder schon verplant gesehen. Dadurch wurde Geld oft übergangen, selbst wenn es gerade zu mir gekommen ist.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Jeder Geldeingang ist ein Signal von Bewegung zu dir. Auch kleine Beträge trainieren Empfangen. Dankbarkeit für Geld beginnt bei dem, was da ist, und öffnet den Blick für mehr.",
+  s3: "Heute sage ich Danke bei jedem Geldplus. Danke für Einnahmen, Rückzahlungen, Buchungen, Geschenke, Rabatte, Unterstützung und Möglichkeiten.",
+  statement: "Ich empfange Geld mit mehr Dankbarkeit, Aufmerksamkeit und Offenheit.",
+  clicks: ["Ich danke für Geld.", "Ich würdige Einnahmen.", "Ich empfange bewusster."],
+  frage: "Welchen Geldeingang kann ich heute bewusst würdigen?"
+}, {
+  day: 18,
+  phase: 4,
+  title: "Geld halten lernen",
+  s1: "Geld kam und war innerlich oft schon wieder weg. Rechnungen, Pläne, Wünsche, Sorgen und Verpflichtungen standen sofort im Raum. Dadurch konnte Geld kaum bleiben, selbst wenn es tatsächlich da war.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Geld halten bedeutet, einen Betrag bewusst wahrzunehmen, bevor er bewegt wird. Halten ist eine Fähigkeit. Es stärkt Ruhe, Übersicht und Führung. Mehr Geld braucht genau diese Fähigkeit: empfangen, bleiben lassen, entscheiden.",
+  s3: "Heute lasse ich Geld innerlich einen Moment bleiben. Ich danke für Geld, das da ist, Geld, das bleiben darf, und Geld, das gute Entscheidungen tragen kann.",
+  statement: "Geld darf bei mir bleiben, wachsen und gute Entscheidungen unterstützen.",
+  clicks: ["Ich halte Geld.", "Ich lasse es da sein.", "Ich führe bewusster."],
+  frage: "Wo wollte ich Geld heute sofort wieder wegdenken?"
+}, {
+  day: 19,
+  phase: 4,
+  title: "Mehr Geld normaler werden lassen",
+  s1: "Mehr Geld klingt gut, kann sich aber im Körper ungewohnt anfühlen. Größere Beträge lösen schnell Fragen aus: Kann ich das halten, führen, verdienen, aussprechen, empfangen? Dadurch wird mehr Geld innerlich manchmal auf Abstand gehalten.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Mehr Geld braucht mehr innere Kapazität. Das bedeutet mehr Bewusstsein, mehr Entscheidung, mehr Ruhe und mehr Fähigkeit, größere Zahlen zu sehen. Normalität entsteht durch Wiederholung.",
+  s3: "Heute lasse ich eine größere Geldzahl näherkommen. Ich danke für meine wachsende Fähigkeit, mehr Geld zu empfangen, zu halten und zu führen.",
+  statement: "Mehr Geld darf für mich normaler, ruhiger und führbarer werden.",
+  clicks: ["Ich lasse mehr zu.", "Ich gewöhne mich an größere Zahlen.", "Ich werde stärker mit Geld."],
+  frage: "Welche Zahl darf für mich vertrauter werden?"
+}, {
+  day: 20,
+  phase: 4,
+  title: "Auch mit weniger Geld bei mir bleiben",
+  s1: "Weniger Geld konnte sofort ein Gefühl von Enge auslösen. Der Blick ging auf Mangel, auf Sorgen, auf das, was gerade fehlt. In solchen Momenten wirkt Geld schnell wie eine Grenze für das ganze Leben.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Auch weniger Geld ist ein Geldmoment, der geführt werden kann. Es zeigt, wo bewusste Entscheidungen, Prioritäten und nächste Schritte wichtig werden. Weniger Geld bedeutet nicht weniger Wert, weniger Zukunft oder weniger Fähigkeit.",
+  s3: "Heute bleibe ich bei mir, auch wenn gerade weniger Geld da ist. Ich danke für Geld, das vorhanden ist, und für die Fähigkeit, den nächsten Schritt zu wählen. Mein innerer Wert bleibt größer als jede Momentaufnahme.",
+  statement: "Auch mit weniger Geld kann ich bewusst, würdig und klar entscheiden.",
+  clicks: ["Ich bleibe bei mir.", "Ich sehe, was da ist.", "Ich wähle den nächsten Schritt."],
+  frage: "Welche bewusste Entscheidung kann ich heute mit dem machen, was da ist?"
+}, {
+  day: 21,
+  phase: 5,
+  title: "Ausgaben bewusst wählen",
+  s1: "Ausgaben wurden oft in gut oder schlecht eingeteilt. Dadurch entstand schnell Druck. Manche Ausgaben fühlten sich falsch an, obwohl sie Versorgung, Lernen oder Alltag ermöglicht haben. Andere Ausgaben passierten aus Stress und fühlten sich danach leer an.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Eine Ausgabe zeigt eine Wahl. Sie kann versorgen, entlasten, investieren, Freude bringen, Verantwortung erfüllen oder ein altes Muster bedienen. Der Unterschied liegt im Bewusstsein dahinter. Geld wird klarer, wenn die Ausgabe eine echte Entscheidung ist.",
+  s3: "Heute wähle ich eine Ausgabe bewusster. Ich danke für Geld, das notwendige Dinge zahlen kann, und für Geld, das mein Leben unterstützt.",
+  statement: "Ich kann Geld ausgeben und dabei klar, dankbar und bewusst bleiben.",
+  clicks: ["Ich wähle bewusst.", "Ich erkenne den Wert.", "Ich gebe mit Klarheit."],
+  frage: "Welche Ausgabe passt heute zu meinem bewussteren Umgang mit Geld?"
+}, {
+  day: 22,
+  phase: 5,
+  title: "Investition und Wachstum",
+  s1: "Bei Investitionen konnte schnell Druck entstehen. Die Frage war dann: Was, wenn es falsch ist, zu viel ist, zu früh ist oder später fehlt? Gleichzeitig kann Wachstum eine Ausgabe brauchen, die größer wirkt als gewohnt.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Eine Investition ist eine bewusste Geldbewegung in Richtung Entwicklung. Sie braucht Klarheit über Zweck, Wert und nächsten Schritt. Eine gute Investition fühlt sich nicht zwingend bequem an, aber sie hat Richtung. Sie wird durch Bewusstsein geführt, nicht durch Panik.",
+  s3: "Heute prüfe ich eine Investition oder Wachstumsentscheidung ehrlich. Ich danke für Geld, das Entwicklung möglich machen kann. Universum, zeig mir die Entscheidung, die Wachstum und Klarheit verbindet.",
+  statement: "Ich kann Geld für Wachstum bewegen und dabei klar bleiben.",
+  clicks: ["Ich prüfe ehrlich.", "Ich wähle aus Richtung.", "Ich erkenne Wachstum."],
+  frage: "Welche Geldentscheidung fühlt sich nach Wachstum an?"
+}, {
+  day: 23,
+  phase: 5,
+  title: "Preise und Wert ansehen",
+  s1: "Ein Preis kann viel auslösen. Plötzlich geht es nicht nur um eine Zahl, sondern um Wert, Sichtbarkeit, Ablehnung, Arbeit, Selbstvertrauen und die Frage, ob jemand dafür zahlen wird. Der Preis wird dann zu einem emotionalen Punkt.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Ein Preis benennt Wert. Er gibt einer Leistung, einer Arbeit, einem Ergebnis oder einer Erfahrung eine klare Form. Der Preis selbst muss nicht entschuldigt werden. Er darf angesehen, ausgesprochen und gehalten werden.",
+  s3: "Heute sehe ich einen Preis an und bleibe bei meinem Wert. Ich danke für meine Arbeit, meine Zeit, meine Erfahrung und meine Fähigkeit, Geld dafür zu empfangen.",
+  statement: "Mein Wert darf eine klare Zahl bekommen.",
+  clicks: ["Ich sehe meinen Wert.", "Ich halte meinen Preis.", "Ich werde sichtbarer."],
+  frage: "Was passiert in mir, wenn ich meinen Preis ansehe?"
+}, {
+  day: 24,
+  phase: 5,
+  title: "Meinen Wert halten",
+  s1: "Wert kann im Kopf klar sein und im Gespräch plötzlich wackeln. Ein Preis wird erklärt, abgeschwächt oder innerlich schon zurückgenommen, bevor jemand reagiert hat. Das passiert nicht aus Schwäche, sondern aus einem alten Reflex.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Geld zeigt an dieser Stelle, wie gut Wert gehalten werden kann. Wert halten bedeutet, bei der eigenen Arbeit, dem eigenen Angebot oder der eigenen Entscheidung zu bleiben. Ein klarer Preis braucht Präsenz, keine lange Rechtfertigung.",
+  s3: "Heute halte ich meinen Wert einen Moment länger als gewohnt. Ich danke für meine Stimme, meine Arbeit und die Fähigkeit, klarer aufzutreten. Universum, bring mich in Kontakt mit Menschen, die meinen Wert erkennen.",
+  statement: "Ich darf meinen Wert halten, aussprechen und empfangen.",
+  clicks: ["Ich halte meinen Wert.", "Ich spreche klarer.", "Ich bleibe stehen."],
+  frage: "Wo kann ich meinen Wert heute klarer halten?"
+}, {
+  day: 25,
+  phase: 5,
+  title: "Neue Geldwege erkennen",
+  s1: "Geld kam vielleicht immer über dieselben gedachten Wege. Arbeit, ein Kunde, ein Gehalt, ein Verkauf, ein bestimmter Kanal. Wenn diese Wege eng wirkten, wirkte auch Geld eng. Der Blick blieb auf dem Bekannten hängen.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Geld kann über viele Wege kommen: Arbeit, Angebote, Empfehlungen, Rückzahlungen, Kooperationen, Verkäufe, Ideen, Gespräche, bessere Entscheidungen, neue Sichtbarkeit oder vorhandene Ressourcen. Neue Geldwege beginnen oft als Gedanke, der ernst genommen wird.",
+  s3: "Heute öffne ich meinen Blick für neue Geldwege. Ich danke für Möglichkeiten, die bereits da sind. Universum, zeig mir Wege, die ich bisher übersehen habe, und gib mir die Klarheit, einen davon zu bewegen.",
+  statement: "Geld darf durch neue, klare und passende Wege zu mir finden.",
+  clicks: ["Ich sehe neue Wege.", "Ich nehme Möglichkeiten ernst.", "Ich bewege einen Schritt."],
+  frage: "Welche Möglichkeit hat sich heute gezeigt?"
+}, {
+  day: 26,
+  phase: 6,
+  title: "Geld mit Verantwortung führen",
+  s1: "Verantwortung mit Geld konnte sich schwer anfühlen. Als müsste alles perfekt geplant, kontrolliert und im Griff sein. Dadurch wurde Verantwortung schnell zu Druck. Geldführung wirkte größer als der nächste kleine Schritt.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Verantwortung bedeutet, den nächsten bewussten Schritt zu wählen. Eine Zahlung ansehen, eine Ausgabe prüfen, eine Einnahme würdigen, eine offene Sache ordnen oder einen klareren Satz aussprechen. Geldführung entsteht durch kleine wiederholte Entscheidungen.",
+  s3: "Heute übernehme ich Verantwortung für einen Geldmoment. Ich danke für die Fähigkeit, Geld bewusster zu führen, auch wenn noch nicht alles perfekt geordnet ist.",
+  statement: "Ich kann Geld Schritt für Schritt bewusster führen.",
+  clicks: ["Ich übernehme einen Schritt.", "Ich ordne einen Moment.", "Ich führe Geld klarer."],
+  frage: "Welchen Geldmoment führe ich heute bewusster?"
+}, {
+  day: 27,
+  phase: 6,
+  title: "Vertrauen und Handlung verbinden",
+  s1: "Vertrauen mit Geld konnte sich anfühlen, als müsste zuerst alles sicher sein. Erst mehr Geld, dann Ruhe. Erst mehr Überblick, dann Vertrauen. Dadurch blieb Vertrauen abhängig von Bedingungen, die sich ständig verändern.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Vertrauen entsteht nicht nur durch mehr Geld. Vertrauen entsteht durch die Erfahrung, dass der nächste Schritt gewählt werden kann. Handlung gibt Vertrauen Form. Wenn ein Geldmoment bewusst geführt wird, bekommt der Körper eine neue Erfahrung.",
+  s3: "Heute verbinde ich Vertrauen mit Handlung. Ich danke für Geld, das da ist, und für meine Fähigkeit, auch mit Unsicherheit einen nächsten guten Schritt zu wählen. Universum, zeig mir den Schritt, der heute Vertrauen in Bewegung bringt.",
+  statement: "Ich kann Geld vertrauen lernen, indem ich bewusst handle.",
+  clicks: ["Ich handle bewusst.", "Ich vertraue dem nächsten Schritt.", "Ich bleibe in Bewegung."],
+  frage: "Wo konnte ich heute Vertrauen und Handlung verbinden?"
+}, {
+  day: 28,
+  phase: 6,
+  title: "Meine Verbindung zu Geld",
+  s1: "Meine Verbindung zu Geld entstand durch Erfahrungen. Durch Familie, Gespräche, Rechnungen, Einnahmen, Sorgen, Wünsche, Entscheidungen und Momente, die hängen geblieben sind. Dadurch wurde Geld persönlich. Es wurde nicht nur benutzt, sondern innerlich bewertet, gefürchtet, gewünscht oder kontrolliert.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld ist ein Bereich meines Lebens, mit dem ich regelmäßig in Kontakt bin. Diese Verbindung kann sich verändern, wenn ich Geld anders ansehe, bewusster ausgebe, echter empfange und mit mehr Dankbarkeit bewege. Geld muss kein Gegner sein und auch keine Rettung.",
+  s3: "Heute baue ich eine neue Verbindung zu Geld auf. Danke für Geld, das mich versorgt. Danke für Geld, das ich bekomme. Universum, zeig mir heute einen Geldmoment, in dem ich bewusster und freundlicher mit Geld umgehen kann.",
+  statement: "Meine Verbindung zu Geld darf ruhiger, klarer und dankbarer werden.",
+  clicks: ["Ich baue eine neue Verbindung auf.", "Ich führe Geld bewusster.", "Ich danke für Geld."],
+  frage: "Wie möchte ich ab heute mit Geld umgehen?"
+}, {
+  day: 29,
+  phase: 6,
+  title: "Mein neuer Geldstandard",
+  s1: "Ein neuer Umgang mit Geld wirkte vielleicht wie etwas Großes. Mehr Einkommen, mehr Sicherheit, mehr Plan, mehr Überblick. Doch ein Standard entsteht im Alltag. Er zeigt sich darin, was jeden Tag wiederholt wird.",
+  s2title: "Was Geld eigentlich zeigt",
+  s2: "Mein Geldstandard zeigt sich darin, wie ich hinsehe, wie ich bezahle, wie ich empfange, wie ich danke und wie ich entscheide. Geld verändert sich durch wiederholte neue Entscheidungen. Jede bewusste Geldbewegung trainiert einen neuen inneren Standard.",
+  s3: "Heute wähle ich einen kleinen neuen Standard. Ich sehe hin, bevor ich ausweiche. Ich danke, bevor ich urteile. Ich entscheide, bevor ein altes Muster übernimmt. Universum, unterstütze mich dabei, meinen neuen Umgang mit Geld weiter aufzubauen.",
+  statement: "Mein neuer Geldstandard beginnt mit der Entscheidung, heute bewusster mit Geld umzugehen.",
+  clicks: ["Ich sehe hin.", "Ich danke.", "Ich entscheide bewusster."],
+  frage: "Welche Entscheidung passt zu meinem neuen Geldstandard?"
+}, {
+  day: 30,
+  phase: 6,
+  title: "Money Magnet leben",
+  s1: "Geld war vielleicht lange mit Druck, Kontrolle, Angst oder Ausweichen verbunden. Eine Zahl, eine Rechnung, ein Preis oder ein Geldeingang konnte sofort einen alten Zustand aktivieren. Gleichzeitig zeigt genau diese Verbindung, wie viel Veränderung möglich ist.",
+  s2title: "Was Geld eigentlich ist",
+  s2: "Geld ist Austausch, Wert, Versorgung, Möglichkeit und Bewegung. Es kommt, geht, bleibt, verändert Form und bringt Entscheidungen ins Leben. Der Umgang damit entscheidet, ob Geld nur Druck macht oder ob es ein Bereich wird, in dem mehr Bewusstsein, Dankbarkeit und Führung entstehen.",
+  s3: "Ich sehe Geld jetzt anders. Ich darf Geld bekommen und Danke sagen. Ich darf Geld ausgeben und Danke sagen. Auch mit weniger Geld kann ich bei mir bleiben und den nächsten guten Schritt wählen.",
+  statement: "Ich kann Geld mit mehr Dankbarkeit, Bewusstsein und Vertrauen in mein Leben lassen.",
+  clicks: ["Ich empfange bewusster.", "Ich bezahle bewusster.", "Ich entscheide bewusster.", "Ich danke bewusster."],
+  frage: "Was hat sich in meinem Umgang mit Geld verändert?"
+}];;
+
+window.MANIFEST_DAYS = [{
+  day: 1,
+  title: "Was willst du wirklich?",
+  s1: "Viele Wünsche bleiben vage. Mehr Geld. Mehr Freiheit. Mehr Liebe. Mehr Erfolg. Mehr Ruhe. Mehr Leben. Das klingt gut, aber der Kopf kann damit kaum arbeiten. Auch das Universum bekommt dadurch nur ein verschwommenes Signal. Ein Wunsch wird stärker, sobald er eine konkrete Form bekommt.",
+  s2: "Heute machst du deinen Wunsch greifbarer. Du gibst ihm Worte, Bilder und Bedeutung. Du formulierst ihn so, dass dein Körper ihn verstehen kann. Manifestation beginnt dort, wo dein Wunsch aus dem Nebel kommt und eine echte innere Entscheidung wird.",
+  s3: "Heute legst du deinen Wunsch offen vor dich hin. Du entscheidest dich für eine Sache, die in diesen 7 Tagen in Bewegung kommen soll. Schreib sie innerlich groß. Nimm sie ernst. Mach sie so konkret, dass du heute schon spürst, welche Version von dir zu diesem Wunsch passt.",
+  statement: "Mein Wunsch bekommt heute eine konkrete Form und ich beginne, mich darauf einzustellen.",
+  clicks: ["Mein Wunsch wird konkret.", "Mein Wunsch zählt.", "Passende Wege dürfen sich zeigen."],
+  frage: "Was genau möchte ich manifestieren?",
+  prompt: "Mein Wunsch ist:"
+}, {
+  day: 2,
+  title: "Dein Wunsch im Alltag",
+  s1: "Ein Wunsch fühlt sich im Kopf schnell groß an. Im Alltag wird er kleiner, sobald Termine, Nachrichten, alte Gewohnheiten und fremde Erwartungen dazwischenkommen. Dann bleibt der Wunsch ein schöner Gedanke, während der Tag weiter nach alten Mustern läuft. Genau dort entscheidet sich Manifestation.",
+  s2: "Heute verbindest du deinen Wunsch mit deinem Alltag. Frag dich: Wie würde ich heute handeln, wenn dieser Wunsch schon auf dem Weg zu mir ist? Wie würde ich sprechen? Was würde ich erledigen? Die Schwingung deines Wunsches entsteht durch das, was du wiederholt denkst, fühlst und tust.",
+  s3: "Heute wählst du eine konkrete Handlung, die zu deinem Wunsch passt. Eine Nachricht. Ein Gespräch. Eine Bewerbung. Eine Buchung. Eine Vorbereitung. Eine direkte Aussage. Etwas Reales, das deinem Wunsch zeigt: Das hier ist ernst gemeint.",
+  statement: "Mein Wunsch bekommt heute Platz in meinem echten Leben.",
+  clicks: ["Ein echter Schritt passiert heute.", "Mein Alltag zieht mit.", "Meine Entscheidung wird sichtbar."],
+  frage: "Welche Handlung passt heute zu dem, was ich manifestieren möchte?",
+  prompt: "Heute bringe ich meinen Wunsch in Bewegung durch:"
+}, {
+  day: 3,
+  title: "Deine Schwingung verändern",
+  s1: "Viele Menschen wünschen sich etwas Neues und bleiben innerlich trotzdem in der alten Energie. Sie denken an den Wunsch und spüren sofort Stress, Zweifel, Druck oder Ungeduld. Der Wunsch wird dann mit Anspannung verbunden. Genau diese Verbindung prägt die Ausstrahlung stärker als die eigentliche Vorstellung.",
+  s2: "Heute trainierst du die Energie, die zu deinem Wunsch passt. Frag dich: Wie fühlt sich mein Leben an, wenn dieser Wunsch da ist? Freier. Ruhiger. Mutiger. Offener. Kraftvoller. Dann bringst du genau dieses Gefühl für einen Moment in deinen Körper.",
+  s3: "Heute übst du die Frequenz deines Wunsches. Du beginnst innen. Atme so, als wäre mehr möglich. Geh durch den Tag, als hätte dein Wunsch bereits eine Tür geöffnet. Triff eine Entscheidung aus der Energie, in die du hineinwachsen willst.",
+  statement: "Mein innerer Zustand kommt meinem Wunsch heute näher.",
+  clicks: ["Mein nächstes Level wird spürbarer.", "Meine Energie wird stärker.", "Mein Wunsch bekommt mehr Raum im Körper."],
+  frage: "Welches Gefühl gehört zu dem Leben, das ich manifestieren möchte?",
+  prompt: "Dieses Gefühl übe ich heute durch:"
+}, {
+  day: 4,
+  title: "Hinweise erkennen",
+  s1: "Manche Möglichkeiten wurden bisher übersehen, weil der Kopf auf das Alte eingestellt war. Ein Gespräch. Ein Gedanke. Eine Idee. Ein Satz. Ein Kontakt. Ein kleiner Impuls. Vieles wirkt im ersten Moment unscheinbar, kann aber der Anfang einer neuen Richtung sein. Das Leben spricht auch durch kleine Hinweise.",
+  s2: "Heute achtest du auf Hinweise, die zu deinem Wunsch passen. Ein Hinweis ist etwas, das dich innerlich aufrichtet, bewegt oder an deinen nächsten Schritt erinnert. Es kann durch Menschen kommen, durch Worte, durch Timing, durch Ideen oder durch eine plötzliche Erkenntnis.",
+  s3: "Heute gehst du wacher durch deinen Tag. Du bemerkst, was sich zeigt. Wenn ein Impuls kommt, hältst du ihn fest. Du notierst ihn, prüfst ihn und machst daraus einen nächsten kleinen Schritt. Manifestation wird greifbarer, wenn du Hinweise in Handlung übersetzt.",
+  statement: "Heute erkenne ich Hinweise, die mich meinem Wunsch näherbringen.",
+  clicks: ["Hinweise dürfen sichtbar werden.", "Impulse bekommen Gewicht.", "Ein Hinweis wird zu einem Schritt."],
+  frage: "Welcher Hinweis hat sich heute gezeigt?",
+  prompt: "Diesen Hinweis nehme ich ernst:"
+}, {
+  day: 5,
+  title: "Dein großes Ziel in kleine Schritte bringen",
+  s1: "Ein großes Ziel kann so weit weg wirken, dass der Anfang schwer wird. Dann denkt der Kopf an das ganze Ergebnis auf einmal. Mehr Geld. Mehr Sichtbarkeit. Ein neues Angebot. Eine große Veränderung. Dadurch wirkt der Wunsch riesig, während der nächste Schritt verschwimmt. Genau hier verlieren viele Menschen Bewegung.",
+  s2: "Heute machst du dein großes Ziel kleiner. Der Wunsch bleibt groß. Der Schritt wird erreichbar. Du brauchst eine Bewegung, die heute möglich ist. Eine Sache, die du wirklich tun kannst. Ein kleiner Schritt, der deinem Kopf zeigt: Das Ziel beginnt bereits.",
+  s3: "Heute brichst du dein Ziel auf. Aus mehr Geld wird eine konkrete Geldhandlung. Aus mehr Sichtbarkeit wird ein Beitrag, eine Nachricht, ein Angebot. Aus mehr Liebe wird ein ehrlicher Satz, eine bessere Entscheidung, ein offener Moment.",
+  statement: "Mein großes Ziel wird greifbar, weil ich heute einen erreichbaren Schritt gehe.",
+  clicks: ["Mein Ziel wird kleiner und machbar.", "Ein Schritt reicht für heute.", "Mein Wunsch bekommt Bewegung."],
+  frage: "Welcher kleine Schritt bringt mein großes Ziel heute näher?",
+  prompt: "Mein kleinster erreichbarer Schritt für heute ist:"
+}, {
+  day: 6,
+  title: "Empfangen üben",
+  s1: "Viele Menschen wünschen sich mehr und übergehen gleichzeitig das, was bereits kommt. Ein Kompliment wird abgewunken. Eine Chance wird kleingeredet. Ein Geldeingang wird sofort verplant. Hilfe wird schwer angenommen. Genau dadurch entsteht innerlich ein Muster: Empfangen fühlt sich ungewohnt an.",
+  s2: "Heute übst du Empfangen. Wenn etwas Gutes kommt, hältst du kurz an. Du sagst innerlich Danke. Du lässt es einen Moment da sein. Geld, Unterstützung, ein Kontakt, eine Idee, ein Lob, eine Möglichkeit, ein Fortschritt. Alles zählt als Bewegung in deine Richtung.",
+  s3: "Heute machst du dich bereit, mehr anzunehmen. Du darfst empfangen, würdigen und weitergehen. Jeder Moment, in dem du etwas Gutes wirklich annimmst, trainiert deinen Körper auf mehr. Dein Wunsch braucht auch deine Fähigkeit, das Gute wirklich ankommen zu lassen.",
+  statement: "Mehr Gutes darf zu mir kommen, und ich darf es wirklich annehmen.",
+  clicks: ["Gutes darf ankommen.", "Danke für das, was kommt.", "Mehr darf in mein Leben."],
+  frage: "Was durfte ich heute empfangen?",
+  prompt: "Heute habe ich empfangen:"
+}, {
+  day: 7,
+  title: "Weiter manifestieren",
+  s1: "In diesen 7 Tagen hast du deinen Wunsch aufgeschrieben, wiederholt und bewegt. Du hast ihn konkreter gemacht. Du hast ihn in deinen Alltag gebracht. Du hast die passende Energie trainiert. Du hast Hinweise erkannt. Du hast dein großes Ziel in kleinere Schritte gebracht. Du hast Empfangen geübt.",
+  s2: "Heute geht es darum, weiterzumachen. Nach 7 Tagen endet dieser Weg in Evolve, aber dein Wunsch geht weiter. Genau jetzt beginnt der wichtigste Teil: Du nimmst deine neue Energie mit in deinen Alltag. Du wiederholst, was dich stärkt. Du machst weiter kleine Schritte.",
+  s3: "Heute machst du aus deinem Commitment einen neuen Standard. Du wählst, wie du ab morgen weitermachst. Ein täglicher Satz. Ein kleiner Schritt. Eine Handlung pro Tag. Eine bewusste Erinnerung an deinen Wunsch. Manifestation bleibt lebendig, wenn du sie weiter bewegst.",
+  statement: "Mein Commitment geht weiter, und mein Wunsch bleibt in Bewegung.",
+  clicks: ["Mein Wunsch bleibt lebendig.", "Mein Commitment geht weiter.", "Mein nächster Schritt steht fest."],
+  frage: "Wie werde ich mein Commitment ab morgen weiterleben?",
+  prompt: "Ab morgen bleibe ich dran, indem ich:"
+}];;
+
+/* ---------- DATA ---------- */
+var THEME_DEF=[
+ {n:"Bewusstsein",ic:"\u2600",free:1,data:window.BEWUSSTSEIN_DAYS},
+ {n:"Mindset",ic:"\u25C8",data:window.MINDSET_DAYS},
+ {n:"Manifestation",ic:"\u2726",data:window.MANIFEST10_DAYS},
+ {n:"Universumsenergie",ic:"\u273A",data:window.UNIVERSUM10_DAYS},
+ {n:"Selbstliebe",ic:"\u2661",data:window.SELBSTLIEBE12_DAYS},
+ {n:"Loslassen",ic:"\u276E",data:window.LOSLASSEN11_DAYS},
+ {n:"Dankbarkeit",ic:"\u273F",data:window.DANKBARKEIT_DAYS},
+ {n:"Reset",ic:"\u223F",data:window.RESET_DAYS}
+];
+var KURSE=[
+ {grp:"Money Magnet",t:"In 30 Tagen zum Money Magnet",s:"Ver\u00e4ndere, wie du \u00fcber Geld denkst und f\u00fchlst.",days:30,tag:"Premium",data:window.MM_DAYS},
+ {grp:"Manifestation & Mindset",t:"7 Tage Manifestation",s:"Sieben Tage, die alles ver\u00e4ndern k\u00f6nnen",days:7,tag:"Premium",data:window.MANIFEST_DAYS},
+ {grp:"Manifestation & Mindset",t:"30 Tage Evolve",s:"Manifestiere dein Wunschleben",days:30,tag:"bald"},
+ {grp:"Manifestation & Mindset",t:"Dein Future Self",s:"Werde, wer du sein willst.",days:30,tag:"bald"}
+];
+var SATZ=["Was du ruhig tust, trägt weiter als alles Hetzen.","Du bist nicht spät dran. Du bist in deiner Zeit.","Heute beginnt mit einem ruhigen, klaren Atemzug.","Du darfst langsam beginnen und trotzdem ankommen.","Ein guter Tag braucht zuerst eine Richtung."];
+
+/* ---------- NAV ---------- */
+var TABS=[["home","Heute","\u2600"],["learnings","Learnings","\u2726"],["kurse","Kurse","\u25A4"],["ziele","Ziele","\u25CE"],["momente","Momente","\u25C9"],["profil","Profil","\u2B22"]];
+function navHTML(active){return TABS.map(function(t){return '<button class="'+(t[0]===active?'act':'')+'" onclick="go(\''+t[0]+'\')"><span class="ic">'+t[2]+'</span><span class="t">'+t2(t[1])+'</span></button>';}).join('');}
+function go(id){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')});
+  var el=document.getElementById(id); el.classList.add('on');
+  var n=el.querySelector('.nav'); if(n) n.innerHTML=navHTML(id);
+  if(id==='momente')renderMomente();
+  if(id==='profil'){renderProfilStats();applyAccount();}
+  if(id==='account'){applyAccount();renderAbo();pwCode=null;renderPw();}
+  if(id==='learnings')renderLearnings();
+  if(id==='kurse')renderKurse();
+  el.querySelector('.scroll') && (el.querySelector('.scroll').scrollTop=0);
+}
+
+/* ---------- HOME ---------- */
+var si=0;
+var LANG='de';
+var I18N={
+"Heute":"Today","Learnings":"Learnings","Kurse":"Courses","Ziele":"Goals","Momente":"Moments","Profil":"Profile",
+"Guten Morgen,":"Good morning,","Dein Weg":"Your path","Dein Satz f\u00fcr heute":"Your line for today",
+"\u21bb neuer Satz":"\u21bb new line","\u2665 Gemerkt":"\u2665 Saved","\u2661 Merken":"\u2661 Save",
+"Acht Wege, dir selbst n\u00e4her zu kommen.":"Eight ways to get closer to yourself.",
+"Gef\u00fchrte Wege \u00fcber mehrere Tage.":"Guided journeys over several days.",
+"Halte fest, was dich getragen hat.":"Capture what carried you.",
+"Setze ein Ziel und teile es in kleine Etappen.":"Set a goal and break it into small steps.",
+"Neues Ziel \u2026":"New goal \u2026","Konto, E-Mail & Passwort":"Account, email & password",
+"Darstellung":"Appearance","Akzentfarbe":"Accent colour","Sprache":"Language","Hell":"Light","Dunkel":"Dark","Deutsch":"German","English":"English",
+"Diese Woche":"This week","Dein Tracking":"Your tracking","Gemerkte S\u00e4tze":"Saved lines",
+"Konto":"Account","Deine Daten":"Your details","Passwort":"Password","Abo":"Subscription","Speichern":"Save",
+"\u2190 Profil":"\u2190 Profile","Tippe aufs Foto, um es zu \u00e4ndern":"Tap the photo to change it",
+"Name":"Name","E-Mail-Adresse":"Email address",
+"Evolve Premium":"Evolve Premium","Schalte alle Learnings, Kurse und deinen vollen Verlauf frei.":"Unlock all learnings, courses and your full history.",
+"Alle 8 Learning-Bereiche":"All 8 learning areas","Alle Kurse \u00b7 Money Magnet & mehr":"All courses \u00b7 Money Magnet & more",
+"Voller Verlauf & Wochenr\u00fcckblick":"Full history & weekly review","Unbegrenzte Ziele & Momente":"Unlimited goals & moments",
+"Premium freischalten":"Unlock Premium","Sp\u00e4ter":"Later","Beliebt":"Popular",
+"4,08 \u20ac pro Monat":"\u20ac4.08 per month","monatlich k\u00fcndbar":"cancel anytime","49 \u20ac / Jahr":"\u20ac49 / year","6,99 \u20ac / Monat":"\u20ac6.99 / month",
+"Dein Weg. Deine Evolution.":"Your path. Your evolution."
+};
+function t(s){ if(LANG==='en'&&I18N[s]!=null)return I18N[s]; return s; }
+function t2(s){return t(s);}
+function setLang(l){LANG=l;try{localStorage.setItem('evolve3_lang',l);}catch(e){}applyLang();}
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){el.textContent=t(el.getAttribute('data-i18n'));});
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){el.placeholder=t(el.getAttribute('data-i18n-ph'));});
+  var segL=document.getElementById('langSeg');
+  if(segL){segL.children[0].classList.toggle('on',LANG==='de');segL.children[1].classList.toggle('on',LANG==='en');}
+  var cur=document.querySelector('.scr.on');var id=cur?cur.id:'home';
+  document.querySelectorAll('.nav').forEach(function(n){n.innerHTML=navHTML(id);});
+  renderLearnings();renderKurse();refreshFav();
+  if(id==='momente')renderMomente();
+  if(id==='profil'){renderProfilStats();applyAccount();}
+  if(id==='account'){applyAccount();renderAbo();renderPw();}
+}
+function renew(){var n=si;while(n===si)n=Math.floor(Math.random()*SATZ.length);si=n;var a=document.getElementById('affirm');a.style.transition='opacity .4s';a.style.opacity=0;setTimeout(function(){a.textContent=SATZ[si];a.style.opacity=1;refreshFav();},200);}
+
+/* ---------- LEARNINGS ---------- */
+function renderLearnings(){
+  var tints=['rgba(103,130,147,.14)','rgba(199,207,217,.36)','rgba(231,224,216,.46)','rgba(243,237,235,.64)'];
+  var h='<h1 class="h1">'+t('Learnings')+'</h1><p class="lead" style="margin-top:6px">'+t('Acht Wege, dir selbst n\u00e4her zu kommen.')+'</p><div class="grid2">';
+  var ldone=getDone();
+  THEME_DEF.forEach(function(t,i){var c=t.data?t.data.length:0;var dc=0;for(var k in ldone){if(ldone[k]&&k.indexOf('learnings'+i+'_')===0)dc++;}var ctTxt=(dc>0?(dc+' / '+c+' erledigt'):(c+' Learnings'));
+    h+='<div class="tile" style="background:'+tints[i%4]+'" onclick="openTheme('+i+')"><span class="badge">'+(t.free?'Free':'Premium')+'</span><span class="ic" style="background:var(--card)">'+t.ic+'</span><div class="nm">'+t.n.replace('Universumsenergie','Universums&#8203;energie')+'</div><div class="ct">'+ctTxt+'</div></div>';});
+  document.getElementById('learnList').innerHTML=h+'</div>';
+}
+var curData=null,curName='',curBack='learnings',curDay=0,slide=0,sections=[];
+var SUBS=["Worum es geht","Was dahintersteckt","F\u00fcr heute","Vertiefung","Noch ein Schritt"];
+function buildSections(){var d=curData[curDay];sections=[];
+  for(var i=1;i<=5;i++){if(d['s'+i]){sections.push({sub:d['t'+i]||SUBS[i-1],head:(i===2?(d.s2title||''):''),body:d['s'+i]});}}
+  if(d.statement)sections.push({satz:1,body:d.statement});
+  if(d.satz)sections.push({satz:1,body:d.satz});}
+var curType='learnings',curIdx=0;
+function openTheme(i){var t=THEME_DEF[i];if(!t.data){return comingSoon(t.n,'learnings');}if(!t.free&&!isPro()){return showPrem('learnings',i);}showDays('learnings',i);}
+function openCourse(i){var k=KURSE[i];if(!k.data){return comingSoon(k.t,'kurse');}if(!isPro()){return showPrem('kurse',i);}showDays('kurse',i);}
+function getDone(){try{return JSON.parse(localStorage.getItem('evolve3_done')||'{}');}catch(e){return {};}}
+function markDone(type,idx,day){var d=getDone();d[type+idx+'_'+day]=true;try{localStorage.setItem('evolve3_done',JSON.stringify(d));}catch(e){}}
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();}
+function getProg(){try{return JSON.parse(localStorage.getItem('evolve3_prog')||'{}');}catch(e){return {};}}
+function setProgDate(key){var p=getProg();p[key]=todayKey();try{localStorage.setItem('evolve3_prog',JSON.stringify(p));}catch(e){}}
+function doneCount(key){var d=getDone(),n=0;for(var k in d){if(d[k]&&k.indexOf(key+'_')===0)n++;}return n;}
+function canStart(key){var fr=doneCount(key);if(fr===0)return true;return getProg()[key]!==todayKey();}
+var curIsFrontier=false;
+function showDays(type,idx){curType=type;curIdx=idx;
+  curData=(type==='learnings'?THEME_DEF[idx].data:KURSE[idx].data);
+  curName=(type==='learnings'?THEME_DEF[idx].n:KURSE[idx].t);curBack='days';
+  var db=document.getElementById('daysBack');db.textContent='\u2190 '+(type==='kurse'?'Kurse':'Learnings');db.setAttribute('onclick',"go('"+type+"')");
+  var key=type+idx;var fr=doneCount(key);var open=canStart(key);
+  var hh='<h1 class="h1">'+curName+'</h1><p class="lead" style="margin-top:6px">Ein Tag pro Tag \u2013 der n\u00e4chste \u00f6ffnet sich morgen.</p>';
+  curData.forEach(function(d,j){var st=(j<fr?'done':(j===fr&&open?'open':'locked'));
+    var click=(st==='locked')?'':' onclick="openDay('+j+')"';
+    var dn=(st==='done')?'\u2713':(st==='locked'?'\u25cf':(j+1));
+    var tag=(st==='done'?'<span class="derl">Erledigt</span>':(st==='open'?'<span class="derl">Heute</span>':(j===fr?'<span class="lockl">Ab morgen</span>':'<span class="lockl">Gesperrt</span>')));
+    var arr=(st==='locked')?'<span class="da">\u25cb</span>':'<span class="da">\u2192</span>';
+    hh+='<div class="dayrow '+st+'"'+click+'><div class="dn">'+dn+'</div><div class="dt">'+(d.title||('Tag '+(j+1)))+'</div>'+tag+arr+'</div>';});
+  document.getElementById('daysBody').innerHTML=hh;go('days');}
+function openDay(j){var key=curType+curIdx;var fr=doneCount(key);
+  if(!(j<fr||(j===fr&&canStart(key))))return;
+  curIsFrontier=(j===fr);
+  curDay=j;buildSections();slide=0;document.getElementById('readerNext').style.display='block';drawReader();go('reader');}
+function backFromReader(){if(curBack==='days')showDays(curType,curIdx);else go(curBack);}
+function comingSoon(name,back){curBack=back;document.getElementById('readerBack').textContent='\u2190 '+(back==='kurse'?'Kurse':'Learnings');document.getElementById('readerBody').innerHTML='<div class="r-tag">'+name+'</div><div class="r-title">Bald verf\u00fcgbar</div><div class="r-body">Dieser Bereich wird als N\u00e4chstes mit Inhalten gef\u00fcllt.</div>';document.getElementById('readerNext').style.display='none';go('reader');}
+function drawReader(){var d=curData[curDay],s=sections[slide];
+  document.getElementById('readerBack').textContent='\u2190 \u00dcbersicht';
+  var prog='<div class="prog">';for(var i=0;i<sections.length;i++)prog+='<i class="'+(i<=slide?'on':'')+'"></i>';prog+='</div>';
+  var head='<div class="r-num">'+(curDay+1)+'</div>'+prog+'<div class="r-tag">'+curName+' \u00b7 Tag '+(curDay+1)+'</div><div class="r-title">'+d.title+'</div>';
+  var body;
+  if(s.satz){body='<div class="satzwrap"><div class="accentline"></div><div class="satzlabel">Dein Satz f\u00fcr heute</div><div class="r-satz">'+s.body+'</div></div>';}
+  else{body='';if(s.sub)body+='<div class="r-sublabel">'+s.sub+'</div>';if(s.head)body+='<div class="r-head">'+s.head+'</div>';body+='<div class="r-body">'+s.body+'</div>';}
+  document.getElementById('readerBody').innerHTML=head+'<div class="rstep">'+body+'</div>';
+  document.getElementById('readerNext').textContent=slide<sections.length-1?'Weiter':(curIsFrontier?'Abschlie\u00dfen':'Zur \u00dcbersicht');}
+function readerNext(){if(slide<sections.length-1){slide++;drawReader();document.querySelector('#reader .scroll').scrollTop=0;}
+  else{if(curIsFrontier){markDone(curType,curIdx,curDay);setProgDate(curType+curIdx);}showDays(curType,curIdx);}}
+
+/* ---------- KURSE ---------- */
+function renderKurse(){
+  var h='<h1 class="h1">'+t('Kurse')+'</h1><p class="lead" style="margin-top:6px">'+t('Gef\u00fchrte Wege \u00fcber mehrere Tage.')+'</p>';var grp='';
+  KURSE.forEach(function(k,idx){if(k.grp!==grp){h+='<div class="sect">'+k.grp+'</div>';grp=k.grp;}
+    h+='<div class="row" onclick="openCourse('+idx+')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="rt">'+k.t+'</div><div class="rs">'+k.s+'</div></div>'+(k.data?'<span class="ptag">Premium</span>':'')+'</div><div class="rm"><span>'+k.days+' Tage</span><b>'+(k.data?(isPro()?'Starten \u2192':'Freischalten \u2192'):'Bald')+'</b></div></div>';});
+  document.getElementById('kurseList').innerHTML=h;
+}
+
+/* ---------- ZIELE ---------- */
+var goals=JSON.parse(localStorage.getItem('evolve3_goals')||'[]');
+goals.forEach(function(g){if(!g.steps)g.steps=[];});
+function saveGoals(){try{localStorage.setItem('evolve3_goals',JSON.stringify(goals));}catch(e){}}
+function gesc(s){return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function gProg(g){var t=g.steps.length;if(!t)return g.done?100:0;return Math.round(g.steps.filter(function(s){return s.done;}).length/t*100);}
+function renderGoals(){
+  var out='';
+  if(!goals.length){out='<p class="lead" style="margin-top:22px;text-align:center">Noch keine Ziele. Schreib dein erstes oben hinein.</p>';}
+  goals.forEach(function(g,i){var p=gProg(g),dn=g.steps.filter(function(s){return s.done;}).length;
+    out+='<div class="goal"><div class="goalhd"><span class="ck'+(p===100?' done':'')+'" onclick="toggleGoal('+i+')">'+(p===100?'\u2713':'')+'</span><div style="flex:1;min-width:0"><div class="gt">'+gesc(g.t)+'</div><div class="gmeta">'+(g.steps.length?(dn+' von '+g.steps.length+' Etappen'):'Noch keine Etappen')+'</div></div><button class="gdel" onclick="delGoal('+i+')">Entfernen</button></div>';
+    if(g.steps.length){out+='<div class="gbar"><i style="width:'+p+'%"></i></div>';}
+    g.steps.forEach(function(s,j){out+='<div class="gstep'+(s.done?' done':'')+'"><span class="sck" onclick="toggleStep('+i+','+j+')">'+(s.done?'\u2713':'')+'</span><span class="st">'+gesc(s.t)+'</span></div>';});
+    out+='<div class="gadd"><input placeholder="Zwischenziel hinzuf\u00fcgen \u2026" onkeydown="if(event.key===\'Enter\')addStep('+i+',this)"><button onclick="addStep('+i+',this.previousElementSibling)">+ Etappe</button></div></div>';
+  });
+  document.getElementById('goalList').innerHTML=out;
+}
+function addGoal(){var el=document.getElementById('goalInput');var v=el.value.trim();if(!v)return;goals.push({t:v,steps:[],done:false});el.value='';saveGoals();renderGoals();}
+function delGoal(i){goals.splice(i,1);saveGoals();renderGoals();}
+function toggleGoal(i){var g=goals[i];if(g.steps.length){var all=g.steps.every(function(s){return s.done;});g.steps.forEach(function(s){s.done=!all;});}else{g.done=!g.done;}saveGoals();renderGoals();}
+function addStep(i,input){var v=input.value.trim();if(!v)return;goals[i].steps.push({t:v,done:false});input.value='';saveGoals();renderGoals();}
+function toggleStep(i,j){goals[i].steps[j].done=!goals[i].steps[j].done;saveGoals();renderGoals();}
+
+/* ---------- PROFIL: theme/accent ---------- */
+function segPick(btn){var s=btn.parentNode.querySelectorAll('button');for(var i=0;i<s.length;i++)s[i].classList.remove('on');btn.classList.add('on');}
+function theme(m,btn){if(m==='dark')document.documentElement.setAttribute('data-theme','dark');else document.documentElement.removeAttribute('data-theme');try{localStorage.setItem('evolve3_theme',m);}catch(e){}if(btn)segPick(btn);}
+function onAccent(c){var m=c.replace('#','');var r=parseInt(m.substr(0,2),16),g=parseInt(m.substr(2,2),16),b=parseInt(m.substr(4,2),16);var L=(0.299*r+0.587*g+0.114*b);return L>150?'#2E333A':'#fff';}
+function darken(c,f){var m=c.replace('#','');function v(i){return Math.round(parseInt(m.substr(i,2),16)*f);}return 'rgb('+v(0)+','+v(2)+','+v(4)+')';}
+function accent(c,btn){document.documentElement.style.setProperty('--teal',c);document.documentElement.style.setProperty('--onTeal',onAccent(c));document.documentElement.style.setProperty('--btnDark',darken(c,0.5));try{localStorage.setItem('evolve3_accent',c);}catch(e){}if(btn)segPick(btn);}
+function loadPrefs(){try{
+  var t=localStorage.getItem('evolve3_theme');
+  if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');var seg=document.querySelector('#profil .seg');if(seg){seg.children[0].classList.remove('on');seg.children[1].classList.add('on');}}
+  var a=localStorage.getItem('evolve3_accent');
+  if(a){document.documentElement.style.setProperty('--teal',a);document.documentElement.style.setProperty('--onTeal',onAccent(a));document.documentElement.style.setProperty('--btnDark',darken(a,0.5));var sw=document.querySelector('#profil .sw');if(sw){var bs=sw.querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].classList.toggle('on',bs[i].getAttribute('onclick').indexOf(a)>=0);}}}
+}catch(e){}}
+
+/* ---------- RITUAL ---------- */
+var STEPS=[
+ {kind:'breath',step:"Komm bei dir an.",sub:"Atme ruhig mit. Vier Sekunden ein, sechs Sekunden aus."},
+ {kind:'text',step:"Was beschäftigt dich gerade?",sub:"Benenne es innerlich kurz – und leg es für die nächsten Minuten zur Seite."},
+ {kind:'breath',step:"Verbinde dich mit deiner Energie.",sub:"Lass mit jedem Ausatmen ein bisschen mehr los."},
+ {kind:'focus',step:"Wähle deinen Fokus für heute.",sub:"Ein Wort genügt.",options:["Dankbarkeit","Klarheit","Ruhe","Mut","Fülle","Vertrauen"]}
+];
+var ci=0,ct,round;
+function startRitual(){ci=0;renderStep();go('ritual');}
+function renderStep(){
+  var s=STEPS[ci];
+  document.getElementById('ritStep').textContent=s.step;document.getElementById('ritSub').textContent=s.sub;
+  var br=document.getElementById('breath'),ch=document.getElementById('chips'),nb=document.getElementById('nextBtn'),rl=document.getElementById('roundLbl');
+  ch.style.display='none';br.style.display='none';rl.textContent='';stopBreath();
+  if(s.kind==='breath'){br.style.display='grid';nb.style.display='none';startBreath();}
+  else if(s.kind==='focus'){ch.style.display='flex';ch.innerHTML='';nb.style.display='block';s.options.forEach(function(o){var c=document.createElement('div');c.className='chip';c.textContent=o;c.onclick=function(){ch.querySelectorAll('.chip').forEach(function(x){x.classList.remove('sel')});c.classList.add('sel');};ch.appendChild(c);});}
+  else{nb.style.display='block';}
+  nb.textContent=ci===STEPS.length-1?'Abschließen':'Weiter';
+  var d=document.getElementById('dots');d.innerHTML='';for(var i=0;i<STEPS.length;i++)d.innerHTML+='<i class="'+(i<=ci?'on':'')+'"></i>';
+}
+function startBreath(){
+  round=1;var br=document.getElementById('breath'),nb=document.getElementById('nextBtn');
+  function setR(){document.getElementById('roundLbl').textContent='Runde '+round+' von 3';}
+  function inhale(){setR();br.className='breath inhale';tick('Einatmen',4,exhale);}
+  function exhale(){br.className='breath exhale';tick('Ausatmen',6,function(){if(round>=3){br.className='breath';document.getElementById('roundLbl').textContent='';nb.style.display='block';document.getElementById('phase').textContent='Fertig';document.getElementById('count').textContent='✓';}else{round++;inhale();}});}
+  function tick(ph,sec,next){document.getElementById('phase').textContent=ph;document.getElementById('count').textContent=sec;if(ct)clearInterval(ct);ct=setInterval(function(){sec--;if(sec<=0){clearInterval(ct);next();}else document.getElementById('count').textContent=sec;},1000);}
+  inhale();
+}
+function stopBreath(){if(ct)clearInterval(ct);ct=null;}
+function ritNext(){if(ci<STEPS.length-1){ci++;renderStep();}else finish();}
+function finish(){stopBreath();logAct('morgen');buildBloom();go('done');}
+function buildBloom(){var dg=document.getElementById('doneGoal');if(dg){dg.style.display='none';}var b=document.getElementById('bloom');b.querySelectorAll('span').forEach(function(s){s.remove()});var cols=['#678293','#C7CFD9','#E7E0D8','#F3EDEB','#7C97A8'];for(var k=0;k<14;k++){var s=document.createElement('span');var a=(k/14)*Math.PI*2,dist=58+Math.random()*22;s.style.setProperty('--end','translate('+Math.cos(a)*dist+'px,'+Math.sin(a)*dist+'px)');s.style.background=cols[k%cols.length];s.style.animationDelay=(0.15+Math.random()*0.25)+'s';b.appendChild(s);}}
+
+/* init */
+renderLearnings();renderKurse();renderGoals();
+/* ---------- MOMENTE ---------- */
+var moments=JSON.parse(localStorage.getItem('evolve3_moments')||'{}');
+function saveMoments(){try{localStorage.setItem('evolve3_moments',JSON.stringify(moments));}catch(e){}}
+var MN=['Januar','Februar','M\u00e4rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+var momY=null,momM=null,momSel=null;
+function renderMomente(){var now=new Date();if(momY==null){momY=now.getFullYear();momM=now.getMonth();}
+  var DOW=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  var first=new Date(momY,momM,1);var startDow=(first.getDay()+6)%7;var days=new Date(momY,momM+1,0).getDate();
+  var todayKey=now.getFullYear()+'-'+now.getMonth()+'-'+now.getDate();
+  var hh='<h1 class="h1">'+t('Momente')+'</h1><p class="lead" style="margin-top:6px">'+t('Halte fest, was dich getragen hat.')+'</p>';
+  hh+='<div class="calhd"><button onclick="momNav(-1)">\u2039</button><span class="mn">'+MN[momM]+' '+momY+'</span><button onclick="momNav(1)">\u203a</button></div><div class="cal">';
+  DOW.forEach(function(d){hh+='<div class="dow">'+d+'</div>';});
+  for(var i=0;i<startDow;i++)hh+='<div class="cell empty"></div>';
+  for(var dn=1;dn<=days;dn++){var key=momY+'-'+momM+'-'+dn;var has=moments[key];
+    var cls='cell'+(has?' has':'')+(key===todayKey?' today':'')+(key===momSel?' sel':'');
+    hh+='<div class="'+cls+'" onclick="momSelect(\''+key+'\')">'+dn+(has?'<span class="dot"></span>':'')+'</div>';}
+  hh+='</div>';
+  if(momSel){var p=momSel.split('-');var lab=p[2]+'. '+MN[p[1]]+' '+p[0];
+    hh+='<div class="moed"><div class="md" style="margin-bottom:8px">'+lab+'</div><textarea id="momText" placeholder="Wof\u00fcr bist du dankbar? Was war heute sch\u00f6n?">'+gesc(moments[momSel]||'')+'</textarea><button class="sv" onclick="momSave()">Speichern</button></div>';}
+  var keys=Object.keys(moments).filter(function(k){return moments[k];});
+  keys.sort(function(a,b){var pa=a.split('-'),pb=b.split('-');return new Date(pb[0],pb[1],pb[2])-new Date(pa[0],pa[1],pa[2]);});
+  if(keys.length){hh+='<div class="sect">Zuletzt</div>';keys.slice(0,6).forEach(function(k){var p=k.split('-');hh+='<div class="mo"><div class="md">'+p[2]+'. '+MN[p[1]]+' '+p[0]+'</div><div class="mt">'+gesc(moments[k])+'</div></div>';});}
+  hh+='<div class="sect">Deine Ziele</div>';
+  if(!goals.length){hh+='<p class="lead" style="margin-top:4px">Noch keine Ziele angelegt. Leg sie im Tab \u201eZiele\u201c an.</p>';}
+  else{var tot=0,don=0,full=0;goals.forEach(function(g){tot+=g.steps.length;don+=g.steps.filter(function(s){return s.done;}).length;if((g.steps.length&&g.steps.every(function(s){return s.done;}))||(!g.steps.length&&g.done))full++;});
+    var pct=tot?Math.round(don/tot*100):0;
+    hh+='<div class="statgrid" style="margin-top:8px"><div class="stat"><div class="sv">'+goals.length+'</div><div class="sl">Ziele gesamt</div></div><div class="stat"><div class="sv">'+full+'</div><div class="sl">Ziele erreicht</div></div><div class="stat"><div class="sv">'+don+'/'+tot+'</div><div class="sl">Etappen erledigt</div></div><div class="stat"><div class="sv">'+pct+'%</div><div class="sl">Gesamtfortschritt</div></div></div>';
+    goals.forEach(function(g){var p=gProg(g),dn=g.steps.filter(function(s){return s.done;}).length;hh+='<div class="mo"><div class="md">'+gesc(g.t)+'</div><div class="gbar" style="margin:9px 0 5px"><i style="width:'+p+'%"></i></div><div class="mt" style="font-size:12px;color:var(--soft)">'+(g.steps.length?(dn+' von '+g.steps.length+' Etappen'):'Keine Etappen')+' \u00b7 '+p+'%</div></div>';});}
+  document.getElementById('momenteBody').innerHTML=hh;}
+function momNav(d){momM+=d;if(momM<0){momM=11;momY--;}if(momM>11){momM=0;momY++;}momSel=null;renderMomente();}
+function momSelect(k){momSel=(momSel===k?null:k);renderMomente();}
+function momSave(){var v=document.getElementById('momText').value.trim();if(v)moments[momSel]=v;else delete moments[momSel];saveMoments();renderMomente();}
+
+/* ---------- PROFIL STATS ---------- */
+var favs=JSON.parse(localStorage.getItem('evolve3_favs')||'[]');
+function getAccount(){try{return JSON.parse(localStorage.getItem('evolve3_account')||'{}');}catch(e){return {};}}
+function applyAccount(){var a=getAccount();var ph=null;try{ph=localStorage.getItem('evolve3_photo');}catch(e){}
+  if(ph)setPhoto(ph);
+  var nm=a.name||'Nicole';var pn=document.getElementById('pname');if(pn)pn.textContent=nm;
+  var i1=document.getElementById('acName'),i2=document.getElementById('acEmail');
+  if(i1&&!i1.value)i1.value=a.name||'';if(i2&&!i2.value)i2.value=a.email||'';}
+function setPhoto(d){['avatar','avatar2'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.backgroundImage='url('+d+')';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}});}
+function onPhoto(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var img=new Image();img.onload=function(){var c=document.createElement('canvas');var s=320;var sc=Math.min(s/img.width,s/img.height,1);c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);var d=c.toDataURL('image/jpeg',0.85);try{localStorage.setItem('evolve3_photo',d);}catch(err){}setPhoto(d);};img.src=r.result;};r.readAsDataURL(f);}
+function saveAccount(){var a=getAccount();var nm=document.getElementById('acName').value.trim(),em=document.getElementById('acEmail').value.trim();
+  if(nm)a.name=nm;if(em)a.email=em;try{localStorage.setItem('evolve3_account',JSON.stringify(a));}catch(e){}
+  applyAccount();var m=document.getElementById('acMsg');m.textContent='Gespeichert.';setTimeout(function(){m.textContent='';},2200);}
+var pwCode=null;
+function renderPw(){var el=document.getElementById('pwArea');if(!el)return;var a=getAccount();
+  if(!pwCode){el.innerHTML='<button class="asave" style="margin-top:8px" onclick="startPwChange()">Passwort \u00e4ndern</button><div id="pwMsg" class="amsg"></div>';}
+  else{el.innerHTML='<p class="lead" style="font-size:13px;margin-top:4px">Wir haben einen 6-stelligen Code an <b style="color:var(--ink)">'+(a.email||'deine E-Mail')+'</b> gesendet.</p>'+
+    '<p style="font-size:12px;margin-top:6px;color:var(--tealText);font-weight:600">Demo-Code: '+pwCode+'</p>'+
+    '<input class="afield" id="pwCodeIn" inputmode="numeric" placeholder="Code aus der E-Mail">'+
+    '<input class="afield" id="pwNew" type="password" placeholder="Neues Passwort">'+
+    '<button class="asave" onclick="confirmPwChange()">Passwort speichern</button>'+
+    '<button class="abocancel" style="width:100%;margin-top:8px;border-radius:999px" onclick="pwCode=null;renderPw();">Abbrechen</button>'+
+    '<div id="pwMsg" class="amsg"></div>';}}
+function startPwChange(){var a=getAccount();if(!a.email){alert('Bitte speichere zuerst deine E-Mail-Adresse.');return;}pwCode=(''+Math.floor(100000+Math.random()*900000));renderPw();}
+function confirmPwChange(){var c=document.getElementById('pwCodeIn').value.trim(),np=document.getElementById('pwNew').value;var m=document.getElementById('pwMsg');
+  if(c!==pwCode){m.textContent='Der Code stimmt nicht.';return;}
+  if(np.length<4){m.textContent='Passwort zu kurz (mind. 4 Zeichen).';return;}
+  var a=getAccount();a.pass=np;try{localStorage.setItem('evolve3_account',JSON.stringify(a));}catch(e){}
+  pwCode=null;renderPw();document.getElementById('pwMsg').textContent='Passwort ge\u00e4ndert.';}
+function isPro(){try{return localStorage.getItem('evolve3_pro')==='true';}catch(e){return false;}}
+function renderAbo(){var el=document.getElementById('aboState');if(!el)return;
+  if(isPro()){el.innerHTML='<div class="aborow"><div><div style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)">Evolve Premium</div><div class="lead" style="font-size:12.5px">Aktiv \u00b7 monatlich</div></div><button class="abocancel" onclick="cancelAbo()">K\u00fcndigen</button></div>';}
+  else{el.innerHTML='<div class="aborow"><div><div style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)">Kein Abo aktiv</div><div class="lead" style="font-size:12.5px">Du nutzt die kostenlose Version</div></div><button class="asave" style="width:auto;padding:0 18px;height:40px;margin:0" onclick="showPrem()">Premium holen</button></div>';}}
+function cancelAbo(){if(confirm('M\u00f6chtest du Evolve Premium wirklich k\u00fcndigen?')){try{localStorage.setItem('evolve3_pro','false');}catch(e){}renderAbo();}}
+function resumeAbo(){try{localStorage.setItem('evolve3_pro','true');}catch(e){}renderAbo();}
+function saveFavs(){try{localStorage.setItem('evolve3_favs',JSON.stringify(favs));}catch(e){}}
+var acts=JSON.parse(localStorage.getItem('evolve3_acts')||'[]');
+function logAct(t){var k=todayKey();if(!acts.some(function(a){return a.d===k&&a.t===t;})){acts.push({d:k,t:t});try{localStorage.setItem('evolve3_acts',JSON.stringify(acts));}catch(e){}}}
+function curSatz(){var a=document.getElementById('affirm');return a?a.textContent:'';}
+function isFav(t){return favs.indexOf(t)>=0;}
+function refreshFav(){var p=document.getElementById('favPill');if(!p)return;var f=isFav(curSatz());p.innerHTML=f?t('\u2665 Gemerkt'):t('\u2661 Merken');}
+function toggleFav(){var t=curSatz();if(!t)return;var i=favs.indexOf(t);if(i>=0)favs.splice(i,1);else favs.unshift(t);saveFavs();refreshFav();}
+function removeFav(i){favs.splice(i,1);saveFavs();renderProfilStats();}
+function dayActive(k){return acts.some(function(a){return a.d===k;})||!!moments[k];}
+function renderProfilStats(){
+  var done=getDone();
+  var dc=Object.keys(done).filter(function(k){return done[k];}).length;
+  var mc=Object.keys(moments).filter(function(k){return moments[k];}).length;
+  var morgen=acts.filter(function(a){return a.t==='morgen';}).length;
+  var abend=acts.filter(function(a){return a.t==='abend';}).length;
+  var gs=0,gt=0;goals.forEach(function(g){gt+=g.steps.length;gs+=g.steps.filter(function(s){return s.done;}).length;});
+  var streak=0,dd=new Date();var k0=dd.getFullYear()+'-'+dd.getMonth()+'-'+dd.getDate();if(!dayActive(k0))dd.setDate(dd.getDate()-1);
+  while(true){var kk=dd.getFullYear()+'-'+dd.getMonth()+'-'+dd.getDate();if(dayActive(kk)){streak++;dd.setDate(dd.getDate()-1);}else break;}
+  /* weekly */
+  var week=[],wd=new Date();for(var i=0;i<7;i++){week.push(wd.getFullYear()+'-'+wd.getMonth()+'-'+wd.getDate());wd.setDate(wd.getDate()-1);}
+  var aktive=week.filter(dayActive).length;
+  var wm=acts.filter(function(a){return a.t==='morgen'&&week.indexOf(a.d)>=0;}).length;
+  var we=acts.filter(function(a){return a.t==='abend'&&week.indexOf(a.d)>=0;}).length;
+  var satzWk=favs[0]||curSatz()||'Was du ruhig tust, tr\u00e4gt weiter als alles Hetzen.';
+  document.getElementById('weekStats').innerHTML=
+    '<div style="display:flex;gap:10px;margin-top:8px"><div class="wstat"><b>'+aktive+'</b><span>aktive Tage</span></div><div class="wstat"><b>'+wm+'</b><span>Morgen</span></div><div class="wstat"><b>'+we+'</b><span>Abende</span></div></div>'+
+    '<div class="weeksatz"><div class="md">Dein Satz der Woche</div><div class="wq">\u201c'+gesc(satzWk)+'\u201d</div></div>';
+  /* tracking */
+  document.getElementById('profilStats').innerHTML='<div class="statgrid">'+
+    '<div class="stat"><div class="sv">'+streak+'</div><div class="sl">Tage am St\u00fcck</div></div>'+
+    '<div class="stat"><div class="sv">'+morgen+'</div><div class="sl">Morgen-Routinen</div></div>'+
+    '<div class="stat"><div class="sv">'+abend+'</div><div class="sl">Abend-Rituale</div></div>'+
+    '<div class="stat"><div class="sv">'+acts.filter(function(a){return a.t==='refocus';}).length+'</div><div class="sl">Gedanken sortiert</div></div>'+
+    '<div class="stat"><div class="sv">'+mc+'</div><div class="sl">Momente</div></div>'+
+    '<div class="stat"><div class="sv">'+dc+'</div><div class="sl">Learnings erledigt</div></div>'+
+    '<div class="stat"><div class="sv">'+goals.length+'</div><div class="sl">Ziele \u00b7 '+gs+'/'+gt+' Etappen</div></div>'+
+    '</div>';
+  /* favorites */
+  var fl=document.getElementById('favList');
+  if(!favs.length){fl.innerHTML='<p class="lead" style="margin-top:6px;font-size:13px">Tippe auf Heute auf \u201eMerken\u201c, um S\u00e4tze zu sammeln.</p>';}
+  else{fl.innerHTML=favs.map(function(t,i){return '<div class="favitem"><div class="fq">\u201c'+gesc(t)+'\u201d</div><button onclick="removeFav('+i+')">\u00d7</button></div>';}).join('');}
+}
+
+/* ---------- ABEND DANKBARKEIT ---------- */
+var GQ=["Wof\u00fcr bin ich heute dankbar?","Was war heute sch\u00f6n, wertvoll oder gut?","Konntest du heute etwas Gutes f\u00fcr jemand anderen tun?","Was m\u00f6chte ich heute an mir selbst wertsch\u00e4tzen?","Hast du heute jemandem Danke gesagt?"];
+var GCAT=["Menschen","Gesundheit","Arbeit & Erfolg","Kleine Momente","Ich selbst","Zuhause"];
+var DANKE=["1\u00d7","2\u00d7","3\u00d7","5\u00d7 oder mehr"];
+var abStep=0,abAns=[],abCat=null,abDanke=null;
+function startAbend(){abStep=0;abAns=['','','','',''];abCat=null;abDanke=null;renderAbend();go('abend');}
+function renderAbend(){
+  document.getElementById('abQ').textContent=GQ[abStep];
+  document.getElementById('abRound').textContent='Frage '+(abStep+1)+' von 5';
+  var ch=document.getElementById('abChips'),ta=document.getElementById('abText');
+  ta.value=abAns[abStep]||'';
+  function chips(arr,sel,set){ch.style.display='flex';ch.innerHTML='';arr.forEach(function(c){var e=document.createElement('div');e.className='chip'+(sel===c?' sel':'');e.textContent=c;e.onclick=function(){set(sel===c?null:c);renderAbend();};ch.appendChild(e);});}
+  if(abStep===0)chips(GCAT,abCat,function(v){abCat=v;});
+  else if(abStep===4)chips(DANKE,abDanke,function(v){abDanke=v;});
+  else ch.style.display='none';
+  var d=document.getElementById('abDots');d.innerHTML='';for(var i=0;i<5;i++)d.innerHTML+='<i class="'+(i<=abStep?'on':'')+'"></i>';
+  document.getElementById('abNext').textContent=abStep<4?'Weiter':'Abschlie\u00dfen';
+}
+function abNext(){abAns[abStep]=document.getElementById('abText').value;if(abStep<4){abStep++;renderAbend();}else abFinish();}
+function abFinish(){var parts=[];if(abCat)parts.push('Dankbar f\u00fcr: '+abCat);
+  abAns.forEach(function(a,i){if(a&&a.trim())parts.push(GQ[i]+' '+a.trim());});
+  if(abDanke)parts.push('Danke gesagt: '+abDanke);
+  var txt=parts.length?parts.join(' \u00b7 '):'Ein dankbarer Abschluss f\u00fcr heute.';
+  var key=new Date().getFullYear()+'-'+new Date().getMonth()+'-'+new Date().getDate();
+  moments[key]=moments[key]?(moments[key]+'\n'+txt):txt;saveMoments();logAct('abend');
+  buildBloom();go('done');}
+
+var premTarget=null,premPlan='year';
+function selPlan(p){premPlan=p;document.getElementById('planYear').classList.toggle('on',p==='year');document.getElementById('planMonth').classList.toggle('on',p==='month');}
+function showPrem(type,i){premTarget=(type?{type:type,i:i}:null);document.getElementById('premModal').classList.add('show');}
+function hidePrem(){document.getElementById('premModal').classList.remove('show');premTarget=null;}
+function activatePrem(){try{localStorage.setItem('evolve3_pro','true');}catch(e){}hidePrem2();renderAbo();renderLearnings();renderKurse();var tg=premTarget;premTarget=null;if(tg){if(tg.type==='learnings')showDays('learnings',tg.i);else showDays('kurse',tg.i);}}
+function hidePrem2(){document.getElementById('premModal').classList.remove('show');}
+var RFBLOCK=["Zeitmangel","Unterbrechung","Unklarheit","Zu viel im Kopf"];
+var rfStep=0,rfBlock=null;
+function startRefocus(){rfStep=0;rfBlock=null;renderRefocus();go('refocus');}
+function renderRefocus(){var ch=document.getElementById('rfChips'),ta=document.getElementById('rfText'),sub=document.getElementById('rfSub');document.getElementById('rfRound').textContent='Sortieren';
+  if(rfStep===0){document.getElementById('rfQ').textContent='Was blockiert gerade?';sub.textContent='Benenne es – dann wird der nächste Schritt klarer.';ch.style.display='flex';ch.innerHTML='';ta.style.display='none';RFBLOCK.forEach(function(c){var e=document.createElement('div');e.className='chip'+(rfBlock===c?' sel':'');e.textContent=c;e.onclick=function(){rfBlock=c;renderRefocus();};ch.appendChild(e);});document.getElementById('rfNext').textContent='Weiter';}
+  else{document.getElementById('rfQ').textContent='Was ist jetzt der nächste Schritt?';sub.textContent='Klein und realistisch. Einer reicht.';ch.style.display='none';ta.style.display='block';ta.value='';document.getElementById('rfNext').textContent='Schritt setzen';}
+  var d=document.getElementById('rfDots');d.innerHTML='';for(var i=0;i<2;i++)d.innerHTML+='<i class="'+(i<=rfStep?'on':'')+'"></i>';}
+function rfNext(){if(rfStep===0){if(!rfBlock)return;rfStep=1;renderRefocus();}else rfFinish();}
+function rfFinish(){var step=document.getElementById('rfText').value.trim();var key=todayKey();var rf=JSON.parse(localStorage.getItem('evolve3_refocus')||'[]');rf.push({d:key,block:rfBlock,step:step});try{localStorage.setItem('evolve3_refocus',JSON.stringify(rf));}catch(e){}logAct('refocus');lastStep=step;buildBloom();go('done');showStepGoal();}
+var MORN=[
+ {q:"Was steht an?",sub:"Das Wichtigste von heute – in einem Satz.",ph:"Das Wichtigste von heute …"},
+ {q:"Was zählt zuerst?",sub:"Deine erste Priorität.",ph:"Womit du beginnst …"},
+ {q:"Was ist der eine Schritt, der dich weiterbringt?",sub:"Ein konkreter, machbarer Schritt.",ph:"Ein klarer nächster Schritt …"}
+];
+var moStep=0,moAns=['','',''],moCt=null,lastStep='';
+function startMorning(){moStep=0;moAns=['','',''];renderMorning();go('morning');}
+function renderMorning(){var br=document.getElementById('moBreathWrap'),ta=document.getElementById('moText'),sub=document.getElementById('moSub');stopMoBreath();
+  if(moStep===0){document.getElementById('moRound').textContent='Optional';document.getElementById('moQ').textContent='Kurz ankommen';sub.textContent='Magst du vorher einmal bewusst durchatmen?';ta.style.display='none';br.style.display='none';document.getElementById('moChoice').style.display='flex';document.getElementById('moNext').style.display='none';}
+  else{document.getElementById('moChoice').style.display='none';document.getElementById('moNext').style.display='block';var s=MORN[moStep-1];document.getElementById('moRound').textContent='Frage '+moStep+' von 3';document.getElementById('moQ').textContent=s.q;sub.textContent=s.sub;ta.style.display='block';ta.placeholder=s.ph;ta.value=moAns[moStep-1]||'';br.style.display='none';document.getElementById('moNext').textContent=moStep<3?'Weiter':'Tag setzen';}
+  var d=document.getElementById('moDots');d.innerHTML='';for(var i=0;i<4;i++)d.innerHTML+='<i class="'+(i<=moStep?'on':'')+'"></i>';}
+function moChoose(yes){document.getElementById('moChoice').style.display='none';if(yes){document.getElementById('moBreathWrap').style.display='flex';var nb=document.getElementById('moNext');nb.style.display='block';nb.textContent='Weiter';runMoBreath();}else{moStep=1;renderMorning();}}
+function moNext(){if(moStep>0)moAns[moStep-1]=document.getElementById('moText').value;if(moStep<3){moStep++;renderMorning();}else moFinish();}
+function runMoBreath(){var br=document.getElementById('moBreath');var round=1;
+  function inh(){br.className='breath inhale';tk('Einatmen',4,exh);}
+  function exh(){br.className='breath exhale';tk('Ausatmen',6,function(){if(round>=3){br.className='breath';document.getElementById('moPhase').textContent='Bereit';document.getElementById('moCount').textContent='✓';}else{round++;inh();}});}
+  function tk(ph,sec,next){document.getElementById('moPhase').textContent=ph;document.getElementById('moCount').textContent=sec;if(moCt)clearInterval(moCt);moCt=setInterval(function(){sec--;if(sec<=0){clearInterval(moCt);next();}else document.getElementById('moCount').textContent=sec;},1000);}
+  inh();}
+function stopMoBreath(){if(moCt)clearInterval(moCt);moCt=null;}
+function moFinish(){stopMoBreath();var key=todayKey();var m=JSON.parse(localStorage.getItem('evolve3_morning')||'{}');m[key]={an:moAns.slice(),step:moAns[2]||''};try{localStorage.setItem('evolve3_morning',JSON.stringify(m));}catch(e){}logAct('morgen');lastStep=(moAns[2]||'').trim();buildBloom();go('done');showStepGoal();}
+function showStepGoal(){var b=document.getElementById('doneGoal');if(!b)return;if(lastStep){b.style.display='inline-block';b.disabled=false;b.textContent='Diesen Schritt als Ziel speichern';}else b.style.display='none';}
+function makeGoalFromStep(){if(!lastStep)return;goals.push({t:lastStep,steps:[]});saveGoals();var b=document.getElementById('doneGoal');b.textContent='Als Ziel gespeichert ✓';b.disabled=true;}
+document.getElementById('nav').innerHTML=navHTML('home');
+loadPrefs();
+refreshFav();
+applyAccount();
+applyLang();
+</script>
+</body></html>
